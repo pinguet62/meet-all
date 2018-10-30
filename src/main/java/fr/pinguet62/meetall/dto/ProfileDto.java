@@ -5,6 +5,7 @@ import lombok.Getter;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PositiveOrZero;
+import java.util.List;
 
 import static java.util.Objects.requireNonNull;
 
@@ -23,18 +24,14 @@ public class ProfileDto {
     @PositiveOrZero
     private final int age;
 
-    private final Object avatar;
+    private final List<String> avatars;
 
-    public ProfileDto(String id, String name, int age, Object avatar) {
+    public ProfileDto(String id, String name, int age, List<String> avatars) {
         this.id = requireNonNull(id);
         this.name = requireNonNull(name);
         if (age < 0) throw new IllegalArgumentException("'age' should be positive");
         this.age = age;
-        this.avatar = avatar;
-    }
-
-    public ProfileDto(String id, String name, int age) {
-        this(id, name, age, null);
+        this.avatars = requireNonNull(avatars);
     }
 
 }

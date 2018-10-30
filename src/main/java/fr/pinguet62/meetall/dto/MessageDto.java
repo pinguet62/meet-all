@@ -5,7 +5,7 @@ import lombok.Getter;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Past;
-import java.time.LocalDate;
+import java.time.ZonedDateTime;
 
 import static java.util.Objects.requireNonNull;
 
@@ -18,7 +18,7 @@ public class MessageDto {
 
     @NotNull
     @Past
-    private final LocalDate date;
+    private final ZonedDateTime date;
 
     @NotNull
     private final boolean sent;
@@ -27,7 +27,7 @@ public class MessageDto {
     @NotEmpty
     private final String text;
 
-    public MessageDto(String id, LocalDate date, boolean sent, String text) {
+    public MessageDto(String id, ZonedDateTime date, boolean sent, String text) {
         this.id = requireNonNull(id);
         this.date = requireNonNull(date);
         this.sent = sent;
