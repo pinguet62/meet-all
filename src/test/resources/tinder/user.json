@@ -1,0 +1,49 @@
+{
+  "status": 200,
+  "results": {
+    "common_like_count": 0,
+    "common_friend_count": 0,
+    "common_likes": [],
+    "common_friends": [],
+    "_id": "5b486956f408df634d26de3b",
+    "birth_date": "1988-11-02T22:05:24.419Z",
+    "name": "Al",
+    "ping_time": "2014-12-09T00:00:00.000Z",
+    "photos": [
+      {
+        "id": "7cd50312-0063-4814-89b0-1568886056ba",
+        "url": "https://images-ssl.gotinder.com/5b486956f408df634d26de3b/1080x1080_7cd50312-0063-4814-89b0-1568886056ba.jpg",
+        "fileName": "7cd50312-0063-4814-89b0-1568886056ba.jpg",
+        "extension": "jpg",
+        "processedFiles": [
+          {
+            "url": "https://images-ssl.gotinder.com/5b486956f408df634d26de3b/640x640_7cd50312-0063-4814-89b0-1568886056ba.jpg",
+            "height": 640,
+            "width": 640
+          },
+          {
+            "url": "https://images-ssl.gotinder.com/5b486956f408df634d26de3b/320x320_7cd50312-0063-4814-89b0-1568886056ba.jpg",
+            "height": 320,
+            "width": 320
+          },
+          {
+            "url": "https://images-ssl.gotinder.com/5b486956f408df634d26de3b/172x172_7cd50312-0063-4814-89b0-1568886056ba.jpg",
+            "height": 172,
+            "width": 172
+          },
+          {
+            "url": "https://images-ssl.gotinder.com/5b486956f408df634d26de3b/84x84_7cd50312-0063-4814-89b0-1568886056ba.jpg",
+            "height": 84,
+            "width": 84
+          }
+        ]
+      }
+    ],
+    "jobs": [],
+    "schools": [],
+    "gender": 1,
+    "birth_date_info": "fuzzy birthdate active, not displaying real birth_date",
+    "distance_mi": 308,
+    "is_tinder_u": false
+  }
+}

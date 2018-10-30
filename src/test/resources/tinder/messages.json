@@ -1,0 +1,29 @@
+{
+  "meta": {
+    "status": 200
+  },
+  "data": {
+    "messages": [
+      {
+        "_id": "5bd2e800e46c4dd64d1a0866",
+        "match_id": "52b4d9ed6c5685412c0002a15aafa40957398e766afe7ed4",
+        "sent_date": "2018-10-26T10:10:08.500Z",
+        "message": "Alors les entretiens RH sur Tinder, ça embuache ? 😋",
+        "to": "5aafa40957398e766afe7ed4",
+        "from": "52b4d9ed6c5685412c0002a1",
+        "created_date": "2018-10-26T10:10:08.500Z",
+        "timestamp": 1540548608500
+      },
+      {
+        "_id": "5bd2e7e67cd91a673b1a9873",
+        "match_id": "52b4d9ed6c5685412c0002a15aafa40957398e766afe7ed4",
+        "sent_date": "2018-10-26T10:09:42.830Z",
+        "message": "Bonjour Maria 😊",
+        "to": "5aafa40957398e766afe7ed4",
+        "from": "52b4d9ed6c5685412c0002a1",
+        "created_date": "2018-10-26T10:09:42.830Z",
+        "timestamp": 1540548582830
+      }
+    ]
+  }
+}

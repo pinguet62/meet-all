@@ -41,7 +41,7 @@ public class TinderProvider implements Provider {
     @Override
     public Flux<ConversationDto> getConversations(String authToken) {
         return WEB_CLIENT.get()
-                .uri("/v2/matches")
+                .uri("/v2/matches?count=60")
                 .header(HEADER, authToken)
                 .retrieve().bodyToFlux(TinderGetConversationResponseDto.class)
                 .map(TinderGetConversationResponseDto::getData)
