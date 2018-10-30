@@ -7,6 +7,7 @@ import fr.pinguet62.meetall.database.UserRepository;
 import fr.pinguet62.meetall.dto.ConversationDto;
 import fr.pinguet62.meetall.dto.MessageDto;
 import fr.pinguet62.meetall.dto.ProfileDto;
+import fr.pinguet62.meetall.provider.tinder.TinderProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
@@ -24,6 +25,8 @@ public class ProviderService {
     public Provider getProviderById(String providerId) {
         // TODO Spring scan
         switch (providerId) {
+            case "tinder":
+                return new TinderProvider();
             default:
                 throw new IllegalArgumentException("Unsupported provider: " + providerId);
         }

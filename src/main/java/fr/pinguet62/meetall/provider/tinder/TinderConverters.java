@@ -1,0 +1,35 @@
+package fr.pinguet62.meetall.provider.tinder;
+
+import fr.pinguet62.meetall.dto.ConversationDto;
+import fr.pinguet62.meetall.dto.MessageDto;
+import fr.pinguet62.meetall.dto.ProfileDto;
+import fr.pinguet62.meetall.provider.tinder.dto.TinderMatchDto;
+import fr.pinguet62.meetall.provider.tinder.dto.TinderMessageDto;
+import fr.pinguet62.meetall.provider.tinder.dto.TinderPhotoDto;
+import fr.pinguet62.meetall.provider.tinder.dto.TinderUserDto;
+
+import java.time.temporal.ChronoUnit;
+
+import static java.time.ZonedDateTime.now;
+import static java.util.stream.Collectors.toList;
+
+public class TinderConverters {
+
+    public static ProfileDto convert(TinderUserDto input) {
+        return new ProfileDto(
+                input.get_id(),
+                input.getName(),
+                (int) ChronoUnit.YEARS.between(input.getBirth_date(), now()),
+                input.getPhotos().stream().map(TinderPhotoDto::getUrl).collect(toList())
+        );
+    }
+
+    public static ConversationDto convert(TinderMatchDto input) {
+        return new ConversationDto(null, null);
+    }
+
+    public static MessageDto convert(TinderMessageDto input) {
+        return new MessageDto(null, null, false, null);
+    }
+
+}
