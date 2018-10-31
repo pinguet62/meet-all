@@ -12,7 +12,6 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
-import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -25,49 +24,44 @@ public class ProvidersService {
     /**
      * @see ProviderService#getId()
      */
-    public ProviderService getProviderServiceById(Provider provider) {
-        Optional<ProviderService> first = providerServices.stream().filter(p -> p.getId().equals(provider)).findFirst();
-        return first.orElseThrow(() -> new NoProviderFoundException(provider));
+    public ProviderService getProviderService(Provider provider) {
+        return providerServices.stream().filter(p -> p.getId().equals(provider)).findFirst()
+                .orElseThrow(() -> new NoProviderFoundException(provider));
     }
 
     /**
-     * @param currentUserId {@link User#getId()}
-     * @param provider      {@link ProviderCredential#getProvider()}
-     * @param profileId     {@link ProfileDto#getId()}
+     * @param userId    {@link User#getId()}
+     * @param provider  {@link ProviderCredential#getProvider()}
+     * @param profileId {@link ProfileDto#getId()}
      */
-    public Mono<ProfileDto> getProfileForUser(int currentUserId, Provider provider, String profileId) {
-        return Mono.justOrEmpty(userRepository.findById(currentUserId))
-                .flatMap(user -> {
-                    ProviderCredential providerCredentials = user.getProviderCredentials().stream().filter(it -> it.getProvider().equals(provider)).findFirst().get();
-                    ProviderService providerService = getProviderServiceById(provider);
-                    return providerService.getProfile(providerCredentials.getCredential(), profileId);
-                });
+    public Mono<ProfileDto> getProfileForUser(int userId, Provider provider, String profileId) {
+        return Mono.justOrEmpty(userRepository.findById(userId))
+                .flatMapIterable(user -> user.getProviderCredentials())
+                .filter(providerCredential -> providerCredential.getProvider().equals(provider))
+                .next()
+                .flatMap(providerCredential -> getProviderService(provider).getProfile(providerCredential.getCredential(), profileId));
     }
 
     /**
-     * @param currentUserId {@link User#getId()}
+     * @param userId {@link User#getId()}
      */
-    public Flux<ConversationDto> getConversationsForUser(int currentUserId) {
-        return Mono.justOrEmpty(userRepository.findById(currentUserId))
+    public Flux<ConversationDto> getConversationsForUser(int userId) {
+        return Mono.justOrEmpty(userRepository.findById(userId))
                 .flatMapIterable(User::getProviderCredentials)
-                .flatMap(providerCredentials -> {
-                    ProviderService providerService = getProviderServiceById(providerCredentials.getProvider());
-                    return providerService.getConversations(providerCredentials.getCredential());
-                });
+                .flatMap(providerCredential -> getProviderService(providerCredential.getProvider()).getConversations(providerCredential.getCredential()));
     }
 
     /**
-     * @param currentUserId {@link User#getId()}
-     * @param provider      {@link ProviderCredential#getProvider()}
-     * @param profileId     {@link ProfileDto#getId()}
+     * @param userId    {@link User#getId()}
+     * @param provider  {@link ProviderCredential#getProvider()}
+     * @param profileId {@link ProfileDto#getId()}
      */
-    public Flux<MessageDto> getMessagesForUser(int currentUserId, Provider provider, String profileId) {
-        return Mono.justOrEmpty(userRepository.findById(currentUserId))
-                .flatMapMany(user -> {
-                    ProviderCredential providerCredentials = user.getProviderCredentials().stream().filter(it -> it.getProvider().equals(provider)).findFirst().get();
-                    ProviderService providerService = getProviderServiceById(provider);
-                    return providerService.getMessages(providerCredentials.getCredential(), profileId);
-                });
+    public Flux<MessageDto> getMessagesForUser(int userId, Provider provider, String profileId) {
+        return Mono.justOrEmpty(userRepository.findById(userId))
+                .flatMapIterable(user -> user.getProviderCredentials())
+                .filter(providerCredential -> providerCredential.getProvider().equals(provider))
+                .next()
+                .flatMapMany(providerCredential -> getProviderService(provider).getMessages(providerCredential.getCredential(), profileId));
     }
 
 }

@@ -13,6 +13,28 @@ import static org.hamcrest.Matchers.is;
 
 public class MatcherUtils {
 
+    public static Matcher<Runnable> throwing(Class<? extends Throwable> type) {
+        return new TypeSafeMatcher<Runnable>() {
+            @Override
+            public void describeTo(Description description) {
+                description.appendText("throws " + type.getSimpleName());
+            }
+
+            @Override
+            protected boolean matchesSafely(Runnable function) {
+                try {
+                    function.run();
+                    return false;
+                } catch (Throwable throwable) {
+                    if (!(type.isAssignableFrom(throwable.getClass()))) {
+                        return false;
+                    }
+                    return true;
+                }
+            }
+        };
+    }
+
     /**
      * <pre>
      * URL url = new URL("http://api.com/user/42");

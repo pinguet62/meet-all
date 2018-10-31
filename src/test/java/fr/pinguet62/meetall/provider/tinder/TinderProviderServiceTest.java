@@ -28,6 +28,7 @@ import static java.lang.System.lineSeparator;
 import static java.util.stream.Collectors.joining;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
@@ -86,17 +87,20 @@ public class TinderProviderServiceTest {
         final String matchId = "matchId";
         server.enqueue(new MockResponse()
                 .setHeader(CONTENT_TYPE, APPLICATION_JSON_UTF8_VALUE)
-                .setBody(readFile("messages.json")));
+                .setBody(readFile("meta.json")));
         server.enqueue(new MockResponse()
                 .setHeader(CONTENT_TYPE, APPLICATION_JSON_UTF8_VALUE)
-                .setBody(readFile("meta.json")));
+                .setBody(readFile("messages.json")));
 
         List<MessageDto> messages = tinderProvider.getMessages(authToken, matchId).collectList().block();
 
         assertThat(server, takingRequest(allOf(
+                url(with(HttpUrl::url, with(URL::toString, containsString("meta")))),
+                header(HEADER, authToken))));
+        assertThat(server, takingRequest(allOf(
                 url(with(HttpUrl::url, with(URL::toString, containsString("v2/matches/" + matchId + "/messages")))),
                 header(HEADER, authToken))));
-        assertThat(messages, not(nullValue()));
+        assertThat(messages, hasSize(2));
     }
 
     private String readFile(String resource) throws IOException, URISyntaxException {

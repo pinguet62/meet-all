@@ -9,7 +9,7 @@ import javax.validation.constraints.NotNull;
 import static java.util.Objects.requireNonNull;
 
 @Getter
-public class RegiteredCredentialDto {
+public class RegisteredCredentialDto {
 
     @NotNull
     private final int id;
@@ -20,7 +20,7 @@ public class RegiteredCredentialDto {
     @NotNull
     private final Provider provider;
 
-    public RegiteredCredentialDto(int id, String label, Provider provider) {
+    public RegisteredCredentialDto(int id, String label, Provider provider) {
         this.id = id;
         this.label = requireNonNull(label);
         this.provider = requireNonNull(provider);

@@ -7,6 +7,8 @@ import static java.util.Objects.requireNonNull;
 
 public class ProviderIdValue {
 
+    static final String SEPARATOR = ":";
+
     @Getter
     private final Provider provider;
 
@@ -23,11 +25,11 @@ public class ProviderIdValue {
     }
 
     public static String format(Provider provider, String valueId) {
-        return String.format("%s:%s", provider.name(), valueId);
+        return String.format("%s%s%s", provider.name(), SEPARATOR, valueId);
     }
 
-    public static ProviderIdValue parse(String encrypted) {
-        String[] values = encrypted.split(":");
+    public static ProviderIdValue parse(String transformed) {
+        String[] values = transformed.split(SEPARATOR);
         return new ProviderIdValue(Provider.valueOf(values[0]), values[1]);
     }
 

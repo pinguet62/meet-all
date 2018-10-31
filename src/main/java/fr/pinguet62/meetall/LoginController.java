@@ -2,7 +2,7 @@ package fr.pinguet62.meetall;
 
 import fr.pinguet62.meetall.database.ProviderCredential;
 import fr.pinguet62.meetall.database.User;
-import fr.pinguet62.meetall.dto.RegiteredCredentialDto;
+import fr.pinguet62.meetall.dto.RegisteredCredentialDto;
 import fr.pinguet62.meetall.provider.Provider;
 import fr.pinguet62.meetall.security.SecurityContext;
 import fr.pinguet62.meetall.security.SecurityContextHolder;
@@ -48,11 +48,11 @@ public class LoginController {
     }
 
     @GetMapping("/credential")
-    public Flux<RegiteredCredentialDto> getRegisteredCredentials() {
+    public Flux<RegisteredCredentialDto> getRegisteredCredentials() {
         return SecurityContextHolder.getContext().map(SecurityContext::getUserId)
                 .doOnNext(it -> System.out.println(it))
                 .flatMapMany(userId -> loginService.getRegisteredCredentials(userId))
-                .map(entity -> new RegiteredCredentialDto(entity.getId(), entity.getLabel(), entity.getProvider()));
+                .map(entity -> new RegisteredCredentialDto(entity.getId(), entity.getLabel(), entity.getProvider()));
     }
 
     /**
@@ -62,10 +62,10 @@ public class LoginController {
      */
     @PostMapping("/credential")
     @ResponseStatus(CREATED)
-    public Mono<Void> registerCredentials(@RequestParam Provider provider, @RequestParam String credential, @RequestParam String label) {
+    public Mono<RegisteredCredentialDto> registerCredentials(@RequestParam Provider provider, @RequestParam String credential, @RequestParam String label) {
         return SecurityContextHolder.getContext().map(SecurityContext::getUserId)
                 .flatMap(userId -> loginService.registerCredentials(userId, provider, credential, label))
-                .flatMap(it -> Mono.empty());
+                .map(entity -> new RegisteredCredentialDto(entity.getId(), entity.getLabel(), entity.getProvider()));
     }
 
     /**
@@ -74,10 +74,10 @@ public class LoginController {
      * @param label      {@link ProviderCredential#getLabel()}
      */
     @PutMapping("/credential/{id}")
-    public Mono<Void> updateCredentials(@PathVariable int id, @RequestParam(required = false) String credential, @RequestParam(required = false) String label) {
+    public Mono<RegisteredCredentialDto> updateCredentials(@PathVariable int id, @RequestParam(required = false) String credential, @RequestParam(required = false) String label) {
         return SecurityContextHolder.getContext().map(SecurityContext::getUserId)
                 .flatMap(userId -> loginService.updateCredentials(userId, id, ofNullable(credential), ofNullable(label)))
-                .flatMap(it -> Mono.empty());
+                .map(entity -> new RegisteredCredentialDto(entity.getId(), entity.getLabel(), entity.getProvider()));
     }
 
 }

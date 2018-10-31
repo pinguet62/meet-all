@@ -7,6 +7,9 @@ import static org.springframework.http.HttpStatus.FORBIDDEN;
 @ResponseStatus(FORBIDDEN)
 public class ForbiddenException extends RuntimeException {
 
+    public ForbiddenException() {
+    }
+
     public ForbiddenException(String message) {
         super(message);
     }

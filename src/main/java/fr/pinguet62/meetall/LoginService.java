@@ -5,6 +5,7 @@ import fr.pinguet62.meetall.database.ProviderCredentialRepository;
 import fr.pinguet62.meetall.database.User;
 import fr.pinguet62.meetall.database.UserRepository;
 import fr.pinguet62.meetall.exception.ConflictException;
+import fr.pinguet62.meetall.exception.ForbiddenException;
 import fr.pinguet62.meetall.exception.NotFoundException;
 import fr.pinguet62.meetall.exception.UnauthorizedException;
 import fr.pinguet62.meetall.provider.Provider;
@@ -92,6 +93,10 @@ public class LoginService {
     public Mono<ProviderCredential> updateCredentials(int userId, int id, Optional<String> credential, Optional<String> label) {
         ProviderCredential providerCredential = providerCredentialRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(ProviderCredential.class, id));
+
+        if (providerCredential.getUser().getId() != userId) {
+            throw new ForbiddenException();
+        }
 
         credential.ifPresent(it -> providerCredential.setCredential(it));
         label.ifPresent(it -> providerCredential.setLabel(it));

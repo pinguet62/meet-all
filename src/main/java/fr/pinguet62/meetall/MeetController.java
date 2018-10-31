@@ -15,7 +15,7 @@ import reactor.core.publisher.Mono;
 
 @RequiredArgsConstructor
 @RestController
-public class MainController {
+public class MeetController {
 
     private final ProvidersService providersService;
 

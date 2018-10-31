@@ -78,9 +78,10 @@ public class TinderProviderService implements ProviderService {
                 .retrieve().bodyToFlux(TinderGetMessagesResponseDto.class)
                 .map(TinderGetMessagesResponseDto::getData)
                 .flatMapIterable(TinderGetMessagesDataResponseDto::getMessages);
-        return Flux.zip(tinderMessageDtoFlux, getMeta(authToken),
-                (tinderMessageDto, me) -> TinderConverters.convert(tinderMessageDto, me.get_id())
-        );
+        Mono<TinderUserDto> metaMono = getMeta(authToken);
+        return metaMono.flatMapMany(me ->
+                tinderMessageDtoFlux.map(tinderMessageDto ->
+                        TinderConverters.convert(tinderMessageDto, me.get_id())));
     }
 
 }
