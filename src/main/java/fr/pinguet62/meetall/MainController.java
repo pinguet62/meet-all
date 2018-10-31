@@ -27,14 +27,16 @@ public class MainController {
 
     @GetMapping("/messages")
     public Flux<MessageDto> getMessages(@RequestParam String providerAndId) {
+        ProviderIdValue providerIdValue = ProviderIdValue.parse(providerAndId);
         return SecurityContextHolder.getContext().map(SecurityContext::getUserId)
-                .flatMapMany(userId -> providersService.getMessagesForUser(userId, ProviderIdValue.parse(providerAndId)));
+                .flatMapMany(userId -> providersService.getMessagesForUser(userId, providerIdValue.getProvider(), providerIdValue.getValueId()));
     }
 
     @GetMapping("/profile")
     public Mono<ProfileDto> getProfile(@RequestParam String providerAndId) {
+        ProviderIdValue providerIdValue = ProviderIdValue.parse(providerAndId);
         return SecurityContextHolder.getContext().map(SecurityContext::getUserId)
-                .flatMap(userId -> providersService.getProfileForUser(userId, ProviderIdValue.parse(providerAndId)));
+                .flatMap(userId -> providersService.getProfileForUser(userId, providerIdValue.getProvider(), providerIdValue.getValueId()));
     }
 
 }

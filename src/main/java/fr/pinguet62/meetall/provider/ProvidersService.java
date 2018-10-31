@@ -1,6 +1,5 @@
 package fr.pinguet62.meetall.provider;
 
-import fr.pinguet62.meetall.ProviderIdValue;
 import fr.pinguet62.meetall.database.ProviderCredential;
 import fr.pinguet62.meetall.database.User;
 import fr.pinguet62.meetall.database.UserRepository;
@@ -26,43 +25,48 @@ public class ProvidersService {
     /**
      * @see ProviderService#getId()
      */
-    public ProviderService getProviderById(Provider provider) {
+    public ProviderService getProviderServiceById(Provider provider) {
         Optional<ProviderService> first = providerServices.stream().filter(p -> p.getId().equals(provider)).findFirst();
         return first.orElseThrow(() -> new NoProviderFoundException(provider));
     }
 
-    public Mono<ProfileDto> getProfileForUser(int userId, ProviderIdValue providerIdValue) {
-        return Mono.justOrEmpty(userRepository.findById(userId))
+    /**
+     * @param currentUserId {@link User#getId()}
+     * @param provider      {@link ProviderCredential#getProvider()}
+     * @param profileId     {@link ProfileDto#getId()}
+     */
+    public Mono<ProfileDto> getProfileForUser(int currentUserId, Provider provider, String profileId) {
+        return Mono.justOrEmpty(userRepository.findById(currentUserId))
                 .flatMap(user -> {
-                    Provider provider = providerIdValue.getProvider();
                     ProviderCredential providerCredentials = user.getProviderCredentials().stream().filter(it -> it.getProvider().equals(provider)).findFirst().get();
-                    ProviderService providerService = getProviderById(provider);
-                    return providerService.getProfile(providerCredentials.getCredential(), providerIdValue.getValueId());
+                    ProviderService providerService = getProviderServiceById(provider);
+                    return providerService.getProfile(providerCredentials.getCredential(), profileId);
                 });
     }
 
     /**
-     * @see User#getId()
+     * @param currentUserId {@link User#getId()}
      */
-    public Flux<ConversationDto> getConversationsForUser(int userId) {
-        return Mono.justOrEmpty(userRepository.findById(userId))
+    public Flux<ConversationDto> getConversationsForUser(int currentUserId) {
+        return Mono.justOrEmpty(userRepository.findById(currentUserId))
                 .flatMapIterable(User::getProviderCredentials)
                 .flatMap(providerCredentials -> {
-                    ProviderService providerService = getProviderById(providerCredentials.getProvider());
+                    ProviderService providerService = getProviderServiceById(providerCredentials.getProvider());
                     return providerService.getConversations(providerCredentials.getCredential());
                 });
     }
 
     /**
-     * @see User#getId()
+     * @param currentUserId {@link User#getId()}
+     * @param provider      {@link ProviderCredential#getProvider()}
+     * @param profileId     {@link ProfileDto#getId()}
      */
-    public Flux<MessageDto> getMessagesForUser(int userId, ProviderIdValue providerIdValue) {
-        return Mono.justOrEmpty(userRepository.findById(userId))
+    public Flux<MessageDto> getMessagesForUser(int currentUserId, Provider provider, String profileId) {
+        return Mono.justOrEmpty(userRepository.findById(currentUserId))
                 .flatMapMany(user -> {
-                    Provider provider = providerIdValue.getProvider();
                     ProviderCredential providerCredentials = user.getProviderCredentials().stream().filter(it -> it.getProvider().equals(provider)).findFirst().get();
-                    ProviderService providerService = getProviderById(provider);
-                    return providerService.getMessages(providerCredentials.getCredential(), providerIdValue.getValueId());
+                    ProviderService providerService = getProviderServiceById(provider);
+                    return providerService.getMessages(providerCredentials.getCredential(), profileId);
                 });
     }
 
