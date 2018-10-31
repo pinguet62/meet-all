@@ -25,11 +25,19 @@ public class TinderConverters {
     }
 
     public static ConversationDto convert(TinderMatchDto input) {
-        return new ConversationDto(null, null);
+        return new ConversationDto(
+                input.get_id(),
+                convert(input.getPerson())
+        );
     }
 
-    public static MessageDto convert(TinderMessageDto input) {
-        return new MessageDto(null, null, false, null);
+    public static MessageDto convert(TinderMessageDto input, String currentUserId) {
+        return new MessageDto(
+                input.get_id(),
+                input.getSent_date(),
+                input.getFrom().equals(currentUserId),
+                input.getMessage()
+        );
     }
 
 }

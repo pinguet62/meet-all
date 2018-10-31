@@ -13,7 +13,7 @@ public class ConversationDto {
     private final String id;
 
     @NotNull
-    private final ProfileDto profile;
+    private final ProfileDto profile; // TODO LazyProfileDto
 
     private final MessageDto lastMessage;
 
