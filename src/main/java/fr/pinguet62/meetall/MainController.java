@@ -3,7 +3,7 @@ package fr.pinguet62.meetall;
 import fr.pinguet62.meetall.dto.ConversationDto;
 import fr.pinguet62.meetall.dto.MessageDto;
 import fr.pinguet62.meetall.dto.ProfileDto;
-import fr.pinguet62.meetall.provider.ProviderService;
+import fr.pinguet62.meetall.provider.ProvidersService;
 import fr.pinguet62.meetall.security.SecurityContext;
 import fr.pinguet62.meetall.security.SecurityContextHolder;
 import lombok.RequiredArgsConstructor;
@@ -17,24 +17,24 @@ import reactor.core.publisher.Mono;
 @RestController
 public class MainController {
 
-    private final ProviderService providerService;
+    private final ProvidersService providersService;
 
     @GetMapping("/conversations")
     public Flux<ConversationDto> getConversations() {
         return SecurityContextHolder.getContext().map(SecurityContext::getUserId)
-                .flatMapMany(providerService::getConversationsForUser);
+                .flatMapMany(providersService::getConversationsForUser);
     }
 
     @GetMapping("/messages")
     public Flux<MessageDto> getMessages(@RequestParam String providerAndId) {
         return SecurityContextHolder.getContext().map(SecurityContext::getUserId)
-                .flatMapMany(userId -> providerService.getMessagesForUser(userId, ProviderIdValue.parse(providerAndId)));
+                .flatMapMany(userId -> providersService.getMessagesForUser(userId, ProviderIdValue.parse(providerAndId)));
     }
 
     @GetMapping("/profile")
     public Mono<ProfileDto> getProfile(@RequestParam String providerAndId) {
         return SecurityContextHolder.getContext().map(SecurityContext::getUserId)
-                .flatMap(userId -> providerService.getProfileForUser(userId, ProviderIdValue.parse(providerAndId)));
+                .flatMap(userId -> providersService.getProfileForUser(userId, ProviderIdValue.parse(providerAndId)));
     }
 
 }

@@ -4,6 +4,7 @@ import fr.pinguet62.meetall.dto.ConversationDto;
 import fr.pinguet62.meetall.dto.MessageDto;
 import fr.pinguet62.meetall.dto.ProfileDto;
 import fr.pinguet62.meetall.provider.Provider;
+import fr.pinguet62.meetall.provider.ProviderService;
 import fr.pinguet62.meetall.provider.tinder.dto.TinderGetConversationResponseDto;
 import fr.pinguet62.meetall.provider.tinder.dto.TinderGetConversationResponseDto.TinderGetConversationDataResponseDto;
 import fr.pinguet62.meetall.provider.tinder.dto.TinderGetMessagesResponseDto;
@@ -17,25 +18,27 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import static fr.pinguet62.meetall.provider.Provider.TINDER;
+
 @Component
-public class TinderProvider implements Provider {
+public class TinderProviderService implements ProviderService {
 
     static final String HEADER = "x-auth-token";
 
     private final WebClient webClient;
 
-    public TinderProvider() {
+    public TinderProviderService() {
         this("https://api.gotinder.com");
     }
 
     // for testing
-    TinderProvider(String baseUrl) {
+    TinderProviderService(String baseUrl) {
         webClient = WebClient.builder().baseUrl(baseUrl).build();
     }
 
     @Override
-    public String getId() {
-        return "tinder";
+    public Provider getId() {
+        return TINDER;
     }
 
     public Mono<TinderUserDto> getMeta(String authToken) {

@@ -8,6 +8,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.validation.constraints.NotEmpty;
+import java.util.ArrayList;
 import java.util.List;
 
 import static java.util.Objects.requireNonNull;
@@ -30,7 +31,7 @@ public class User {
     @Column(nullable = false)
     private String password;
 
-    private List<ProviderCredentials> providerCredentials;
+    private List<ProviderCredential> providerCredentials = new ArrayList<>();
 
     public User(String email, String password) {
         this(null, email, password);
