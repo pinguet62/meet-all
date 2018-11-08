@@ -5,6 +5,8 @@ import {IonicModule} from '@ionic/angular';
 import {ConversationsPage} from './conversations.page';
 import {Services} from '../services';
 import {ConversationsRoutingModule} from './conversations-routing.module';
+import {ConversationMessagesPage} from './conversation-messages.page';
+import {ConversationListPage} from './conversation-list.page';
 
 @NgModule({
     imports: [
@@ -17,6 +19,8 @@ import {ConversationsRoutingModule} from './conversations-routing.module';
     ],
     declarations: [
         ConversationsPage,
+        ConversationListPage,
+        ConversationMessagesPage,
     ],
     providers: [
         Services,
