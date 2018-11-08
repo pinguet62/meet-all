@@ -1,11 +1,11 @@
-import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
+import {NgModule} from '@angular/core';
+import {RouterModule, Routes} from '@angular/router';
 
-const routes: Routes = [
-  { path: '', loadChildren: './tabs/tabs.module#TabsPageModule' }
-];
+const routes: Routes = [];
+
 @NgModule({
-  imports: [RouterModule.forRoot(routes)],
-  exports: [RouterModule]
+    imports: [RouterModule.forRoot([{path: '', loadChildren: './tabs/tabs.module#TabsPageModule'}])],
+    exports: [RouterModule],
 })
-export class AppRoutingModule {}
+export class AppRoutingModule {
+}

@@ -21,6 +21,16 @@ export interface Conversation {
     lastMessage: Message;
 }
 
+export enum Provider {
+    TINDER = 'TINDER',
+}
+
+export interface RegisteredCredential {
+    id: number;
+    provider: Provider;
+    label: string;
+}
+
 @Injectable()
 export class Services {
 
@@ -46,6 +56,14 @@ export class Services {
                 },
                 lastMessage: {id: 'mes2', date: new Date(), sent: false, text: 'text2'}
             }
+        ]);
+    }
+
+    public getRegisteredCredential(): Observable<RegisteredCredential[]> {
+        return of([
+            {id: 1, provider: Provider.TINDER, label: 'First'},
+            {id: 2, provider: Provider.TINDER, label: 'Second'},
+            {id: 3, provider: Provider.TINDER, label: 'Third'}
         ]);
     }
 
