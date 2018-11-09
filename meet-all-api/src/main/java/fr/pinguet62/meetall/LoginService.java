@@ -11,6 +11,7 @@ import fr.pinguet62.meetall.exception.UnauthorizedException;
 import fr.pinguet62.meetall.provider.Provider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -18,6 +19,7 @@ import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
+@Transactional
 public class LoginService {
 
     private final UserRepository userRepository;
@@ -61,7 +63,7 @@ public class LoginService {
      * @param userId {@link User#getId()}
      */
     public Flux<ProviderCredential> getRegisteredCredentials(int userId) {
-        return Mono.just(userRepository.findById(userId).get())
+        return Mono.justOrEmpty(userRepository.findById(userId))
                 .flatMapIterable(User::getProviderCredentials);
     }
 

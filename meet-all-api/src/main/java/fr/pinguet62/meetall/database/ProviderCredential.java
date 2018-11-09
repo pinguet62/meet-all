@@ -9,6 +9,7 @@ import lombok.Setter;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotEmpty;
@@ -23,11 +24,11 @@ import static javax.persistence.EnumType.STRING;
 public class ProviderCredential {
 
     @Id
+    @GeneratedValue
     @Column(nullable = true) // because of @Id
     private Integer id;
 
     @ManyToOne(optional = false)
-    @Column(nullable = false)
     private User user;
 
     /**

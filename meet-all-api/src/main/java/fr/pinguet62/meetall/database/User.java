@@ -6,12 +6,15 @@ import lombok.Setter;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.validation.constraints.NotEmpty;
 import java.util.ArrayList;
 import java.util.List;
 
 import static java.util.Objects.requireNonNull;
+import static javax.persistence.FetchType.EAGER;
 
 @Entity
 @NoArgsConstructor
@@ -20,6 +23,7 @@ import static java.util.Objects.requireNonNull;
 public class User {
 
     @Id
+    @GeneratedValue
     @Column(nullable = true) // because of @Id
     private Integer id;
 
@@ -31,6 +35,7 @@ public class User {
     @Column(nullable = false)
     private String password;
 
+    @OneToMany(mappedBy = "user", fetch = EAGER)
     private List<ProviderCredential> providerCredentials = new ArrayList<>();
 
     public User(String email, String password) {

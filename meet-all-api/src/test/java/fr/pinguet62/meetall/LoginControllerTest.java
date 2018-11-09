@@ -12,17 +12,22 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.reactive.server.WebTestClient;
+import org.springframework.util.LinkedMultiValueMap;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
 
+import static fr.pinguet62.meetall.Utils.mapOf;
 import static fr.pinguet62.meetall.provider.Provider.TINDER;
 import static java.lang.String.valueOf;
 import static java.util.Arrays.asList;
-import static java.util.Optional.ofNullable;
+import static java.util.Collections.singletonList;
+import static java.util.Optional.of;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
+import static org.springframework.web.reactive.function.BodyInserters.fromMultipartData;
 
 @RunWith(SpringRunner.class)
 @WebFluxTest(LoginController.class)
@@ -47,10 +52,10 @@ public class LoginControllerTest {
         when(loginService.createAccount(email, password)).thenReturn(Mono.just(token));
 
         webTestClient.post()
-                .uri(uriBuilder -> uriBuilder.path("/user")
-                        .queryParam("email", email)
-                        .queryParam("password", password)
-                        .build())
+                .uri("/user")
+                .body(fromMultipartData(new LinkedMultiValueMap<>(mapOf(
+                        "email", singletonList(email),
+                        "password", singletonList(password)))))
                 .exchange()
                 .expectStatus().isCreated()
                 .expectBody(String.class).isEqualTo(token);
@@ -68,10 +73,10 @@ public class LoginControllerTest {
         when(loginService.login(email, password)).thenReturn(Mono.just(token));
 
         webTestClient.post()
-                .uri(uriBuilder -> uriBuilder.path("/login")
-                        .queryParam("email", email)
-                        .queryParam("password", password)
-                        .build())
+                .uri("/login")
+                .body(fromMultipartData(new LinkedMultiValueMap<>(mapOf(
+                        "email", singletonList(email),
+                        "password", singletonList(password)))))
                 .exchange()
                 .expectStatus().isOk()
                 .expectBody(String.class).isEqualTo(token);
@@ -101,6 +106,20 @@ public class LoginControllerTest {
     }
 
     /**
+     * @see LoginController#getRegisteredCredentials()
+     */
+    @Test
+    public void getRegisteredCredentials_secured() {
+        when(loginService.getRegisteredCredentials(anyInt())).thenReturn(Flux.empty());
+
+        webTestClient.get()
+                .uri("/credential")
+                // .header(AUTHORIZATION, null)
+                .exchange()
+                .expectStatus().isUnauthorized();
+    }
+
+    /**
      * @see LoginController#registerCredentials(Provider, String, String)
      */
     @Test
@@ -113,12 +132,12 @@ public class LoginControllerTest {
         when(loginService.registerCredentials(currentUserId, provider, credential, label)).thenReturn(Mono.just(new ProviderCredential(99, new User(), provider, credential, label)));
 
         webTestClient.post()
-                .uri(uriBuilder -> uriBuilder.path("/credential")
-                        .queryParam("provider", provider)
-                        .queryParam("credential", credential)
-                        .queryParam("label", label)
-                        .build())
+                .uri("/credential")
                 .header(AUTHORIZATION, valueOf(currentUserId))
+                .body(fromMultipartData(new LinkedMultiValueMap<>(mapOf(
+                        "provider", singletonList(provider),
+                        "credential", singletonList(credential),
+                        "label", singletonList(label)))))
                 .exchange()
                 .expectStatus().isCreated()
                 .expectBody()
@@ -126,6 +145,29 @@ public class LoginControllerTest {
                 .jsonPath("$.provider").isEqualTo(provider.name())
                 .jsonPath("$.label").isEqualTo(label)
                 .jsonPath("$.credential").doesNotExist(); // secret!
+    }
+
+    /**
+     * @see LoginController#registerCredentials(Provider, String, String)
+     */
+    @Test
+    public void registerCredentials_secured() {
+        final int currentUserId = 42;
+        final Provider provider = TINDER;
+        final String credential = "credential";
+        final String label = "label";
+
+        when(loginService.registerCredentials(currentUserId, provider, credential, label)).thenReturn(Mono.just(new ProviderCredential(99, new User(), provider, credential, label)));
+
+        webTestClient.post()
+                .uri("/credential")
+                // .header(AUTHORIZATION, null)
+                .body(fromMultipartData(new LinkedMultiValueMap<>(mapOf(
+                        "provider", singletonList(provider),
+                        "credential", singletonList(credential),
+                        "label", singletonList(label)))))
+                .exchange()
+                .expectStatus().isUnauthorized();
     }
 
     /**
@@ -139,14 +181,14 @@ public class LoginControllerTest {
         final String credential = "credential";
         final String label = "label";
 
-        when(loginService.updateCredentials(currentUserId, id, ofNullable(credential), ofNullable(label))).thenReturn(Mono.just(new ProviderCredential(99, new User(), provider, credential, label)));
+        when(loginService.updateCredentials(currentUserId, id, of(credential), of(label))).thenReturn(Mono.just(new ProviderCredential(99, new User(), provider, credential, label)));
 
         webTestClient.put()
-                .uri(uriBuilder -> uriBuilder.path("/credential").pathSegment(valueOf(id))
-                        .queryParam("credential", credential)
-                        .queryParam("label", label)
-                        .build())
+                .uri(uriBuilder -> uriBuilder.path("/credential").pathSegment(valueOf(id)).build())
                 .header(AUTHORIZATION, valueOf(currentUserId))
+                .body(fromMultipartData(new LinkedMultiValueMap<>(mapOf(
+                        "credential", singletonList(credential),
+                        "label", singletonList(label)))))
                 .exchange()
                 .expectStatus().isOk()
                 .expectBody()
@@ -154,6 +196,26 @@ public class LoginControllerTest {
                 .jsonPath("$.provider").isEqualTo(provider.name())
                 .jsonPath("$.label").isEqualTo(label)
                 .jsonPath("$.credential").doesNotExist(); // secret!
+    }
+
+    /**
+     * @see LoginController#updateCredentials(int, String, String)
+     */
+    @Test
+    public void updateCredentials_secured() {
+        final int currentUserId = 42;
+        final int id = 99;
+        final Provider provider = TINDER;
+        final String credential = "credential";
+        final String label = "label";
+
+        when(loginService.updateCredentials(currentUserId, id, of(credential), of(label))).thenReturn(Mono.just(new ProviderCredential(99, new User(), provider, credential, label)));
+
+        webTestClient.put()
+                .uri(uriBuilder -> uriBuilder.path("/credential").pathSegment(valueOf(id)).build())
+                // .header(AUTHORIZATION, null)
+                .exchange()
+                .expectStatus().isUnauthorized();
     }
 
 }
