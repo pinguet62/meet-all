@@ -120,16 +120,16 @@ public class LoginControllerTest {
     }
 
     /**
-     * @see LoginController#registerCredentials(Provider, String, String)
+     * @see LoginController#registerCredential(Provider, String, String)
      */
     @Test
-    public void registerCredentials() {
+    public void registerCredential() {
         final int currentUserId = 42;
         final Provider provider = TINDER;
         final String credential = "credential";
         final String label = "label";
 
-        when(loginService.registerCredentials(currentUserId, provider, credential, label)).thenReturn(Mono.just(new ProviderCredential(99, new User(), provider, credential, label)));
+        when(loginService.registerCredential(currentUserId, provider, credential, label)).thenReturn(Mono.just(new ProviderCredential(99, new User(), provider, credential, label)));
 
         webTestClient.post()
                 .uri("/credential")
@@ -148,16 +148,16 @@ public class LoginControllerTest {
     }
 
     /**
-     * @see LoginController#registerCredentials(Provider, String, String)
+     * @see LoginController#registerCredential(Provider, String, String)
      */
     @Test
-    public void registerCredentials_secured() {
+    public void registerCredential_secured() {
         final int currentUserId = 42;
         final Provider provider = TINDER;
         final String credential = "credential";
         final String label = "label";
 
-        when(loginService.registerCredentials(currentUserId, provider, credential, label)).thenReturn(Mono.just(new ProviderCredential(99, new User(), provider, credential, label)));
+        when(loginService.registerCredential(currentUserId, provider, credential, label)).thenReturn(Mono.just(new ProviderCredential(99, new User(), provider, credential, label)));
 
         webTestClient.post()
                 .uri("/credential")
@@ -171,17 +171,17 @@ public class LoginControllerTest {
     }
 
     /**
-     * @see LoginController#updateCredentials(int, String, String)
+     * @see LoginController#updateCredential(int, String, String)
      */
     @Test
-    public void updateCredentials() {
+    public void updateCredential() {
         final int currentUserId = 42;
         final int id = 99;
         final Provider provider = TINDER;
         final String credential = "credential";
         final String label = "label";
 
-        when(loginService.updateCredentials(currentUserId, id, of(credential), of(label))).thenReturn(Mono.just(new ProviderCredential(99, new User(), provider, credential, label)));
+        when(loginService.updateCredential(currentUserId, id, of(credential), of(label))).thenReturn(Mono.just(new ProviderCredential(99, new User(), provider, credential, label)));
 
         webTestClient.put()
                 .uri(uriBuilder -> uriBuilder.path("/credential").pathSegment(valueOf(id)).build())
@@ -199,19 +199,64 @@ public class LoginControllerTest {
     }
 
     /**
-     * @see LoginController#updateCredentials(int, String, String)
+     * @see LoginController#updateCredential(int, String, String)
      */
     @Test
-    public void updateCredentials_secured() {
+    public void updateCredential_secured() {
         final int currentUserId = 42;
         final int id = 99;
         final Provider provider = TINDER;
         final String credential = "credential";
         final String label = "label";
 
-        when(loginService.updateCredentials(currentUserId, id, of(credential), of(label))).thenReturn(Mono.just(new ProviderCredential(99, new User(), provider, credential, label)));
+        when(loginService.updateCredential(currentUserId, id, of(credential), of(label))).thenReturn(Mono.just(new ProviderCredential(99, new User(), provider, credential, label)));
 
         webTestClient.put()
+                .uri(uriBuilder -> uriBuilder.path("/credential").pathSegment(valueOf(id)).build())
+                // .header(AUTHORIZATION, null)
+                .exchange()
+                .expectStatus().isUnauthorized();
+    }
+
+    /**
+     * @see LoginController#deleteCredential(int)
+     */
+    @Test
+    public void deleteCredential() {
+        final int currentUserId = 42;
+        final int id = 99;
+        final Provider provider = TINDER;
+        final String credential = "credential";
+        final String label = "label";
+
+        when(loginService.deleteCredential(currentUserId, id)).thenReturn(Mono.just(new ProviderCredential(99, new User(), provider, credential, label)));
+
+        webTestClient.delete()
+                .uri(uriBuilder -> uriBuilder.path("/credential").pathSegment(valueOf(id)).build())
+                .header(AUTHORIZATION, valueOf(currentUserId))
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody()
+                .jsonPath("$.id").isEqualTo(id)
+                .jsonPath("$.provider").isEqualTo(provider.name())
+                .jsonPath("$.label").isEqualTo(label)
+                .jsonPath("$.credential").doesNotExist(); // secret!
+    }
+
+    /**
+     * @see LoginController#deleteCredential(int)
+     */
+    @Test
+    public void deleteCredential_secured() {
+        final int currentUserId = 42;
+        final int id = 99;
+        final Provider provider = TINDER;
+        final String credential = "credential";
+        final String label = "label";
+
+        when(loginService.deleteCredential(currentUserId, id)).thenReturn(Mono.just(new ProviderCredential(99, new User(), provider, credential, label)));
+
+        webTestClient.delete()
                 .uri(uriBuilder -> uriBuilder.path("/credential").pathSegment(valueOf(id)).build())
                 // .header(AUTHORIZATION, null)
                 .exchange()

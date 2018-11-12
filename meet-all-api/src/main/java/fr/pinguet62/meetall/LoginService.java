@@ -73,7 +73,7 @@ public class LoginService {
      * @param credential {@link ProviderCredential#getCredential()}
      * @param label      {@link ProviderCredential#getLabel()}
      */
-    public Mono<ProviderCredential> registerCredentials(int userId, Provider provider, String credential, String label) {
+    public Mono<ProviderCredential> registerCredential(int userId, Provider provider, String credential, String label) {
         // TODO ConflictException when provider.getMeta().get_id() already exists
 
         ProviderCredential providerCredential = new ProviderCredential(
@@ -92,7 +92,7 @@ public class LoginService {
      * @param credential {@link ProviderCredential#getCredential()}
      * @param label      {@link ProviderCredential#getLabel()}
      */
-    public Mono<ProviderCredential> updateCredentials(int userId, int id, Optional<String> credential, Optional<String> label) {
+    public Mono<ProviderCredential> updateCredential(int userId, int id, Optional<String> credential, Optional<String> label) {
         ProviderCredential providerCredential = providerCredentialRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(ProviderCredential.class, id));
 
@@ -106,6 +106,23 @@ public class LoginService {
         ProviderCredential updatedProviderCredential = providerCredentialRepository.save(providerCredential);
 
         return Mono.just(updatedProviderCredential);
+    }
+
+    /**
+     * @param userId {@link User#getId()}
+     * @param id     {@link ProviderCredential#getId()}
+     */
+    public Mono<ProviderCredential> deleteCredential(int userId, int id) {
+        ProviderCredential providerCredential = providerCredentialRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException(ProviderCredential.class, id));
+
+        if (providerCredential.getUser().getId() != userId) {
+            throw new ForbiddenException();
+        }
+
+        providerCredentialRepository.delete(providerCredential);
+
+        return Mono.just(providerCredential);
     }
 
 }

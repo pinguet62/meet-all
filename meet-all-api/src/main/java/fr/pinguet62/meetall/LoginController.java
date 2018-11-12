@@ -8,6 +8,7 @@ import fr.pinguet62.meetall.provider.Provider;
 import fr.pinguet62.meetall.security.SecurityContext;
 import fr.pinguet62.meetall.security.SecurityContextHolder;
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -65,11 +66,11 @@ public class LoginController {
      */
     @PostMapping("/credential")
     @ResponseStatus(CREATED)
-    public Mono<RegisteredCredentialDto> registerCredentials(@RequestPart Provider provider, @RequestPart String credential, @RequestPart String label) {
+    public Mono<RegisteredCredentialDto> registerCredential(@RequestPart Provider provider, @RequestPart String credential, @RequestPart String label) {
         return SecurityContextHolder.getContext()
                 .switchIfEmpty(error(new UnauthorizedException()))
                 .map(SecurityContext::getUserId)
-                .flatMap(userId -> loginService.registerCredentials(userId, provider, credential, label))
+                .flatMap(userId -> loginService.registerCredential(userId, provider, credential, label))
                 .map(entity -> new RegisteredCredentialDto(entity.getId(), entity.getLabel(), entity.getProvider()));
     }
 
@@ -79,11 +80,23 @@ public class LoginController {
      * @param label      {@link ProviderCredential#getLabel()}
      */
     @PutMapping("/credential/{id}")
-    public Mono<RegisteredCredentialDto> updateCredentials(@PathVariable int id, @RequestPart(required = false) String credential, @RequestPart(required = false) String label) {
+    public Mono<RegisteredCredentialDto> updateCredential(@PathVariable int id, @RequestPart(required = false) String credential, @RequestPart(required = false) String label) {
         return SecurityContextHolder.getContext()
                 .switchIfEmpty(error(new UnauthorizedException()))
                 .map(SecurityContext::getUserId)
-                .flatMap(userId -> loginService.updateCredentials(userId, id, ofNullable(credential), ofNullable(label)))
+                .flatMap(userId -> loginService.updateCredential(userId, id, ofNullable(credential), ofNullable(label)))
+                .map(entity -> new RegisteredCredentialDto(entity.getId(), entity.getLabel(), entity.getProvider()));
+    }
+
+    /**
+     * @param id {@link ProviderCredential#getId()}
+     */
+    @DeleteMapping("/credential/{id}")
+    public Mono<RegisteredCredentialDto> deleteCredential(@PathVariable int id) {
+        return SecurityContextHolder.getContext()
+                .switchIfEmpty(error(new UnauthorizedException()))
+                .map(SecurityContext::getUserId)
+                .flatMap(userId -> loginService.deleteCredential(userId, id))
                 .map(entity -> new RegisteredCredentialDto(entity.getId(), entity.getLabel(), entity.getProvider()));
     }
 
