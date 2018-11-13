@@ -3,6 +3,7 @@ package fr.pinguet62.meetall;
 import fr.pinguet62.meetall.provider.Provider;
 import lombok.Getter;
 
+import static fr.pinguet62.meetall.provider.Provider.TINDER;
 import static java.util.Objects.requireNonNull;
 
 public class ProviderIdValue {
@@ -25,12 +26,14 @@ public class ProviderIdValue {
     }
 
     public static String format(Provider provider, String valueId) {
-        return String.format("%s%s%s", provider.name(), SEPARATOR, valueId);
+//        return String.format("%s%s%s", provider.name(), SEPARATOR, valueId);
+        return valueId;
     }
 
     public static ProviderIdValue parse(String transformed) {
-        String[] values = transformed.split(SEPARATOR);
-        return new ProviderIdValue(Provider.valueOf(values[0]), values[1]);
+//        String[] values = transformed.split(SEPARATOR);
+//        return new ProviderIdValue(Provider.valueOf(values[0]), values[1]);
+        return new ProviderIdValue(TINDER, transformed);
     }
 
 }
