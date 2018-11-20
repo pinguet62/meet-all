@@ -1,3 +1,4 @@
 export const environment = {
-  production: true
+    production: true,
+    apiUrl: 'https://meet-all-api.herokuapp.com',
 };
