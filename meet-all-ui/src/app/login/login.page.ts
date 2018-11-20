@@ -1,6 +1,7 @@
 import {Component} from "@angular/core";
 import {LoadingController} from "@ionic/angular";
 import {LoginService} from "./login.service";
+import {processLoading} from "../loading-controller.utils";
 
 @Component({
     selector: 'app-login',
@@ -28,14 +29,14 @@ export class LoginPage {
     }
 
     createAccount() {
-        this.loginService.createAccount(this.email, this.password).subscribe(
+        processLoading(this.loadingController, this.loginService.createAccount(this.email, this.password)).subscribe(
             success => console.log("success", success),
             error => console.error("error", error)
         );
     }
 
     login() {
-        this.loginService.login(this.email, this.password).subscribe(
+        processLoading(this.loadingController, this.loginService.login(this.email, this.password)).subscribe(
             success => console.log("success", success),
             error => console.error("error", error)
         );

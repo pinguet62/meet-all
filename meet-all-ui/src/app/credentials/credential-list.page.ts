@@ -1,8 +1,7 @@
 import {Component} from '@angular/core';
 import {RegisteredCredential, Services} from '../services';
-import {LoadingController, ModalController} from '@ionic/angular';
-import {EMPTY, from} from 'rxjs';
-import {catchError, mapTo, mergeMap, tap} from 'rxjs/operators';
+import {LoadingController} from '@ionic/angular';
+import {processLoading} from "../loading-controller.utils";
 
 @Component({
     selector: 'app-credential-list',
@@ -45,21 +44,10 @@ export class CredentialListPage {
 
     credentials: RegisteredCredential[];
 
-    constructor(
-        loadingController: LoadingController,
-        private modalController: ModalController,
-        services: Services
-    ) {
-        from(loadingController.create())
-            .pipe(tap((loader: HTMLIonLoadingElement) => loader.present()))
-            .pipe(mergeMap(loader =>
-                services.getRegisteredCredential()
-                    .pipe(tap((it => this.credentials = it)))
-                    .pipe(catchError(() => EMPTY))
-                    .pipe(mapTo(loader))
-            ))
-            .pipe(mergeMap(loader => from(loader.dismiss())))
-            .subscribe();
+    constructor(loadingController: LoadingController, services: Services) {
+        processLoading(loadingController, services.getRegisteredCredential()).subscribe(
+            it => this.credentials = it
+        );
     }
 
 }

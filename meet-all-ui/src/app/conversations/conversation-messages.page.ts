@@ -1,9 +1,8 @@
 import {Component} from '@angular/core';
 import {Message, Services} from '../services';
 import {LoadingController} from '@ionic/angular';
-import {EMPTY, from} from 'rxjs';
-import {catchError, mapTo, mergeMap, tap} from 'rxjs/operators';
 import {Location} from '@angular/common';
+import {processLoading} from "../loading-controller.utils";
 
 @Component({
     selector: 'app-conversation-messages',
@@ -38,16 +37,9 @@ export class ConversationMessagesPage {
         loadingController: LoadingController,
         services: Services
     ) {
-        from(loadingController.create())
-            .pipe(tap((loader: HTMLIonLoadingElement) => loader.present()))
-            .pipe(mergeMap(loader =>
-                services.getMessagesByConversation(null)
-                    .pipe(tap((it => this.messages = it)))
-                    .pipe(catchError(() => EMPTY))
-                    .pipe(mapTo(loader))
-            ))
-            .pipe(mergeMap(loader => from(loader.dismiss())))
-            .subscribe();
+        processLoading(loadingController, services.getMessagesByConversation(null)).subscribe(
+            it => this.messages = it
+        );
     }
 
 }

@@ -1,8 +1,7 @@
 import {Component} from '@angular/core';
 import {LoadingController} from '@ionic/angular';
-import {EMPTY, from} from 'rxjs';
-import {catchError, mapTo, mergeMap, tap} from 'rxjs/operators';
 import {Conversation, Services} from '../services';
+import {processLoading} from "../loading-controller.utils";
 
 @Component({
     selector: 'app-conversation-list',
@@ -37,16 +36,9 @@ export class ConversationListPage {
     conversations: Conversation[];
 
     constructor(loadingController: LoadingController, services: Services) {
-        from(loadingController.create())
-            .pipe(tap((loader: HTMLIonLoadingElement) => loader.present()))
-            .pipe(mergeMap(loader =>
-                services.getConversations()
-                    .pipe(tap((it => this.conversations = it)))
-                    .pipe(catchError(() => EMPTY))
-                    .pipe(mapTo(loader))
-            ))
-            .pipe(mergeMap(loader => from(loader.dismiss())))
-            .subscribe();
+        processLoading(loadingController, services.getConversations()).subscribe(
+            it => this.conversations = it
+        );
     }
 
 }
