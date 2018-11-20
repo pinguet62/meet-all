@@ -6,6 +6,8 @@ import {SplashScreen} from '@ionic-native/splash-screen/ngx';
 import {StatusBar} from '@ionic-native/status-bar/ngx';
 import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
+import {SecurityService} from './security/security.service';
+import {SecurityGuard} from "./security/security.guard";
 
 @NgModule({
     declarations: [AppComponent],
@@ -18,9 +20,13 @@ import {AppComponent} from './app.component';
         AppRoutingModule,
     ],
     providers: [
+        // libs
         StatusBar,
         SplashScreen,
-        {provide: RouteReuseStrategy, useClass: IonicRouteStrategy}
+        {provide: RouteReuseStrategy, useClass: IonicRouteStrategy},
+        // app
+        SecurityGuard,
+        SecurityService,
     ],
     bootstrap: [AppComponent]
 })
