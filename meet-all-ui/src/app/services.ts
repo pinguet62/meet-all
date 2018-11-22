@@ -63,9 +63,9 @@ export class Services {
     public getMessagesByConversation(conversationId: string): Observable<Message[]> {
         return of([
             {id: 'mes1', date: new Date(new Date().getTime() + 4/*min*/ * 60/*sec*/ * 1/*sec*/ * 1000), sent: true, text: 'text1'},
-            {id: 'mes2', date: new Date(new Date().getTime() + 3/*min*/ * 60/*sec*/ * 1/*sec*/ * 1000), sent: false, text: 'text2'},
-            {id: 'mes3', date: new Date(new Date().getTime() + 2/*min*/ * 60/*sec*/ * 1/*sec*/ * 1000), sent: false, text: 'text3'},
-            {id: 'mes4', date: new Date(new Date().getTime() + 1/*min*/ * 60/*sec*/ * 1/*sec*/ * 1000), sent: true, text: 'text4'},
+            {id: 'mes2', date: new Date(new Date().getTime() + 3/*min*/ * 60/*sec*/ * 1/*sec*/ * 1000), sent: false, text: '😅'},
+            {id: 'mes3', date: new Date(new Date().getTime() + 2/*min*/ * 60/*sec*/ * 1/*sec*/ * 1000), sent: false, text: 'Even if girls don\'t speak, this is a very long message, for visual testing, with line breaks because of screen width!'},
+            {id: 'mes4', date: new Date(new Date().getTime() + 1/*min*/ * 60/*sec*/ * 1/*sec*/ * 1000), sent: true, text: 'This is a very long message with line breaks because of screen width \nor voluntary!'},
         ]);
     }
 

@@ -20,13 +20,32 @@ import {processLoading} from "../loading-controller.utils";
         </ion-header>
 
         <ion-content>
-            <ion-list>
+            <ion-list lines="none">
                 <ion-item *ngFor="let message of messages">
-
+                    <ion-avatar *ngIf="!message.sent">
+                        <ion-img src="assets/provider/TINDER.png"></ion-img>
+                    </ion-avatar>
+                    <ion-text [slot]="message.sent ? 'end' : ''" [ngClass]="['message', message.sent ? 'sent' : 'received']">{{message.text}}</ion-text>
                 </ion-item>
             </ion-list>
         </ion-content>
-    `
+    `,
+    styles: [
+            `
+            .message {
+                max-width: 75%;
+                white-space: pre-wrap;
+            }
+
+            .sent {
+                background-color: rgb(0, 162, 216)
+            }
+
+            .received {
+                background-color: rgb(225, 225, 225);
+            }
+        `
+    ]
 })
 export class ConversationMessagesPage {
 
