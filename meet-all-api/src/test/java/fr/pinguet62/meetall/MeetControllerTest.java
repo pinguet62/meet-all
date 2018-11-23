@@ -95,7 +95,7 @@ public class MeetControllerTest {
                 .jsonPath("$.id").isEqualTo("profile-id")
                 .jsonPath("$.name").isEqualTo("profile-name")
                 .jsonPath("$.age").isEqualTo("29")
-                .jsonPath("$.avatars").isEqualTo(emptyList());
+                .jsonPath("$.avatars").isEmpty();
     }
 
 }
