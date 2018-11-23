@@ -19,7 +19,7 @@ describe("loading-controller.utils", () => {
             loadingController.create.and.returnValue(Promise.resolve(loader));
         });
 
-        it("success", (done) => {
+        it("success", done => {
             const observable = of("expected");
 
             const result = processLoading(loadingController, observable);
@@ -32,7 +32,7 @@ describe("loading-controller.utils", () => {
             });
         });
 
-        it("error", (done) => {
+        it("error", done => {
             const observable = throwError(new Error("expected"));
 
             const result = processLoading(loadingController, observable);

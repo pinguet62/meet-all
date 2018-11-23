@@ -4,30 +4,26 @@ import {Observable} from "rxjs";
 import {environment} from "../../environments/environment";
 import {SecurityService} from "../security/security.service";
 
+export type Token = string;
+
 @Injectable()
 export class LoginService {
 
     constructor(private http: HttpClient, private securityService: SecurityService) {
     }
 
-    /**
-     * @return The authorization token.
-     */
-    public createAccount(email: string, password: string): Observable<string> {
+    public createAccount(email: string, password: string): Observable<Token> {
         const formData = new FormData();
         formData.append("email", email);
         formData.append("password", password);
-        return this.http.post<string>(environment.apiUrl + '/login', formData, {headers: {'Authorization': this.securityService.token}});
+        return this.http.post<Token>(environment.apiUrl + '/login', formData, {headers: {'Authorization': this.securityService.token}});
     }
 
-    /**
-     * @return The authorization token.
-     */
-    public login(email: string, password: string): Observable<string> {
+    public login(email: string, password: string): Observable<Token> {
         const formData = new FormData();
         formData.append("email", email);
         formData.append("password", password);
-        return this.http.post<string>(environment.apiUrl + '/login', formData);
+        return this.http.post<Token>(environment.apiUrl + '/login', formData);
     }
 
 }

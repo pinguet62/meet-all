@@ -12,12 +12,12 @@ export class SecurityGuard implements CanActivate {
     }
 
     canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
-        // if (this.securityService.isLogged()) {
+        if (this.securityService.isLogged()) {
             return true;
-        // }
-        //
-        // this.router.navigate([`/login`]);
-        // return false;
+        }
+
+        this.router.navigate([`/login`], {queryParams: {['redirect_url']: state.url}});
+        return false;
     }
 
 }
