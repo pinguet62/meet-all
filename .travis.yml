@@ -1,0 +1,17 @@
+# https://travis-ci.org/pinguet62/spring-specification
+
+language: java
+jdk: oraclejdk8
+
+addons:
+  # Protractor
+  chrome: stable
+before_install:
+  # Karma: http://karma-runner.github.io/0.8/plus/Travis-CI.html
+  - export DISPLAY=:99.0
+  - sh -e /etc/init.d/xvfb start
+
+install: true # override default "mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V"
+
+script: # override default "mvn test -B"
+  - mvn clean install -B

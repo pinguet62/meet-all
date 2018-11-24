@@ -18,7 +18,7 @@
                             <directory>node_modules</directory>
                         </fileset>
                         <fileset>
-                            <directory>dist</directory>
+                            <directory>www</directory>
                         </fileset>
                     </filesets>
                 </configuration>
@@ -28,7 +28,7 @@
             <plugin>
                 <groupId>com.github.eirslett</groupId>
                 <artifactId>frontend-maven-plugin</artifactId>
-                <version>${frontend-maven-plugin.version}</version>
+                <version>1.6</version>
                 <configuration>
                     <installDirectory>target</installDirectory>
                     <workingDirectory>.</workingDirectory>
@@ -41,7 +41,7 @@
                             <goal>install-node-and-npm</goal>
                         </goals>
                         <configuration>
-                            <nodeVersion>v11.0.0</nodeVersion>
+                            <nodeVersion>v11.2.0</nodeVersion>
                             <npmVersion>6.4.1</npmVersion>
                         </configuration>
                     </execution>
@@ -62,10 +62,7 @@
                             <goal>npm</goal>
                         </goals>
                         <configuration>
-                            <!-- ng build -->
-                            <!-- &#x002d;&#x002d;environment=embedded -->
-                            <!-- &#x002d;&#x002d;base-href=/meet-all-ui/ -->
-                            <arguments>run ng -- build --environment=embedded --base-href=/meet-all-ui/</arguments>
+                            <arguments>run build</arguments>
                         </configuration>
                     </execution>
                     <execution>
@@ -75,8 +72,7 @@
                             <goal>npm</goal>
                         </goals>
                         <configuration>
-                            <!-- &#x002d;&#x002d;single-run : disable watch (stop after execution) -->
-                            <arguments>run ng -- test --code-coverage=true --single-run</arguments>
+                            <arguments>run test -- --code-coverage=true</arguments>
                         </configuration>
                     </execution>
                     <execution>
@@ -86,19 +82,12 @@
                             <goal>npm</goal>
                         </goals>
                         <configuration>
-                            <arguments>run ng -- e2e</arguments>
+                            <arguments>run e2e</arguments>
                         </configuration>
                     </execution>
                 </executions>
             </plugin>
         </plugins>
-
-        <resources>
-            <resource>
-                <directory>dist</directory>
-                <targetPath>META-INF/meet-all-ui</targetPath>
-            </resource>
-        </resources>
     </build>
 
 </project>
