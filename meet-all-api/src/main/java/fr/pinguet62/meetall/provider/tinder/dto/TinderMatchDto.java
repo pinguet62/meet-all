@@ -8,7 +8,7 @@ import java.util.List;
 public class TinderMatchDto {
 
     private String _id;
-    private List<TinderMatchDto> messages;
+    private List<TinderMessageDto> messages;
     private TinderUserDto person;
 
 }

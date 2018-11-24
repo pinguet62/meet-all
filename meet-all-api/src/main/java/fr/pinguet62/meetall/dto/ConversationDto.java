@@ -23,8 +23,4 @@ public class ConversationDto {
         this.lastMessage = lastMessage;
     }
 
-    public ConversationDto(String id, ProfileDto profile) {
-        this(id, profile, null);
-    }
-
 }

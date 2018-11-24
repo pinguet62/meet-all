@@ -11,7 +11,10 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.Comparator;
 import java.util.List;
+
+import static java.util.Comparator.comparing;
 
 @RequiredArgsConstructor
 @Service
@@ -36,7 +39,7 @@ public class ProvidersService {
      */
     public Mono<ProfileDto> getProfileForUser(int userId, Provider provider, String profileId) {
         return Mono.justOrEmpty(userRepository.findById(userId))
-                .flatMapIterable(user -> user.getProviderCredentials())
+                .flatMapIterable(User::getProviderCredentials)
                 .filter(providerCredential -> providerCredential.getProvider().equals(provider))
                 .next()
                 .flatMap(providerCredential -> getProviderService(provider).getProfile(providerCredential.getCredential(), profileId));
@@ -58,7 +61,7 @@ public class ProvidersService {
      */
     public Flux<MessageDto> getMessagesForUser(int userId, Provider provider, String profileId) {
         return Mono.justOrEmpty(userRepository.findById(userId))
-                .flatMapIterable(user -> user.getProviderCredentials())
+                .flatMapIterable(User::getProviderCredentials)
                 .filter(providerCredential -> providerCredential.getProvider().equals(provider))
                 .next()
                 .flatMapMany(providerCredential -> getProviderService(provider).getMessages(providerCredential.getCredential(), profileId));

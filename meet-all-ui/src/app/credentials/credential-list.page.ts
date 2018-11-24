@@ -1,7 +1,7 @@
 import {Component} from '@angular/core';
-import {RegisteredCredential, Services} from '../services';
 import {LoadingController} from '@ionic/angular';
-import {processLoading} from "../loading-controller.utils";
+import {processLoading} from '../loading-controller.utils';
+import {CredentialService, RegisteredCredential} from './credential.service';
 
 @Component({
     selector: 'app-credential-list',
@@ -22,7 +22,7 @@ import {processLoading} from "../loading-controller.utils";
                         <ion-label>{{credential.label}}</ion-label>
                     </ion-item>
                     <ion-item-options>
-                        <ion-item-option color="danger">Delete</ion-item-option>
+                        <ion-item-option color="danger" (click)="onDelete(credential.id)">Delete</ion-item-option>
                     </ion-item-options>
                 </ion-item-sliding>
             </ion-list>
@@ -44,10 +44,21 @@ export class CredentialListPage {
 
     credentials: RegisteredCredential[];
 
-    constructor(loadingController: LoadingController, services: Services) {
-        processLoading(loadingController, services.getRegisteredCredential()).subscribe(
-            it => this.credentials = it
-        );
+    constructor(
+        private loadingController: LoadingController,
+        private service: CredentialService
+    ) {
+        this.refresh();
+    }
+
+    onDelete(id: number) {
+        processLoading(this.loadingController, this.service.deleteCredential(id))
+            .subscribe(() => this.refresh());
+    }
+
+    private refresh() {
+        processLoading(this.loadingController, this.service.getRegisteredCredential())
+            .subscribe(it => this.credentials = it);
     }
 
 }

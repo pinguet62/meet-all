@@ -11,6 +11,7 @@ import fr.pinguet62.meetall.provider.tinder.dto.TinderGetMessagesResponseDto;
 import fr.pinguet62.meetall.provider.tinder.dto.TinderGetMessagesResponseDto.TinderGetMessagesDataResponseDto;
 import fr.pinguet62.meetall.provider.tinder.dto.TinderGetMetaResponseDto;
 import fr.pinguet62.meetall.provider.tinder.dto.TinderGetUserResponseDto;
+import fr.pinguet62.meetall.provider.tinder.dto.TinderMatchDto;
 import fr.pinguet62.meetall.provider.tinder.dto.TinderMessageDto;
 import fr.pinguet62.meetall.provider.tinder.dto.TinderUserDto;
 import org.springframework.stereotype.Component;
@@ -20,6 +21,25 @@ import reactor.core.publisher.Mono;
 
 import static fr.pinguet62.meetall.provider.Provider.TINDER;
 
+/**
+ * <ol>
+ * <li>
+ * Get Facebook token:
+ * <ol>
+ * <li>https://www.facebook.com/v2.6/dialog/oauth?redirect_uri=fb464891386855067%3A%2F%2Fauthorize%2F&scope=user_birthday,user_photos,user_education_history,email,user_relationship_details,user_friends,user_work_history,user_likes&response_type=token%2Csigned_request&client_id=464891386855067</li>
+ * <li>Get {@code access_token} value from response https://www.facebook.com/v2.8/dialog/oauth/confirm?dpr=1</li>
+ * </ol>
+ * </li>
+ *
+ * <li>
+ * Get Facebook user's ID
+ * <ul>
+ * <li>https://graph.facebook.com/me?access_token={{facebook_token}}</li>
+ * <li>http://findmyfbid.com</li>
+ * </ul>
+ * </li>
+ * </ol>
+ */
 @Component
 public class TinderProviderService implements ProviderService {
 
@@ -61,13 +81,16 @@ public class TinderProviderService implements ProviderService {
 
     @Override
     public Flux<ConversationDto> getConversations(String authToken) {
-        return webClient.get()
+        Flux<TinderMatchDto> tinderMatchDtoFlux = webClient.get()
                 .uri("/v2/matches?count=60")
                 .header(HEADER, authToken)
                 .retrieve().bodyToFlux(TinderGetConversationResponseDto.class)
                 .map(TinderGetConversationResponseDto::getData)
-                .flatMapIterable(TinderGetConversationDataResponseDto::getMatches)
-                .map(TinderConverters::convert);
+                .flatMapIterable(TinderGetConversationDataResponseDto::getMatches);
+        Mono<TinderUserDto> metaMono = getMeta(authToken);
+        return metaMono.flatMapMany(me ->
+                tinderMatchDtoFlux.map(tinderMessageDto ->
+                        TinderConverters.convert(tinderMessageDto, me.get_id())));
     }
 
     @Override

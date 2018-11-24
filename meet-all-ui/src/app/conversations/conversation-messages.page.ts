@@ -1,8 +1,8 @@
 import {Component} from '@angular/core';
-import {Message, Services} from '../services';
 import {LoadingController} from '@ionic/angular';
 import {Location} from '@angular/common';
-import {processLoading} from "../loading-controller.utils";
+import {processLoading} from '../loading-controller.utils';
+import {ConversationsService, Message} from './conversations.service';
 
 @Component({
     selector: 'app-conversation-messages',
@@ -54,9 +54,9 @@ export class ConversationMessagesPage {
     constructor(
         public location: Location,
         loadingController: LoadingController,
-        services: Services
+        service: ConversationsService
     ) {
-        processLoading(loadingController, services.getMessagesByConversation(null)).subscribe(
+        processLoading(loadingController, service.getMessagesByConversation(null)).subscribe(
             it => this.messages = it
         );
     }

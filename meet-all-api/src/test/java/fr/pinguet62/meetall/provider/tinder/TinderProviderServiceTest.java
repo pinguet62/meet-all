@@ -72,10 +72,16 @@ public class TinderProviderServiceTest {
     public void getConversations() throws Exception {
         server.enqueue(new MockResponse()
                 .setHeader(CONTENT_TYPE, APPLICATION_JSON_UTF8_VALUE)
+                .setBody(readFile("meta.json")));
+        server.enqueue(new MockResponse()
+                .setHeader(CONTENT_TYPE, APPLICATION_JSON_UTF8_VALUE)
                 .setBody(readFile("matches.json")));
 
         List<ConversationDto> conversations = tinderProvider.getConversations(authToken).collectList().block();
 
+        assertThat(server, takingRequest(allOf(
+                url(with(HttpUrl::url, with(URL::toString, containsString("meta")))),
+                header(HEADER, authToken))));
         assertThat(server, takingRequest(allOf(
                 url(with(HttpUrl::url, with(URL::toString, containsString("v2/matches")))),
                 header(HEADER, authToken))));

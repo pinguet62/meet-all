@@ -24,10 +24,11 @@ public class TinderConverters {
         );
     }
 
-    public static ConversationDto convert(TinderMatchDto input) {
+    public static ConversationDto convert(TinderMatchDto input, String currentUserId) {
         return new ConversationDto(
                 input.get_id(),
-                convert(input.getPerson())
+                convert(input.getPerson()),
+                input.getMessages().isEmpty() ? null : convert(input.getMessages().get(0), currentUserId)
         );
     }
 

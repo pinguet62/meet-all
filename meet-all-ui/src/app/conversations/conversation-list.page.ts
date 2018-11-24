@@ -1,7 +1,7 @@
 import {Component} from '@angular/core';
 import {LoadingController} from '@ionic/angular';
-import {Conversation, Services} from '../services';
-import {processLoading} from "../loading-controller.utils";
+import {processLoading} from '../loading-controller.utils';
+import {Conversation, ConversationsService} from './conversations.service';
 
 @Component({
     selector: 'app-conversation-list',
@@ -23,8 +23,8 @@ import {processLoading} from "../loading-controller.utils";
                     </ion-avatar>
                     <ion-label>
                         <h2>{{conversation.profile.name}}</h2>
-                        <h3>{{conversation.lastMessage.text}}</h3>
-                        <p>{{conversation.lastMessage.date | date}}</p>
+                        <h3 *ngIf="conversation.lastMessage">{{conversation.lastMessage.text}}</h3>
+                        <p *ngIf="conversation.lastMessage">{{conversation.lastMessage.date | date}}</p>
                     </ion-label>
                 </ion-item>
             </ion-list>
@@ -35,8 +35,8 @@ export class ConversationListPage {
 
     conversations: Conversation[];
 
-    constructor(loadingController: LoadingController, services: Services) {
-        processLoading(loadingController, services.getConversations()).subscribe(
+    constructor(loadingController: LoadingController, service: ConversationsService) {
+        processLoading(loadingController, service.getConversations()).subscribe(
             it => this.conversations = it
         );
     }

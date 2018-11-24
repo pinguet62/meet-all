@@ -1,10 +1,10 @@
-import {Component} from "@angular/core";
-import {ActivatedRoute, Router} from "@angular/router";
-import {AlertController, LoadingController} from "@ionic/angular";
-import {tap} from "rxjs/operators";
-import {catchErrorAndPresentAlert} from "../alert-controller.utils";
-import {processLoading} from "../loading-controller.utils";
-import {LoginService} from "./login.service";
+import {Component} from '@angular/core';
+import {ActivatedRoute, Router} from '@angular/router';
+import {AlertController, LoadingController} from '@ionic/angular';
+import {tap} from 'rxjs/operators';
+import {catchErrorAndPresentAlert} from '../alert-controller.utils';
+import {processLoading} from '../loading-controller.utils';
+import {LoginService} from './login.service';
 
 @Component({
     selector: 'app-login',
@@ -25,10 +25,10 @@ import {LoginService} from "./login.service";
 })
 export class LoginPage {
 
-    originalUrl: string;
+    readonly originalUrl: string;
 
-    email: string;
-    password: string;
+    email = '';
+    password = '';
 
     constructor(
         private route: ActivatedRoute,
@@ -37,7 +37,7 @@ export class LoginPage {
         private alertController: AlertController,
         private loginService: LoginService,
     ) {
-        this.originalUrl = this.route.snapshot.queryParams['redirect_url'] || '/';
+        this.originalUrl = /*this.route.snapshot.queryParams['redirect_url'] ||*/ '/';
     }
 
     createAccount() {
@@ -46,7 +46,7 @@ export class LoginPage {
             .pipe(catchErrorAndPresentAlert(this.alertController, {
                 header: 'Error',
                 subHeader: 'Create account',
-                message: "Error creating account",
+                message: 'Error creating account',
                 buttons: ['OK'],
             }))
             .subscribe();
@@ -58,7 +58,7 @@ export class LoginPage {
             .pipe(catchErrorAndPresentAlert(this.alertController, {
                 header: 'Error',
                 subHeader: 'Login',
-                message: "Invalid username or password",
+                message: 'Invalid username or password',
                 buttons: ['OK'],
             }))
             .subscribe();
