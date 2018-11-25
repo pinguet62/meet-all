@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.util.Comparator;
 import java.util.List;
 
 import static java.util.Comparator.comparing;
@@ -51,7 +50,8 @@ public class ProvidersService {
     public Flux<ConversationDto> getConversationsForUser(int userId) {
         return Mono.justOrEmpty(userRepository.findById(userId))
                 .flatMapIterable(User::getProviderCredentials)
-                .flatMap(providerCredential -> getProviderService(providerCredential.getProvider()).getConversations(providerCredential.getCredential()));
+                .flatMap(providerCredential -> getProviderService(providerCredential.getProvider()).getConversations(providerCredential.getCredential()))
+                .sort(comparing(ConversationDto::getDate).reversed());
     }
 
     /**

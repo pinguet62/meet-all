@@ -28,6 +28,7 @@ public class TinderConverters {
         return new ConversationDto(
                 input.get_id(),
                 convert(input.getPerson()),
+                input.getLast_activity_date(),
                 input.getMessages().isEmpty() ? null : convert(input.getMessages().get(0), currentUserId)
         );
     }
