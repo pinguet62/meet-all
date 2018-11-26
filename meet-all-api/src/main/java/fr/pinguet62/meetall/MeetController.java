@@ -31,27 +31,27 @@ public class MeetController {
     }
 
     /**
-     * @param id {@link ProviderIdValue}
+     * @param id {@link TransformedId}
      */
     @GetMapping("/conversations/{id}/messages")
     public Flux<MessageDto> getMessages(@PathVariable String id) {
-        ProviderIdValue providerIdValue = ProviderIdValue.parse(id);
+        TransformedId transformedId = TransformedId.parse(id);
         return SecurityContextHolder.getContext()
                 .switchIfEmpty(error(new UnauthorizedException()))
                 .map(SecurityContext::getUserId)
-                .flatMapMany(userId -> providersService.getMessagesForUser(userId, providerIdValue.getProvider(), providerIdValue.getValueId()));
+                .flatMapMany(userId -> providersService.getMessagesForUser(userId, transformedId.getCredentialId(), transformedId.getValueId()));
     }
 
     /**
-     * @param id {@link ProviderIdValue}
+     * @param id {@link TransformedId}
      */
     @GetMapping("/profile/{id}")
     public Mono<ProfileDto> getProfile(@PathVariable String id) {
-        ProviderIdValue providerIdValue = ProviderIdValue.parse(id);
+        TransformedId transformedId = TransformedId.parse(id);
         return SecurityContextHolder.getContext()
                 .switchIfEmpty(error(new UnauthorizedException()))
                 .map(SecurityContext::getUserId)
-                .flatMap(userId -> providersService.getProfileForUser(userId, providerIdValue.getProvider(), providerIdValue.getValueId()));
+                .flatMap(userId -> providersService.getProfileForUser(userId, transformedId.getCredentialId(), transformedId.getValueId()));
     }
 
 }

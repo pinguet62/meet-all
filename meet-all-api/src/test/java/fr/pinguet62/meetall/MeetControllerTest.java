@@ -38,7 +38,7 @@ public class MeetControllerTest {
 
     @Test
     public void getConversations() {
-        final int currentUserId = 42;
+        final int currentUserId = 3;
 
         when(providersService.getConversationsForUser(currentUserId)).thenReturn(Flux.fromIterable(asList(
                 new ConversationDto("conversation-1", new ProfileDto("profile-id-1", "profile-name-1", 1, emptyList()), now(), new MessageDto("message-1", now(), true, "message-text-1")),
@@ -57,16 +57,16 @@ public class MeetControllerTest {
 
     @Test
     public void getMessages() {
-        final int currentUserId = 42;
-        final Provider provider = TINDER;
+        final int currentUserId = 3;
+        final int credentialId = 42;
         final String id = "99";
 
-        when(providersService.getMessagesForUser(currentUserId, provider, id)).thenReturn(Flux.fromIterable(asList(
+        when(providersService.getMessagesForUser(currentUserId, credentialId, id)).thenReturn(Flux.fromIterable(asList(
                 new MessageDto("message-1", now(), true, "message-text-1"),
                 new MessageDto("message-2", now(), false, "message-text-2")
         )));
 
-        String transformedId = ProviderIdValue.format(provider, id);
+        String transformedId = TransformedId.format(credentialId, id);
         webTestClient.get()
                 .uri(uriBuilder -> uriBuilder.path("/conversations").pathSegment(transformedId).pathSegment("messages").build())
                 .header(AUTHORIZATION, valueOf(currentUserId))
@@ -79,13 +79,13 @@ public class MeetControllerTest {
 
     @Test
     public void getProfile() {
-        final int currentUserId = 42;
-        final Provider provider = TINDER;
+        final int currentUserId = 3;
+        final int credentialId = 42;
         final String id = "99";
 
-        when(providersService.getProfileForUser(currentUserId, provider, id)).thenReturn(Mono.justOrEmpty(new ProfileDto("profile-id", "profile-name", 29, emptyList())));
+        when(providersService.getProfileForUser(currentUserId, credentialId, id)).thenReturn(Mono.justOrEmpty(new ProfileDto("profile-id", "profile-name", 29, emptyList())));
 
-        String transformedId = ProviderIdValue.format(provider, id);
+        String transformedId = TransformedId.format(credentialId, id);
         webTestClient.get()
                 .uri(uriBuilder -> uriBuilder.path("/profile").pathSegment(transformedId).build())
                 .header(AUTHORIZATION, valueOf(currentUserId))

@@ -1,5 +1,6 @@
 package fr.pinguet62.meetall.provider;
 
+import fr.pinguet62.meetall.TransformedId;
 import fr.pinguet62.meetall.database.ProviderCredential;
 import fr.pinguet62.meetall.database.User;
 import fr.pinguet62.meetall.database.UserRepository;
@@ -32,39 +33,61 @@ public class ProvidersService {
     }
 
     /**
-     * @param userId    {@link User#getId()}
-     * @param provider  {@link ProviderCredential#getProvider()}
-     * @param profileId {@link ProfileDto#getId()}
+     * Update {@link ProfileDto#getId()}.
+     *
+     * @param userId       {@link User#getId()}
+     * @param credentialId {@link ProviderCredential#getId()}
+     * @param profileId    {@link ProfileDto#getId()}
      */
-    public Mono<ProfileDto> getProfileForUser(int userId, Provider provider, String profileId) {
+    public Mono<ProfileDto> getProfileForUser(int userId, int credentialId, String profileId) {
         return Mono.justOrEmpty(userRepository.findById(userId))
                 .flatMapIterable(User::getProviderCredentials)
-                .filter(providerCredential -> providerCredential.getProvider().equals(provider))
+                .filter(providerCredential -> providerCredential.getId().equals(credentialId))
                 .next()
-                .flatMap(providerCredential -> getProviderService(provider).getProfile(providerCredential.getCredential(), profileId));
+                .flatMap(providerCredential ->
+                        getProviderService(providerCredential.getProvider()).getProfile(providerCredential.getCredential(), profileId)
+                                .map(it -> it.withId(TransformedId.format(providerCredential.getId(), it.getId()))));
     }
 
     /**
+     * Merge result of each {@link ProviderService#getConversations(String)}.<br>
+     * Update {@link ConversationDto#getId()}, {@link ProfileDto#getId()}, {@link MessageDto#getId()}.<br>
+     * Order by descending {@link ConversationDto#getDate()}.
+     *
      * @param userId {@link User#getId()}
      */
     public Flux<ConversationDto> getConversationsForUser(int userId) {
         return Mono.justOrEmpty(userRepository.findById(userId))
                 .flatMapIterable(User::getProviderCredentials)
-                .flatMap(providerCredential -> getProviderService(providerCredential.getProvider()).getConversations(providerCredential.getCredential()))
+                .flatMap(providerCredential ->
+                        getProviderService(providerCredential.getProvider()).getConversations(providerCredential.getCredential())
+                                .map(it -> {
+                                    it = it.withId(TransformedId.format(providerCredential.getId(), it.getId()));
+                                    it = it.withProfile(it.getProfile().withId(TransformedId.format(providerCredential.getId(), it.getProfile().getId())));
+                                    if (it.getLastMessage() != null)
+                                        it = it.withLastMessage(it.getLastMessage().withId(TransformedId.format(providerCredential.getId(), it.getLastMessage().getId())));
+                                    return it;
+                                }))
                 .sort(comparing(ConversationDto::getDate).reversed());
     }
 
     /**
-     * @param userId    {@link User#getId()}
-     * @param provider  {@link ProviderCredential#getProvider()}
-     * @param profileId {@link ProfileDto#getId()}
+     * Update {@link MessageDto#getId()}.<br>
+     * Order by descending {@link MessageDto#getDate()}.
+     *
+     * @param userId       {@link User#getId()}
+     * @param credentialId {@link ProviderCredential#getId()}
+     * @param profileId    {@link ProfileDto#getId()}
      */
-    public Flux<MessageDto> getMessagesForUser(int userId, Provider provider, String profileId) {
+    public Flux<MessageDto> getMessagesForUser(int userId, int credentialId, String profileId) {
         return Mono.justOrEmpty(userRepository.findById(userId))
                 .flatMapIterable(User::getProviderCredentials)
-                .filter(providerCredential -> providerCredential.getProvider().equals(provider))
+                .filter(providerCredential -> providerCredential.getId().equals(credentialId))
                 .next()
-                .flatMapMany(providerCredential -> getProviderService(provider).getMessages(providerCredential.getCredential(), profileId));
+                .flatMapMany(providerCredential ->
+                        getProviderService(providerCredential.getProvider()).getMessages(providerCredential.getCredential(), profileId)
+                                .map(it -> it.withId(TransformedId.format(providerCredential.getId(), it.getId()))))
+                .sort(comparing(MessageDto::getDate).reversed());
     }
 
 }

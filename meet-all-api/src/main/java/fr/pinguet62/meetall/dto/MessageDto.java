@@ -34,4 +34,9 @@ public class MessageDto {
         this.text = requireNonNull(text);
     }
 
+    public MessageDto withId(String value) {
+        if (value.equals(this.id)) return this;
+        return new MessageDto(value, this.date, this.sent, this.text);
+    }
+
 }

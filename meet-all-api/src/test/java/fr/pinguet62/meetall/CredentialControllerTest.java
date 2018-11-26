@@ -45,7 +45,7 @@ public class CredentialControllerTest {
      */
     @Test
     public void getRegisteredCredentials() {
-        final int currentUserId = 42;
+        final int currentUserId = 3;
         final List<ProviderCredential> providerCredentials = asList(
                 new ProviderCredential(11, new User(), TINDER, "tinderAuthToken1", "first"),
                 new ProviderCredential(22, new User(), TINDER, "tinderAuthToken2", "second")
@@ -82,7 +82,7 @@ public class CredentialControllerTest {
      */
     @Test
     public void registerCredential() {
-        final int currentUserId = 42;
+        final int currentUserId = 3;
         final Provider provider = TINDER;
         final String credential = "credential";
         final String label = "label";
@@ -110,7 +110,7 @@ public class CredentialControllerTest {
      */
     @Test
     public void registerCredential_secured() {
-        final int currentUserId = 42;
+        final int currentUserId = 3;
         final Provider provider = TINDER;
         final String credential = "credential";
         final String label = "label";
@@ -133,7 +133,7 @@ public class CredentialControllerTest {
      */
     @Test
     public void updateCredential() {
-        final int currentUserId = 42;
+        final int currentUserId = 3;
         final int id = 99;
         final Provider provider = TINDER;
         final String credential = "credential";
@@ -161,7 +161,7 @@ public class CredentialControllerTest {
      */
     @Test
     public void updateCredential_secured() {
-        final int currentUserId = 42;
+        final int currentUserId = 3;
         final int id = 99;
         final Provider provider = TINDER;
         final String credential = "credential";
@@ -181,7 +181,7 @@ public class CredentialControllerTest {
      */
     @Test
     public void deleteCredential() {
-        final int currentUserId = 42;
+        final int currentUserId = 3;
         final int id = 99;
         final Provider provider = TINDER;
         final String credential = "credential";
@@ -206,7 +206,7 @@ public class CredentialControllerTest {
      */
     @Test
     public void deleteCredential_secured() {
-        final int currentUserId = 42;
+        final int currentUserId = 3;
         final int id = 99;
         final Provider provider = TINDER;
         final String credential = "credential";

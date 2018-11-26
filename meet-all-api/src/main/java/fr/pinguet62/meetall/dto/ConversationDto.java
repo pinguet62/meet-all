@@ -35,4 +35,19 @@ public class ConversationDto {
         this.lastMessage = lastMessage;
     }
 
+    public ConversationDto withId(String value) {
+        if (value.equals(this.id)) return this;
+        return new ConversationDto(value, this.profile, this.date, this.lastMessage);
+    }
+
+    public ConversationDto withProfile(ProfileDto value) {
+        if (value.equals(this.profile)) return this;
+        return new ConversationDto(this.id, value, this.date, this.lastMessage);
+    }
+
+    public ConversationDto withLastMessage(MessageDto value) {
+        if (value.equals(this.lastMessage)) return this;
+        return new ConversationDto(this.id, this.profile, this.date, value);
+    }
+
 }

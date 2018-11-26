@@ -34,4 +34,9 @@ public class ProfileDto {
         this.avatars = requireNonNull(avatars);
     }
 
+    public ProfileDto withId(String value) {
+        if (value.equals(this.id)) return this;
+        return new ProfileDto(value, this.name, this.age, this.avatars);
+    }
+
 }
