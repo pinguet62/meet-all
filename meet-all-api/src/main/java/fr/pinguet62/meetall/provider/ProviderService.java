@@ -10,10 +10,10 @@ public interface ProviderService {
 
     Provider getId();
 
-    Mono<ProfileDto> getProfile(String credentials, String profileId);
+    Mono<ProfileDto> getProfile(String credential, String profileId);
 
-    Flux<ConversationDto> getConversations(String credentials);
+    Flux<ConversationDto> getConversations(String credential);
 
-    Flux<MessageDto> getMessages(String credentials, String conversationId);
+    Flux<MessageDto> getMessages(String credential, String conversationId);
 
 }

@@ -1,10 +1,79 @@
 package fr.pinguet62.meetall.provider.happn;
 
+import fr.pinguet62.meetall.dto.ConversationDto;
+import fr.pinguet62.meetall.dto.MessageDto;
+import fr.pinguet62.meetall.dto.ProfileDto;
+import fr.pinguet62.meetall.provider.Provider;
+import fr.pinguet62.meetall.provider.ProviderService;
+import fr.pinguet62.meetall.provider.happn.dto.HappnConversationsResponseDto;
+import fr.pinguet62.meetall.provider.happn.dto.HappnMessagesResponseDto;
+import fr.pinguet62.meetall.provider.happn.dto.HappnUserResponseDto;
+import org.springframework.stereotype.Component;
+import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+
+import static fr.pinguet62.meetall.provider.Provider.HAPPN;
+import static org.springframework.http.HttpHeaders.AUTHORIZATION;
+
 /**
  * <ol>
  * <li>https://www.facebook.com/dialog/oauth?client_id=247294518656661&redirect_uri=fbconnect://success&scope=email,user_birthday,user_friends,public_profile,user_photos,user_likes&response_type=token</li>
  * <li>Get {@code access_token} value from response https://www.facebook.com/v2.8/dialog/oauth/confirm?dpr=1</li>
  * </ol>
  */
-public class HappnProviderService {
+@Component
+public class HappnProviderService implements ProviderService {
+
+    static final String HEADER = AUTHORIZATION;
+
+    private final WebClient webClient;
+
+    public HappnProviderService() {
+        this("https://api.happn.fr/api");
+    }
+
+    // for testing
+    HappnProviderService(String baseUrl) {
+        webClient = WebClient.builder().baseUrl(baseUrl).build();
+    }
+
+    @Override
+    public Provider getId() {
+        return HAPPN;
+    }
+
+    @Override
+    public Mono<ProfileDto> getProfile(String authToken, String profileId) {
+        return this.webClient.get()
+                .uri("/users/" + profileId + "?fields=birth_date,first_name,fb_id,last_name,display_name,credits,referal,matching_preferences,notification_settings,unread_conversations,about,is_accepted,age,job,workplace,school,modification_date,last_meet_position,my_relation,is_charmed,distance,gender,profiles.mode(0).width(1000).height(1000).fields(url,width,height,mode)")
+                .header(HEADER, "OAuth=\"" + authToken + "\"")
+                .retrieve().bodyToMono(HappnUserResponseDto.class)
+                .map(HappnUserResponseDto::getData)
+                .map(HappnConverters::convert);
+    }
+
+    @Override
+    public Flux<ConversationDto> getConversations(String authToken) {
+        return this.webClient.get()
+                .uri("/users/me/conversations?limit=99999999&fields=modification_date,participants.fields(user.fields(birth_date,first_name,fb_id,last_name,display_name,credits,referal,matching_preferences,notification_settings,unread_conversations,about,is_accepted,age,job,workplace,school,modification_date,last_meet_position,my_relation,is_charmed,distance,gender,profiles.mode(0).width(1000).height(1000).fields(url,width,height,mode))),messages.fields(message,creation_date,sender.fields(id,profiles))")
+                .header(HEADER, "OAuth=\"" + authToken + "\"")
+                .retrieve().bodyToMono(HappnConversationsResponseDto.class)
+                .flatMapIterable(HappnConversationsResponseDto::getData)
+                .map(HappnConverters::convert);
+    }
+
+    /**
+     * Ordered by {@link MessageDto#getDate()} descending.
+     */
+    @Override
+    public Flux<MessageDto> getMessages(String authToken, String conversationId) {
+        return this.webClient.get()
+                .uri("/conversations/" + conversationId + "/messages?fields=id,message,creation_date,sender.fields(id,profiles)")
+                .header(HEADER, "OAuth=\"" + authToken + "\"")
+                .retrieve().bodyToMono(HappnMessagesResponseDto.class)
+                .flatMapIterable(HappnMessagesResponseDto::getData)
+                .map(HappnConverters::convert);
+    }
+
 }

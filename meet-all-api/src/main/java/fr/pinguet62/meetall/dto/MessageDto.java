@@ -1,6 +1,8 @@
 package fr.pinguet62.meetall.dto;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.ToString;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
@@ -9,6 +11,8 @@ import java.time.ZonedDateTime;
 
 import static java.util.Objects.requireNonNull;
 
+@EqualsAndHashCode // testing
+@ToString(callSuper = true) // testing
 @Getter
 public class MessageDto {
 

@@ -1,0 +1,74 @@
+{
+  "success": true,
+  "status": 200,
+  "error": null,
+  "data": {
+    "id": "48a3216c-a73f-4f7b-a5f9-aeeacdbabeb1",
+    "role": "CLIENT",
+    "type": "CLIENT",
+    "clickable_message_link": false,
+    "birth_date": null,
+    "first_name": "Sophie",
+    "fb_id": null,
+    "last_name": null,
+    "display_name": "Sophie",
+    "referal": {
+      "texts": {
+        "sponsor_share_text_texto": "Teste happn, c'est énorme {LINK}",
+        "sponsor_share_text_mail": "Salut ! Teste happn, tu vas pouvoir retrouver tous les gens que tu croises, c'est énorme {LINK}",
+        "sponsor_share_text_twitter": "Découvrez @happn_app, l’app pour retrouver qui vous croisez {LINK}",
+        "sponsor_share_text_facebook": "Découvrez happn, l’app pour retrouver qui vous croisez {LINK}",
+        "crush_share_text_texto": "Je viens d'avoir mon Crush № {CRUSH_N} sur happn :D",
+        "crush_share_text_mail": "Je viens d'avoir mon Crush № {CRUSH_N} sur happn :D",
+        "crush_share_text_twitter": "Je viens d'avoir mon Crush № {CRUSH_N} sur @happn_app :D",
+        "crush_share_text_facebook": "Je viens d'avoir mon Crush № {CRUSH_N} sur happn :D"
+      },
+      "sponsor_link": {
+        "id": "cead4df924357bfbb727b834d5bf1a1d",
+        "code": "6ER0vfvvJht",
+        "destination": "https://happn.com/r/6ER0vfvvJht",
+        "creation_date": "2018-11-26T10:55:38+00:00",
+        "status": 1,
+        "redirect_url": "https://happn.com/r/6ER0vfvvJht"
+      }
+    },
+    "matching_preferences": null,
+    "notification_settings": null,
+    "unread_conversations": null,
+    "about": "",
+    "is_accepted": false,
+    "age": 26,
+    "job": null,
+    "workplace": null,
+    "school": "",
+    "modification_date": "2018-11-25T10:47:51+00:00",
+    "last_meet_position": {
+      "lat": 50.645126,
+      "lon": 3.1432352,
+      "creation_date": "2018-11-26T08:29:43+00:00",
+      "modification_date": "2018-11-26T08:29:43+00:00"
+    },
+    "my_relation": 1,
+    "is_charmed": false,
+    "distance": null,
+    "gender": "female",
+    "profiles": [
+      {
+        "id": "559a0790-d18a-11e8-9e28-196ec4dfc48e",
+        "url": "https://1675564c27.optimicdn.com/cache/images/48a3216c-a73f-4f7b-a5f9-aeeacdbabeb1/320-320.0_559a0790-d18a-11e8-9e28-196ec4dfc48e.jpg",
+        "width": 320,
+        "height": 320,
+        "mode": 0
+      },
+      {
+        "id": "3219f290-c117-11e8-b57d-0fc094ce31f9",
+        "url": "https://1675564c27.optimicdn.com/cache/images/48a3216c-a73f-4f7b-a5f9-aeeacdbabeb1/320-320.0_3219f290-c117-11e8-b57d-0fc094ce31f9.jpg",
+        "width": 320,
+        "height": 320,
+        "mode": 0
+      }
+    ],
+    "nb_photos": 9
+  },
+  "error_code": 0
+}

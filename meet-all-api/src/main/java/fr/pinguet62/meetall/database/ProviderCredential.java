@@ -43,7 +43,7 @@ public class ProviderCredential {
      * The secret necessary to use target webservice.
      */
     @NotEmpty
-    @Column(nullable = false)
+    @Column(nullable = false, length = 4095)
     private String credential;
 
     @NotEmpty

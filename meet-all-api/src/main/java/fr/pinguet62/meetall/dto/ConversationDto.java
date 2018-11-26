@@ -1,7 +1,9 @@
 package fr.pinguet62.meetall.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.ToString;
 
 import javax.validation.constraints.NotNull;
 import java.time.ZonedDateTime;
@@ -9,6 +11,8 @@ import java.time.ZonedDateTime;
 import static com.fasterxml.jackson.annotation.JsonFormat.Shape.STRING;
 import static java.util.Objects.requireNonNull;
 
+@EqualsAndHashCode // testing
+@ToString(callSuper = true) // testing
 @Getter
 public class ConversationDto {
 
@@ -26,7 +30,7 @@ public class ConversationDto {
     @JsonFormat(shape = STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
     private final ZonedDateTime date;
 
-    private final MessageDto lastMessage;
+    private final MessageDto lastMessage; // TODO LazyMessageDto
 
     public ConversationDto(String id, ProfileDto profile, ZonedDateTime date, MessageDto lastMessage) {
         this.id = requireNonNull(id);
