@@ -1,7 +1,6 @@
 package fr.pinguet62.meetall;
 
-import fr.pinguet62.meetall.database.ProviderCredential;
-import fr.pinguet62.meetall.database.User;
+import fr.pinguet62.meetall.dto.RegisteredCredentialDto;
 import fr.pinguet62.meetall.provider.Provider;
 import fr.pinguet62.meetall.security.SecurityWebFilter;
 import org.junit.Test;
@@ -16,12 +15,10 @@ import org.springframework.util.LinkedMultiValueMap;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.util.List;
-
 import static fr.pinguet62.meetall.Utils.mapOf;
+import static fr.pinguet62.meetall.provider.Provider.HAPPN;
 import static fr.pinguet62.meetall.provider.Provider.TINDER;
 import static java.lang.String.valueOf;
-import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static java.util.Optional.of;
 import static org.mockito.ArgumentMatchers.anyInt;
@@ -46,12 +43,10 @@ public class CredentialControllerTest {
     @Test
     public void getRegisteredCredentials() {
         final int currentUserId = 3;
-        final List<ProviderCredential> providerCredentials = asList(
-                new ProviderCredential(11, new User(), TINDER, "tinderAuthToken1", "first"),
-                new ProviderCredential(22, new User(), TINDER, "tinderAuthToken2", "second")
-        );
 
-        when(credentialService.getRegisteredCredentials(currentUserId)).thenReturn(Flux.fromIterable(providerCredentials));
+        when(credentialService.getRegisteredCredentials(currentUserId)).thenReturn(Flux.just(
+                new RegisteredCredentialDto(11, "first", TINDER, true),
+                new RegisteredCredentialDto(22, "second", HAPPN, false)));
 
         webTestClient.get()
                 .uri("/credential")
@@ -60,7 +55,13 @@ public class CredentialControllerTest {
                 .expectStatus().isOk()
                 .expectBody()
                 .jsonPath("$[0].id").isEqualTo(11)
-                .jsonPath("$[1].id").isEqualTo(22);
+                .jsonPath("$[0].label").isEqualTo("first")
+                .jsonPath("$[0].provider").isEqualTo(TINDER.name())
+                .jsonPath("$[0].ok").isEqualTo(true)
+                .jsonPath("$[1].id").isEqualTo(22)
+                .jsonPath("$[1].label").isEqualTo("second")
+                .jsonPath("$[1].provider").isEqualTo(HAPPN.name())
+                .jsonPath("$[1].ok").isEqualTo(false);
     }
 
     /**
@@ -87,7 +88,7 @@ public class CredentialControllerTest {
         final String credential = "credential";
         final String label = "label";
 
-        when(credentialService.registerCredential(currentUserId, provider, credential, label)).thenReturn(Mono.just(new ProviderCredential(99, new User(), provider, credential, label)));
+        when(credentialService.registerCredential(currentUserId, provider, credential, label)).thenReturn(Mono.just(new RegisteredCredentialDto(99, label, provider, true)));
 
         webTestClient.post()
                 .uri("/credential")
@@ -100,8 +101,9 @@ public class CredentialControllerTest {
                 .expectStatus().isCreated()
                 .expectBody()
                 .jsonPath("$.id").exists() // generated
-                .jsonPath("$.provider").isEqualTo(provider.name())
                 .jsonPath("$.label").isEqualTo(label)
+                .jsonPath("$.provider").isEqualTo(provider.name())
+                .jsonPath("$.ok").isEqualTo(true)
                 .jsonPath("$.credential").doesNotExist(); // secret!
     }
 
@@ -115,7 +117,7 @@ public class CredentialControllerTest {
         final String credential = "credential";
         final String label = "label";
 
-        when(credentialService.registerCredential(currentUserId, provider, credential, label)).thenReturn(Mono.just(new ProviderCredential(99, new User(), provider, credential, label)));
+        when(credentialService.registerCredential(currentUserId, provider, credential, label)).thenReturn(Mono.just(new RegisteredCredentialDto(99, label, provider, true)));
 
         webTestClient.post()
                 .uri("/credential")
@@ -139,7 +141,7 @@ public class CredentialControllerTest {
         final String credential = "credential";
         final String label = "label";
 
-        when(credentialService.updateCredential(currentUserId, id, of(credential), of(label))).thenReturn(Mono.just(new ProviderCredential(99, new User(), provider, credential, label)));
+        when(credentialService.updateCredential(currentUserId, id, of(credential), of(label))).thenReturn(Mono.just(new RegisteredCredentialDto(99, label, provider, true)));
 
         webTestClient.put()
                 .uri(uriBuilder -> uriBuilder.path("/credential").pathSegment(valueOf(id)).build())
@@ -151,8 +153,9 @@ public class CredentialControllerTest {
                 .expectStatus().isOk()
                 .expectBody()
                 .jsonPath("$.id").isEqualTo(id)
-                .jsonPath("$.provider").isEqualTo(provider.name())
                 .jsonPath("$.label").isEqualTo(label)
+                .jsonPath("$.provider").isEqualTo(provider.name())
+                .jsonPath("$.ok").isEqualTo(true)
                 .jsonPath("$.credential").doesNotExist(); // secret!
     }
 
@@ -167,7 +170,7 @@ public class CredentialControllerTest {
         final String credential = "credential";
         final String label = "label";
 
-        when(credentialService.updateCredential(currentUserId, id, of(credential), of(label))).thenReturn(Mono.just(new ProviderCredential(99, new User(), provider, credential, label)));
+        when(credentialService.updateCredential(currentUserId, id, of(credential), of(label))).thenReturn(Mono.just(new RegisteredCredentialDto(99, label, provider, true)));
 
         webTestClient.put()
                 .uri(uriBuilder -> uriBuilder.path("/credential").pathSegment(valueOf(id)).build())
@@ -187,7 +190,7 @@ public class CredentialControllerTest {
         final String credential = "credential";
         final String label = "label";
 
-        when(credentialService.deleteCredential(currentUserId, id)).thenReturn(Mono.just(new ProviderCredential(99, new User(), provider, credential, label)));
+        when(credentialService.deleteCredential(currentUserId, id)).thenReturn(Mono.just(new RegisteredCredentialDto(99, label, provider, true)));
 
         webTestClient.delete()
                 .uri(uriBuilder -> uriBuilder.path("/credential").pathSegment(valueOf(id)).build())
@@ -196,8 +199,9 @@ public class CredentialControllerTest {
                 .expectStatus().isOk()
                 .expectBody()
                 .jsonPath("$.id").isEqualTo(id)
-                .jsonPath("$.provider").isEqualTo(provider.name())
                 .jsonPath("$.label").isEqualTo(label)
+                .jsonPath("$.provider").isEqualTo(provider.name())
+                .jsonPath("$.ok").isEqualTo(true)
                 .jsonPath("$.credential").doesNotExist(); // secret!
     }
 
@@ -212,7 +216,7 @@ public class CredentialControllerTest {
         final String credential = "credential";
         final String label = "label";
 
-        when(credentialService.deleteCredential(currentUserId, id)).thenReturn(Mono.just(new ProviderCredential(99, new User(), provider, credential, label)));
+        when(credentialService.deleteCredential(currentUserId, id)).thenReturn(Mono.just(new RegisteredCredentialDto(99, label, provider, true)));
 
         webTestClient.delete()
                 .uri(uriBuilder -> uriBuilder.path("/credential").pathSegment(valueOf(id)).build())

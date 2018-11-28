@@ -20,8 +20,7 @@ public class TinderConverters {
                 input.get_id(),
                 input.getName(),
                 (int) ChronoUnit.YEARS.between(input.getBirth_date(), now()),
-                input.getPhotos().stream().map(TinderPhotoDto::getUrl).collect(toList())
-        );
+                input.getPhotos().stream().map(TinderPhotoDto::getUrl).collect(toList()));
     }
 
     public static ConversationDto convert(TinderMatchDto input, String currentUserId) {
@@ -29,8 +28,7 @@ public class TinderConverters {
                 input.get_id(),
                 convert(input.getPerson()),
                 input.getLast_activity_date(),
-                input.getMessages().isEmpty() ? null : convert(input.getMessages().get(0), currentUserId)
-        );
+                input.getMessages().isEmpty() ? null : convert(input.getMessages().get(0), currentUserId));
     }
 
     public static MessageDto convert(TinderMessageDto input, String currentUserId) {
@@ -38,8 +36,7 @@ public class TinderConverters {
                 input.get_id(),
                 input.getSent_date(),
                 input.getFrom().equals(currentUserId),
-                input.getMessage()
-        );
+                input.getMessage());
     }
 
 }

@@ -94,16 +94,13 @@ public class HappnProviderServiceTest {
                         30,
                         asList(
                                 "https://1675564c27.optimicdn.com/cache/images/93833b7c-a427-45be-b3cd-81d068108184/320-320.0_7b745d40-aed9-11e8-9d0d-0f272e08b1ea.jpg",
-                                "https://1675564c27.optimicdn.com/cache/images/93833b7c-a427-45be-b3cd-81d068108184/320-320.0_7c213f10-aed9-11e8-a9a7-0d1f7e69a1ae.jpg"
-                        )),
+                                "https://1675564c27.optimicdn.com/cache/images/93833b7c-a427-45be-b3cd-81d068108184/320-320.0_7c213f10-aed9-11e8-a9a7-0d1f7e69a1ae.jpg")),
                 OffsetDateTime.parse("2018-11-25T09:47:58+00:00").toZonedDateTime(),
                 new MessageDto(
                         "1543139278_30e2ad90-f097-11e8-b59a-bf3837b6acfb",
                         OffsetDateTime.parse("2018-11-25T09:47:58+00:00").toZonedDateTime(),
                         false,
-                        "Bonjour, comment vas tu ? :)"
-                )
-        )));
+                        "Bonjour, comment vas tu ? :)"))));
     }
 
     @Test

@@ -33,8 +33,7 @@ public class CredentialController {
         return SecurityContextHolder.getContext()
                 .switchIfEmpty(error(new UnauthorizedException()))
                 .map(SecurityContext::getUserId)
-                .flatMapMany(loginService::getRegisteredCredentials)
-                .map(entity -> new RegisteredCredentialDto(entity.getId(), entity.getLabel(), entity.getProvider()));
+                .flatMapMany(loginService::getRegisteredCredentials);
     }
 
     /**
@@ -48,8 +47,7 @@ public class CredentialController {
         return SecurityContextHolder.getContext()
                 .switchIfEmpty(error(new UnauthorizedException()))
                 .map(SecurityContext::getUserId)
-                .flatMap(userId -> loginService.registerCredential(userId, provider, credential, label))
-                .map(entity -> new RegisteredCredentialDto(entity.getId(), entity.getLabel(), entity.getProvider()));
+                .flatMap(userId -> loginService.registerCredential(userId, provider, credential, label));
     }
 
     /**
@@ -62,8 +60,7 @@ public class CredentialController {
         return SecurityContextHolder.getContext()
                 .switchIfEmpty(error(new UnauthorizedException()))
                 .map(SecurityContext::getUserId)
-                .flatMap(userId -> loginService.updateCredential(userId, id, ofNullable(credential), ofNullable(label)))
-                .map(entity -> new RegisteredCredentialDto(entity.getId(), entity.getLabel(), entity.getProvider()));
+                .flatMap(userId -> loginService.updateCredential(userId, id, ofNullable(credential), ofNullable(label)));
     }
 
     /**
@@ -74,8 +71,7 @@ public class CredentialController {
         return SecurityContextHolder.getContext()
                 .switchIfEmpty(error(new UnauthorizedException()))
                 .map(SecurityContext::getUserId)
-                .flatMap(userId -> loginService.deleteCredential(userId, id))
-                .map(entity -> new RegisteredCredentialDto(entity.getId(), entity.getLabel(), entity.getProvider()));
+                .flatMap(userId -> loginService.deleteCredential(userId, id));
     }
 
 }

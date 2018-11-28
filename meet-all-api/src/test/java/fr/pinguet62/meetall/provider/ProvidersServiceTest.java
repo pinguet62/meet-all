@@ -19,6 +19,7 @@ import java.util.Optional;
 import static fr.pinguet62.meetall.provider.Provider.HAPPN;
 import static fr.pinguet62.meetall.provider.Provider.TINDER;
 import static java.time.ZoneOffset.UTC;
+import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.is;
@@ -66,8 +67,9 @@ public class ProvidersServiceTest {
 
         // User: credentials
         User user = new User(userId, "email", "password");
-        user.getProviderCredentials().add(new ProviderCredential(81, user, TINDER, "tinderCredential_91", "label 11"));
-        user.getProviderCredentials().add(new ProviderCredential(92, user, HAPPN, "happnCredential_92", "label 12"));
+        user.getProviderCredentials().addAll(asList(
+                new ProviderCredential(91, user, TINDER, "tinderCredential_91", "label 91"),
+                new ProviderCredential(92, user, HAPPN, "happnCredential_92", "label 92")));
         when(userRepository.findById(userId)).thenReturn(Optional.of(user));
         // Provider: TINDER
         ProviderService tinderProviderService = mock(ProviderService.class);
@@ -86,9 +88,9 @@ public class ProvidersServiceTest {
         Flux<ConversationDto> conversations = service.getConversationsForUser(userId);
 
         assertThat(conversations.collectList().block(), contains(
-                new ConversationDto("81#convTinder12", new ProfileDto("81#profTinder12", "profile name 12", 12, emptyList()), ZonedDateTime.of(2003, 8, 12, 5, 28, 56, 98, UTC), null),
+                new ConversationDto("91#convTinder12", new ProfileDto("91#profTinder12", "profile name 12", 12, emptyList()), ZonedDateTime.of(2003, 8, 12, 5, 28, 56, 98, UTC), null),
                 new ConversationDto("92#convHappn21", new ProfileDto("92#profHappn21", "profile name 21", 21, emptyList()), ZonedDateTime.of(2002, 7, 9, 19, 52, 59, 12, UTC), new MessageDto("92#messHappn21", ZonedDateTime.of(2002, 7, 9, 19, 52, 59, 12, UTC), false, "message Happn 21")),
-                new ConversationDto("81#convTinder11", new ProfileDto("81#profTinder11", "profile name 11", 11, emptyList()), ZonedDateTime.of(2001, 4, 7, 9, 13, 37, 27, UTC), new MessageDto("81#messTinder11", ZonedDateTime.of(2001, 4, 7, 9, 13, 37, 27, UTC), true, "message Tinder 11"))));
+                new ConversationDto("91#convTinder11", new ProfileDto("91#profTinder11", "profile name 11", 11, emptyList()), ZonedDateTime.of(2001, 4, 7, 9, 13, 37, 27, UTC), new MessageDto("91#messTinder11", ZonedDateTime.of(2001, 4, 7, 9, 13, 37, 27, UTC), true, "message Tinder 11"))));
     }
 
     @Test

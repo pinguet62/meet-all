@@ -17,8 +17,7 @@ public class HappnConverters {
                 input.getId(),
                 input.getDisplay_name(),
                 input.getAge(),
-                input.getProfiles().stream().map(HappnProfileDto::getUrl).collect(toList())
-        );
+                input.getProfiles().stream().map(HappnProfileDto::getUrl).collect(toList()));
     }
 
     public static ConversationDto convert(HappnConversationDto input) {
@@ -26,8 +25,7 @@ public class HappnConverters {
                 input.getId(),
                 convert(input.getParticipants().get(1).getUser()),
                 input.getModification_date().toZonedDateTime(),
-                input.getMessages().isEmpty() ? null : convert(input.getMessages().get(0))
-        );
+                input.getMessages().isEmpty() ? null : convert(input.getMessages().get(0)));
     }
 
     public static MessageDto convert(HappnMessageDto input) {
@@ -35,8 +33,7 @@ public class HappnConverters {
                 input.getId(),
                 input.getCreation_date().toZonedDateTime(),
                 input.getSender().getBirth_date() != null,
-                input.getMessage()
-        );
+                input.getMessage());
     }
 
 }

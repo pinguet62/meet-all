@@ -1,13 +1,17 @@
 package fr.pinguet62.meetall.dto;
 
 import fr.pinguet62.meetall.provider.Provider;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.ToString;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 import static java.util.Objects.requireNonNull;
 
+@EqualsAndHashCode // testing
+@ToString(callSuper = true) // testing
 @Getter
 public class RegisteredCredentialDto {
 
@@ -20,10 +24,14 @@ public class RegisteredCredentialDto {
     @NotNull
     private final Provider provider;
 
-    public RegisteredCredentialDto(int id, String label, Provider provider) {
+    @NotNull
+    private final boolean ok;
+
+    public RegisteredCredentialDto(int id, String label, Provider provider, boolean ok) {
         this.id = id;
         this.label = requireNonNull(label);
         this.provider = requireNonNull(provider);
+        this.ok = ok;
     }
 
 }

@@ -10,6 +10,12 @@ public interface ProviderService {
 
     Provider getId();
 
+    default Mono<Boolean> checkCredential(String credential) {
+        return getConversations(credential)
+                .collectList().map(it -> true)
+                .onErrorReturn(false);
+    }
+
     Mono<ProfileDto> getProfile(String credential, String profileId);
 
     Flux<ConversationDto> getConversations(String credential);
