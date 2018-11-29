@@ -1,5 +1,6 @@
 package fr.pinguet62.meetall.provider;
 
+import fr.pinguet62.meetall.PartialList;
 import fr.pinguet62.meetall.TransformedId;
 import fr.pinguet62.meetall.database.ProviderCredential;
 import fr.pinguet62.meetall.database.User;
@@ -13,6 +14,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import static java.util.Comparator.comparing;
 
@@ -56,11 +58,15 @@ public class ProvidersService {
      *
      * @param userId {@link User#getId()}
      */
-    public Flux<ConversationDto> getConversationsForUser(int userId) {
+    public Mono<PartialList<ConversationDto>> getConversationsForUser(int userId) {
+        AtomicBoolean partial = new AtomicBoolean(false);
         return Mono.justOrEmpty(userRepository.findById(userId))
                 .flatMapIterable(User::getProviderCredentials)
                 .flatMap(providerCredential ->
-                        getProviderService(providerCredential.getProvider()).getConversations(providerCredential.getCredential())
+                        getProviderService(providerCredential.getProvider())
+                                .getConversations(providerCredential.getCredential())
+                                .doOnError(error -> partial.set(true))
+                                .onErrorResume(error -> Flux.empty())
                                 .map(it -> {
                                     it = it.withId(TransformedId.format(providerCredential.getId(), it.getId()));
                                     it = it.withProfile(it.getProfile().withId(TransformedId.format(providerCredential.getId(), it.getProfile().getId())));
@@ -68,7 +74,9 @@ public class ProvidersService {
                                         it = it.withLastMessage(it.getLastMessage().withId(TransformedId.format(providerCredential.getId(), it.getLastMessage().getId())));
                                     return it;
                                 }))
-                .sort(comparing(ConversationDto::getDate).reversed());
+                .sort(comparing(ConversationDto::getDate).reversed())
+                .collectList()
+                .map(it -> new PartialList<>(it, partial.get()));
     }
 
     /**
