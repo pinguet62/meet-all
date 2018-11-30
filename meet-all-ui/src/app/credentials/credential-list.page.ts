@@ -35,6 +35,9 @@ import {CredentialService, RegisteredCredential} from './credential.service';
                     <ion-fab-button href="/tabs/(credentials:credentials/create)">
                         <ion-img src="assets/provider/TINDER.png"></ion-img>
                     </ion-fab-button>
+                    <ion-fab-button href="/tabs/(credentials:credentials/create)">
+                        <ion-img src="assets/provider/HAPPN.png"></ion-img>
+                    </ion-fab-button>
                 </ion-fab-list>
             </ion-fab>
         </ion-content>

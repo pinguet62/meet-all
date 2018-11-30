@@ -3,8 +3,10 @@ import {Injectable} from '@angular/core';
 import {Observable} from 'rxjs';
 import {environment} from '../../environments/environment';
 
+/** The icon name. */
 export enum Provider {
     TINDER = 'TINDER',
+    HAPPN = 'HAPPN',
 }
 
 export interface RegisteredCredential {

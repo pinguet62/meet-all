@@ -37,6 +37,7 @@ import {tap} from 'rxjs/operators';
                     <ion-label>Provider</ion-label>
                     <ion-select [(ngModel)]="provider" name="provider" required placeholder="Select one">
                         <ion-select-option value="TINDER">Tinder</ion-select-option>
+                        <ion-select-option value="HAPPN">Happn</ion-select-option>
                     </ion-select>
                 </ion-item>
 
