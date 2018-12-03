@@ -5,8 +5,9 @@ import {environment} from '../../environments/environment';
 
 /** The icon name. */
 export enum Provider {
-    TINDER = 'TINDER',
     HAPPN = 'HAPPN',
+    ONCE = "ONCE",
+    TINDER = 'TINDER',
 }
 
 export interface RegisteredCredential {

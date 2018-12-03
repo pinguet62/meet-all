@@ -2,6 +2,6 @@ package fr.pinguet62.meetall.provider;
 
 public enum Provider {
 
-    TINDER, HAPPN;
+    TINDER, HAPPN, ONCE
 
 }

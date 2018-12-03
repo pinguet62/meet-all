@@ -1,0 +1,79 @@
+{
+  "status": "ok",
+  "result": {
+    "chat_requests": [],
+    "like_messages": [],
+    "deleted": [
+      "MEA309198513",
+      "MEA307306927",
+      "MEA311137421",
+      "MEA310854319",
+      "MEA312462299",
+      "MEA313376327",
+      "MEA316550102",
+      "MEA319344627",
+      "MEA318956448",
+      "MEA318045705",
+      "MEA328726096",
+      "MEA327951458",
+      "MEA332772155",
+      "MEA332295234",
+      "MEA333507734",
+      "MEA340025431",
+      "MEA337317369",
+      "MEA339040450",
+      "MEA340758226",
+      "MEA343472451"
+    ],
+    "connections": [
+      {
+        "user": {
+          "id": "EA7464845",
+          "first_name": "Louise",
+          "last_name": null,
+          "age": 27,
+          "gender": "w",
+          "pictures": [
+            {
+              "original": "33485378_original.jpg",
+              "cropped": "33485378_cropped.jpg",
+              "id": "33485378",
+              "tmp": false,
+              "p60": "33485378_60.jpg",
+              "p120": "33485378_120.jpg",
+              "p300": "33485378_300.jpg",
+              "p600": "33485378_600.jpg"
+            }
+          ],
+          "location_name": "Lille",
+          "occupation": {},
+          "education": [],
+          "flags": [
+            "auto-validated"
+          ],
+          "email_verified": false,
+          "email_bounced": false
+        },
+        "can_talk": true,
+        "sender_id": "EA601448",
+        "receiver_id": "EA7464845",
+        "match_id": "MEA346007886",
+        "last_message": "Bonsoir la timide :p",
+        "last_message_id": 2,
+        "message_sent_at": 1543084668,
+        "read": true,
+        "opened": {
+          "EA7464845": 1543066613,
+          "EA601448": 1543084638
+        },
+        "allowed_to_review": false
+      }
+    ],
+    "query_id": "MzAtMzAtMTU0MzU5NzI5OA==",
+    "base_url": "https://d110abryny6tab.cloudfront.net/pictures",
+    "dm_feature_activated": false,
+    "remaining_connections": 0,
+    "total": 1,
+    "timestamp": 1543595498
+  }
+}

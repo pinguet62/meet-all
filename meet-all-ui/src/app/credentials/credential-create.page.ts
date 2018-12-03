@@ -36,8 +36,7 @@ import {tap} from 'rxjs/operators';
                 <ion-item>
                     <ion-label>Provider</ion-label>
                     <ion-select [(ngModel)]="provider" name="provider" required placeholder="Select one">
-                        <ion-select-option value="TINDER">Tinder</ion-select-option>
-                        <ion-select-option value="HAPPN">Happn</ion-select-option>
+                        <ion-select-option *ngFor="let provider of providers" [value]="provider">{{provider}}</ion-select-option>
                     </ion-select>
                 </ion-item>
 
@@ -50,6 +49,8 @@ import {tap} from 'rxjs/operators';
     `,
 })
 export class CredentialCreatePage {
+
+    readonly providers = Object.keys(Provider);
 
     label = '';
     provider: Provider;

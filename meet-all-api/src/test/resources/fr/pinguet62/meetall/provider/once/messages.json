@@ -1,0 +1,72 @@
+{
+  "status": "ok",
+  "result": {
+    "user": {
+      "id": "EA7464845",
+      "first_name": "Louise",
+      "last_name": null,
+      "age": 27,
+      "gender": "w",
+      "pictures": [
+        {
+          "original": "33485378_original.jpg",
+          "cropped": "33485378_cropped.jpg",
+          "id": "33485378",
+          "tmp": false,
+          "p60": "33485378_60.jpg",
+          "p120": "33485378_120.jpg",
+          "p300": "33485378_300.jpg",
+          "p600": "33485378_600.jpg"
+        }
+      ],
+      "location_name": "Lille",
+      "occupation": {},
+      "education": []
+    },
+    "chat_key": "MEA346007886",
+    "messages": [
+      {
+        "id": "MEA346007886::2",
+        "type": 3,
+        "number": 2,
+        "sender_id": "EA601448",
+        "receiver_id": "EA7464845",
+        "message": "Bonsoir la timide :p",
+        "media_file": null,
+        "read": true,
+        "client_id": "Android-1672-12144814781737185992",
+        "match_id": "MEA346007886",
+        "created_at": 1543084668,
+        "info": {
+          "screen_uri": "onceapp://chat/MEA346007886"
+        },
+        "extras": {}
+      },
+      {
+        "id": "MEA346007886::1",
+        "type": 24,
+        "number": 1,
+        "sender_id": "EA601448",
+        "receiver_id": "EA7464845",
+        "message": "Vous avez été connectés",
+        "media_file": null,
+        "read": true,
+        "client_id": "bo-5407f20717464479aaf6",
+        "match_id": "MEA346007886",
+        "created_at": 1543066610,
+        "info": {
+          "no_push": true,
+          "by_dm": false,
+          "screen_uri": "onceapp://chat/MEA346007886",
+          "intros": {
+            "EA7464845": "Vous avez été connectés",
+            "EA601448": "Vous avez été connectés"
+          }
+        },
+        "extras": {}
+      }
+    ],
+    "base_url": "https://d110abryny6tab.cloudfront.net/pictures",
+    "chat_pictures_url": "https://d110abryny6tab.cloudfront.net/chats/regular"
+  }
+}
