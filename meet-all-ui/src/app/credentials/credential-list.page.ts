@@ -21,6 +21,7 @@ import {tap} from "rxjs/operators";
                             <img [src]="'assets/provider/' + credential.provider + '.png'">
                         </ion-avatar>
                         <ion-label>{{credential.label}}</ion-label>
+                        <ion-icon [name]="credential.ok ? 'checkmark' : 'close-circle'"></ion-icon>
                     </ion-item>
                     <ion-item-options>
                         <ion-item-option color="danger" (click)="onDelete(credential.id)">Delete</ion-item-option>

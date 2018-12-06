@@ -14,6 +14,7 @@ export interface RegisteredCredential {
     id: number;
     provider: Provider;
     label: string;
+    ok: boolean;
 }
 
 @Injectable()
