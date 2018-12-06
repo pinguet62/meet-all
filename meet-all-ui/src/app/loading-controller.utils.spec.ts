@@ -1,48 +1,68 @@
 import {LoadingController} from "@ionic/angular";
 import {OverlayBaseController} from "@ionic/angular/dist/util/overlay";
-import {of, throwError} from "rxjs";
+import {Observable, Subscriber} from "rxjs";
 import {processLoading} from "./loading-controller.utils";
+
+function createSpyPromise<T>(callback: (...args: any[]) => T): Promise<T> {
+    const promise = new Promise<T>(resolve => {
+        setTimeout(() => { // avoid direct resolve
+            resolve(callback());
+        }, 0);
+    });
+    spyOn(promise, 'then').and.callThrough();
+    return promise;
+}
 
 describe("loading-controller.utils", () => {
     describe("processLoading", () => {
-        let loaderPresentPromise: Promise<void>;
-        let loaderPresentDismiss: Promise<void>;
+        let callOrder: string[];
+        let loaderPresentPresent: Promise<any>;
+        let loaderPresentDismiss: Promise<any>;
         let loader: { present: () => Promise<void>, dismiss: () => Promise<void> }; // HTMLIonLoadingElement
         let loadingController: jasmine.SpyObj<LoadingController>;
         beforeEach(() => {
-            loaderPresentPromise = Promise.resolve();
-            spyOn(loaderPresentPromise, 'then').and.callThrough();
-            loaderPresentDismiss = Promise.resolve();
-            spyOn(loaderPresentDismiss, 'then').and.callThrough();
-            loader = {present: () => loaderPresentPromise, dismiss: () => loaderPresentDismiss};
+            callOrder = [];
+            loaderPresentPresent = createSpyPromise(() => callOrder.push("loaderPresentPresent"));
+            loaderPresentDismiss = createSpyPromise(() => callOrder.push("loaderPresentDismiss"));
+            loader = {present: () => loaderPresentPresent, dismiss: () => loaderPresentDismiss};
             loadingController = jasmine.createSpyObj<LoadingController>(LoadingController.name, Object.keys(OverlayBaseController.prototype));
-            loadingController.create.and.returnValue(Promise.resolve(loader));
+            loadingController.create.and.returnValue(new Promise(resolve => resolve(loader)));
         });
 
         it("success", done => {
-            const observable = of("expected");
+            let sourceNext = jasmine.createSpy("source").and.callFake((observer: Subscriber<string>) => {
+                callOrder.push("source");
+                observer.next("source");
+            });
+            const observable = Observable.create(sourceNext);
 
             const result = processLoading(loadingController, observable);
 
             result.subscribe(value => {
-                expect(value).toEqual("expected");
-                expect(loaderPresentPromise.then).toHaveBeenCalled();
+                expect(value).toEqual("source");
+                expect(loaderPresentPresent.then).toHaveBeenCalled();
                 expect(loaderPresentDismiss.then).toHaveBeenCalled();
+                expect(callOrder).toEqual(["loaderPresentPresent", "source", "loaderPresentDismiss"]);
                 done();
             });
         });
 
         it("error", done => {
-            const observable = throwError(new Error("expected"));
+            let sourceError = jasmine.createSpy("source").and.callFake((observer: Subscriber<string>) => {
+                callOrder.push("source");
+                observer.error(new Error("source"));
+            });
+            const observable = Observable.create(sourceError);
 
             const result = processLoading(loadingController, observable);
 
             result.subscribe(
                 () => done.fail(),
                 error => {
-                    expect(error).toEqual(new Error("expected"));
-                    expect(loaderPresentPromise.then).toHaveBeenCalled();
+                    expect(error.message).toEqual("source");
+                    expect(loaderPresentPresent.then).toHaveBeenCalled();
                     expect(loaderPresentDismiss.then).toHaveBeenCalled();
+                    expect(callOrder).toEqual(["loaderPresentPresent", "source", "loaderPresentDismiss"]);
                     done();
                 });
         });

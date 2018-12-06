@@ -2,6 +2,7 @@ import {Component} from '@angular/core';
 import {LoadingController} from '@ionic/angular';
 import {processLoading} from '../loading-controller.utils';
 import {Conversation, ConversationsService} from './conversations.service';
+import {tap} from "rxjs/operators";
 
 @Component({
     selector: 'app-conversation-list',
@@ -36,9 +37,10 @@ export class ConversationListPage {
     conversations: Conversation[];
 
     constructor(loadingController: LoadingController, service: ConversationsService) {
-        processLoading(loadingController, service.getConversations()).subscribe(
-            it => this.conversations = it
-        );
+        processLoading(loadingController,
+            service.getConversations()
+                .pipe(tap(it => this.conversations = it))
+        ).subscribe();
     }
 
 }

@@ -3,6 +3,7 @@ import {LoadingController} from '@ionic/angular';
 import {Location} from '@angular/common';
 import {processLoading} from '../loading-controller.utils';
 import {ConversationsService, Message} from './conversations.service';
+import {tap} from "rxjs/operators";
 
 @Component({
     selector: 'app-conversation-messages',
@@ -56,9 +57,10 @@ export class ConversationMessagesPage {
         loadingController: LoadingController,
         service: ConversationsService
     ) {
-        processLoading(loadingController, service.getMessagesByConversation(null)).subscribe(
-            it => this.messages = it
-        );
+        processLoading(loadingController,
+            service.getMessagesByConversation(null)
+                .pipe(tap(it => this.messages = it))
+        ).subscribe();
     }
 
 }

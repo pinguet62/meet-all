@@ -64,9 +64,10 @@ export class CredentialCreatePage {
     }
 
     onCreate() {
-        processLoading(this.loadingController, this.service.registerCredential(this.provider, this.credential, this.label))
-            .pipe(tap(() => this.location.back()))
-            .subscribe();
+        processLoading(this.loadingController,
+            this.service.registerCredential(this.provider, this.credential, this.label)
+                .pipe(tap(() => this.location.back()))
+        ).subscribe();
     }
 
 }

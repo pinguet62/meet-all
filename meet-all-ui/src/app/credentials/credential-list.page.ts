@@ -2,6 +2,7 @@ import {Component} from '@angular/core';
 import {LoadingController} from '@ionic/angular';
 import {processLoading} from '../loading-controller.utils';
 import {CredentialService, Provider, RegisteredCredential} from './credential.service';
+import {tap} from "rxjs/operators";
 
 @Component({
     selector: 'app-credential-list',
@@ -54,13 +55,17 @@ export class CredentialListPage {
     }
 
     onDelete(id: number) {
-        processLoading(this.loadingController, this.service.deleteCredential(id))
-            .subscribe(() => this.refresh());
+        processLoading(this.loadingController,
+            this.service.deleteCredential(id)
+                .pipe(tap(() => this.refresh()))
+        ).subscribe();
     }
 
     private refresh() {
-        processLoading(this.loadingController, this.service.getRegisteredCredential())
-            .subscribe(it => this.credentials = it);
+        processLoading(this.loadingController,
+            this.service.getRegisteredCredential()
+                .pipe(tap(it => this.credentials = it))
+        ).subscribe();
     }
 
 }

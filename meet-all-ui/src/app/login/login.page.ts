@@ -41,27 +41,29 @@ export class LoginPage {
     }
 
     createAccount() {
-        processLoading(this.loadingController, this.loginService.createAccount(this.email, this.password))
-            .pipe(tap(() => this.router.navigate([this.originalUrl])))
-            .pipe(catchErrorAndPresentAlert(this.alertController, {
-                header: 'Error',
-                subHeader: 'Create account',
-                message: 'Error creating account',
-                buttons: ['OK'],
-            }))
-            .subscribe();
+        processLoading(this.loadingController,
+            this.loginService.createAccount(this.email, this.password)
+                .pipe(tap(() => this.router.navigate([this.originalUrl])))
+                .pipe(catchErrorAndPresentAlert(this.alertController, {
+                    header: 'Error',
+                    subHeader: 'Create account',
+                    message: 'Error creating account',
+                    buttons: ['OK'],
+                }))
+        ).subscribe();
     }
 
     login() {
-        processLoading(this.loadingController, this.loginService.login(this.email, this.password))
-            .pipe(tap(() => this.router.navigate([this.originalUrl])))
-            .pipe(catchErrorAndPresentAlert(this.alertController, {
-                header: 'Error',
-                subHeader: 'Login',
-                message: 'Invalid username or password',
-                buttons: ['OK'],
-            }))
-            .subscribe();
+        processLoading(this.loadingController,
+            this.loginService.login(this.email, this.password)
+                .pipe(tap(() => this.router.navigate([this.originalUrl])))
+                .pipe(catchErrorAndPresentAlert(this.alertController, {
+                    header: 'Error',
+                    subHeader: 'Login',
+                    message: 'Invalid username or password',
+                    buttons: ['OK'],
+                }))
+        ).subscribe();
     }
 
 }
