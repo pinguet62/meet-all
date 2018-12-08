@@ -35,8 +35,8 @@ export class CredentialService {
         return this.http.post<RegisteredCredential>(environment.apiUrl + '/credential', formData);
     }
 
-    public deleteCredential(id: number): Observable<RegisteredCredential> {
-        return this.http.delete<RegisteredCredential>(environment.apiUrl + `/credential/${encodeURIComponent(id.toString())}`);
+    public deleteCredential(credentialId: number): Observable<RegisteredCredential> {
+        return this.http.delete<RegisteredCredential>(environment.apiUrl + `/credential/${encodeURIComponent(credentialId.toString())}`);
     }
 
 }

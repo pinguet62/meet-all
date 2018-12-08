@@ -148,9 +148,9 @@ public class ProvidersServiceTest {
         Flux<MessageDto> messages = service.getMessagesForUser(userId, credentialId, profileId);
 
         assertThat(messages.collectList().block(), contains(
-                new MessageDto(credentialId + "#" + "mess3", ZonedDateTime.of(2003, 8, 12, 5, 28, 56, 98, UTC), false, "text 3"),
+                new MessageDto(credentialId + "#" + "mess1", ZonedDateTime.of(2001, 4, 7, 9, 13, 37, 27, UTC), false, "text 1"),
                 new MessageDto(credentialId + "#" + "mess2", ZonedDateTime.of(2002, 7, 9, 19, 52, 59, 12, UTC), false, "text 2"),
-                new MessageDto(credentialId + "#" + "mess1", ZonedDateTime.of(2001, 4, 7, 9, 13, 37, 27, UTC), false, "text 1")));
+                new MessageDto(credentialId + "#" + "mess3", ZonedDateTime.of(2003, 8, 12, 5, 28, 56, 98, UTC), false, "text 3")));
     }
 
 }

@@ -81,21 +81,21 @@ public class ProvidersService {
 
     /**
      * Update {@link MessageDto#getId()}.<br>
-     * Order by descending {@link MessageDto#getDate()}.
+     * Order by ascending {@link MessageDto#getDate()}.
      *
-     * @param userId       {@link User#getId()}
-     * @param credentialId {@link ProviderCredential#getId()}
-     * @param profileId    {@link ProfileDto#getId()}
+     * @param userId         {@link User#getId()}
+     * @param credentialId   {@link ProviderCredential#getId()}
+     * @param conversationId {@link ConversationDto#getId()}
      */
-    public Flux<MessageDto> getMessagesForUser(int userId, int credentialId, String profileId) {
+    public Flux<MessageDto> getMessagesForUser(int userId, int credentialId, String conversationId) {
         return Mono.justOrEmpty(userRepository.findById(userId))
                 .flatMapIterable(User::getProviderCredentials)
                 .filter(providerCredential -> providerCredential.getId().equals(credentialId))
                 .next()
                 .flatMapMany(providerCredential ->
-                        getProviderService(providerCredential.getProvider()).getMessages(providerCredential.getCredential(), profileId)
+                        getProviderService(providerCredential.getProvider()).getMessages(providerCredential.getCredential(), conversationId)
                                 .map(it -> it.withId(TransformedId.format(providerCredential.getId(), it.getId()))))
-                .sort(comparing(MessageDto::getDate).reversed());
+                .sort(comparing(MessageDto::getDate));
     }
 
 }

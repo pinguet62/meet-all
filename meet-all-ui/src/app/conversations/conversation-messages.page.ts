@@ -2,8 +2,10 @@ import {Component} from '@angular/core';
 import {LoadingController} from '@ionic/angular';
 import {Location} from '@angular/common';
 import {processLoading} from '../loading-controller.utils';
-import {ConversationsService, Message} from './conversations.service';
-import {tap} from "rxjs/operators";
+import {ConversationsService, Message, Profile} from './conversations.service';
+import {forkJoin} from 'rxjs';
+import {tap} from 'rxjs/operators';
+import {ActivatedRoute} from '@angular/router';
 
 @Component({
     selector: 'app-conversation-messages',
@@ -16,7 +18,12 @@ import {tap} from "rxjs/operators";
                         Back
                     </ion-button>
                 </ion-buttons>
-                <ion-title>Messages</ion-title>
+                <div style="display: flex;">
+                    <ion-avatar>
+                        <ion-img *ngIf="profile != null" [src]="profile.avatars[0]"></ion-img>
+                    </ion-avatar>
+                    <ion-title *ngIf="profile != null">{{profile.name}}</ion-title>
+                </div>
             </ion-toolbar>
         </ion-header>
 
@@ -24,9 +31,10 @@ import {tap} from "rxjs/operators";
             <ion-list lines="none">
                 <ion-item *ngFor="let message of messages">
                     <ion-avatar *ngIf="!message.sent">
-                        <ion-img src="assets/provider/TINDER.png"></ion-img>
+                        <ion-img *ngIf="profile != null" [src]="profile.avatars[0]"></ion-img>
                     </ion-avatar>
-                    <ion-text [slot]="message.sent ? 'end' : ''" [ngClass]="['message', message.sent ? 'sent' : 'received']">{{message.text}}</ion-text>
+                    <ion-text [slot]="message.sent ? 'end' : ''"
+                              [ngClass]="['message', message.sent ? 'sent' : 'received']">{{message.text}}</ion-text>
                 </ion-item>
             </ion-list>
         </ion-content>
@@ -50,17 +58,25 @@ import {tap} from "rxjs/operators";
 })
 export class ConversationMessagesPage {
 
-    messages: Message[] = [];
+    profile: Profile = null;
+    messages: Message[] = null;
 
     constructor(
+        route: ActivatedRoute,
         public location: Location,
         loadingController: LoadingController,
-        service: ConversationsService
+        service: ConversationsService,
     ) {
-        processLoading(loadingController,
-            service.getMessagesByConversation(null)
-                .pipe(tap(it => this.messages = it))
-        ).subscribe();
+        let conversationId = route.snapshot.paramMap.get('conversationId');
+        console.log('conversationId', conversationId);
+        let profileId = route.snapshot.paramMap.get('profileId');
+        console.log('profileId', profileId);
+        processLoading(loadingController, forkJoin(
+            service.getMessagesByConversation(conversationId)
+                .pipe(tap(it => this.messages = it)),
+            service.getProfile(profileId)
+                .pipe(tap(it => this.profile = it)),
+        )).subscribe();
     }
 
 }

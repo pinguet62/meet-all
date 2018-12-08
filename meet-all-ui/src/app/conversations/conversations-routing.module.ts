@@ -9,8 +9,8 @@ import {ConversationListPage} from './conversation-list.page';
         RouterModule.forChild([{
             path: '', component: ConversationsPage, children: [
                 {path: '', component: ConversationListPage},
-                {path: ':id', component: ConversationMessagesPage},
-            ]
+                {path: ':conversationId/:profileId', component: ConversationMessagesPage},
+            ],
         }]),
     ],
     exports: [RouterModule],

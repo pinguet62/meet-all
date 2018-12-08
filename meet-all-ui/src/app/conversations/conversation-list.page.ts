@@ -18,7 +18,7 @@ import {tap} from "rxjs/operators";
                 <ion-list-header>
                     <ion-label>Messages</ion-label>
                 </ion-list-header>
-                <ion-item *ngFor="let conversation of conversations" [href]="'/tabs/(conversations:conversations/' + conversation.id + ')'">
+                <ion-item *ngFor="let conversation of conversations" [href]="'/tabs/(conversations:conversations/' + encodeURIComponent(conversation.id) + '/' + encodeURIComponent(conversation.profile.id) + ')'">
                     <ion-avatar>
                         <img [src]="conversation.profile.avatars[0]">
                     </ion-avatar>
@@ -33,6 +33,8 @@ import {tap} from "rxjs/operators";
     `
 })
 export class ConversationListPage {
+
+    readonly encodeURIComponent = encodeURIComponent;
 
     conversations: Conversation[];
 
