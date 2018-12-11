@@ -18,7 +18,7 @@ describe("loading-controller.utils", () => {
         let callOrder: string[];
         let loaderPresentPresent: Promise<any>;
         let loaderPresentDismiss: Promise<any>;
-        let loader: { present: () => Promise<void>, dismiss: () => Promise<void> }; // HTMLIonLoadingElement
+        let loader: { present: () => Promise<void>, dismiss: () => Promise<boolean> }; // HTMLIonLoadingElement
         let loadingController: jasmine.SpyObj<LoadingController>;
         beforeEach(() => {
             callOrder = [];
@@ -26,7 +26,7 @@ describe("loading-controller.utils", () => {
             loaderPresentDismiss = createSpyPromise(() => callOrder.push("loaderPresentDismiss"));
             loader = {present: () => loaderPresentPresent, dismiss: () => loaderPresentDismiss};
             loadingController = jasmine.createSpyObj<LoadingController>(LoadingController.name, Object.keys(OverlayBaseController.prototype));
-            loadingController.create.and.returnValue(new Promise(resolve => resolve(loader)));
+            loadingController.create.and.returnValue(Promise.resolve(loader));
         });
 
         it("success", done => {

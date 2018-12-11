@@ -8,5 +8,5 @@ export function processLoading<T>(loadingController: LoadingController, action: 
         .pipe(mergeMap((loader: HTMLIonLoadingElement) =>
             from(loader.present() as Promise<void>)
                 .pipe(mergeMap(() => action
-                    .pipe(finalize(defer(() => loader.dismiss() as any as Promise<void>)))))));
+                    .pipe(finalize(defer(() => loader.dismiss() as any as Promise<boolean>)))))));
 }

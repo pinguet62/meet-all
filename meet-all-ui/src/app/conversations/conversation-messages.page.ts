@@ -20,7 +20,7 @@ import {ActivatedRoute} from '@angular/router';
                 </ion-buttons>
                 <div style="display: flex;">
                     <ion-avatar>
-                        <ion-img *ngIf="profile != null" [src]="profile.avatars[0]"></ion-img>
+                        <img *ngIf="profile != null" [src]="profile.avatars[0]">
                     </ion-avatar>
                     <ion-title *ngIf="profile != null">{{profile.name}}</ion-title>
                 </div>
@@ -31,7 +31,7 @@ import {ActivatedRoute} from '@angular/router';
             <ion-list lines="none">
                 <ion-item *ngFor="let message of messages">
                     <ion-avatar *ngIf="!message.sent">
-                        <ion-img *ngIf="profile != null" [src]="profile.avatars[0]"></ion-img>
+                        <img *ngIf="profile != null" [src]="profile.avatars[0]">
                     </ion-avatar>
                     <ion-text [slot]="message.sent ? 'end' : ''"
                               [ngClass]="['message', message.sent ? 'sent' : 'received']">{{message.text}}</ion-text>

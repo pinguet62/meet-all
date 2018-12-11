@@ -3,7 +3,7 @@ import {LoadingController} from '@ionic/angular';
 import {RefresherEventDetail} from '@ionic/core';
 import {tap} from "rxjs/operators";
 import {processLoading} from '../loading-controller.utils';
-import {CredentialService, Provider, RegisteredCredential} from './credential.service';
+import {CredentialService, RegisteredCredential} from './credential.service';
 
 @Component({
     selector: 'app-credential-list',
@@ -34,21 +34,14 @@ import {CredentialService, Provider, RegisteredCredential} from './credential.se
             </ion-list>
 
             <ion-fab vertical="bottom" horizontal="end" slot="fixed">
-                <ion-fab-button>
+                <ion-fab-button href="/tabs/(credentials:credentials/create)">
                     <ion-icon name="add"></ion-icon>
                 </ion-fab-button>
-                <ion-fab-list side="top">
-                    <ion-fab-button *ngFor="let provider of providers" href="/tabs/(credentials:credentials/create)">
-                        <ion-img [src]="'assets/provider/' + provider + '.png'"></ion-img>
-                    </ion-fab-button>
-                </ion-fab-list>
             </ion-fab>
         </ion-content>
     `,
 })
 export class CredentialListPage {
-
-    readonly providers = Object.keys(Provider);
 
     credentials: RegisteredCredential[];
 
