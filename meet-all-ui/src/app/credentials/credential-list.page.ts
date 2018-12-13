@@ -1,8 +1,9 @@
 import {Component} from '@angular/core';
 import {LoadingController} from '@ionic/angular';
+import {RefresherEventDetail} from '@ionic/core';
+import {tap} from "rxjs/operators";
 import {processLoading} from '../loading-controller.utils';
 import {CredentialService, Provider, RegisteredCredential} from './credential.service';
-import {tap} from "rxjs/operators";
 
 @Component({
     selector: 'app-credential-list',
@@ -14,6 +15,9 @@ import {tap} from "rxjs/operators";
         </ion-header>
 
         <ion-content>
+            <ion-refresher slot="fixed" (ionRefresh)="onRefresh($event)" refreshingSpinner="circles" refreshingText="Refreshing...">
+                <ion-refresher-content></ion-refresher-content>
+            </ion-refresher>
             <ion-list>
                 <ion-item-sliding *ngFor="let credential of credentials">
                     <ion-item>
@@ -24,7 +28,7 @@ import {tap} from "rxjs/operators";
                         <ion-icon [name]="credential.ok ? 'checkmark' : 'close-circle'"></ion-icon>
                     </ion-item>
                     <ion-item-options>
-                        <ion-item-option color="danger" (click)="onDelete(credential.id)">Delete</ion-item-option>
+                        <ion-item-option color="danger" (click)="onDelete(credential)">Delete</ion-item-option>
                     </ion-item-options>
                 </ion-item-sliding>
             </ion-list>
@@ -52,21 +56,24 @@ export class CredentialListPage {
         private loadingController: LoadingController,
         private service: CredentialService
     ) {
-        this.refresh();
-    }
-
-    onDelete(id: number) {
-        processLoading(this.loadingController,
-            this.service.deleteCredential(id)
-                .pipe(tap(() => this.refresh()))
-        ).subscribe();
-    }
-
-    private refresh() {
         processLoading(this.loadingController,
             this.service.getRegisteredCredential()
                 .pipe(tap(it => this.credentials = it))
         ).subscribe();
+    }
+
+    onDelete(registeredCredential: RegisteredCredential) {
+        processLoading(this.loadingController,
+            this.service.deleteCredential(registeredCredential.id)
+                .pipe(tap(it => this.credentials.splice(this.credentials.findIndex(x => x.id === it.id), 1)))
+        ).subscribe();
+    }
+
+    onRefresh(event: CustomEvent<RefresherEventDetail>) {
+        this.service.getRegisteredCredential()
+            .pipe(tap(it => this.credentials = it))
+            .pipe(tap(event.detail.complete))
+            .subscribe();
     }
 
 }

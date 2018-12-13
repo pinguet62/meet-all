@@ -1,8 +1,9 @@
 import {Component} from '@angular/core';
 import {LoadingController} from '@ionic/angular';
+import {RefresherEventDetail} from '@ionic/core';
+import {tap} from "rxjs/operators";
 import {processLoading} from '../loading-controller.utils';
 import {Conversation, ConversationsService} from './conversations.service';
-import {tap} from "rxjs/operators";
 
 @Component({
     selector: 'app-conversation-list',
@@ -14,11 +15,15 @@ import {tap} from "rxjs/operators";
         </ion-header>
 
         <ion-content>
+            <ion-refresher slot="fixed" (ionRefresh)="onRefresh($event)" refreshingSpinner="circles" refreshingText="Refreshing...">
+                <ion-refresher-content></ion-refresher-content>
+            </ion-refresher>
             <ion-list>
                 <ion-list-header>
                     <ion-label>Messages</ion-label>
                 </ion-list-header>
-                <ion-item *ngFor="let conversation of conversations" [href]="'/tabs/(conversations:conversations/' + encodeURIComponent(conversation.id) + '/' + encodeURIComponent(conversation.profile.id) + ')'">
+                <ion-item *ngFor="let conversation of conversations"
+                          [href]="'/tabs/(conversations:conversations/' + encodeURIComponent(conversation.id) + '/' + encodeURIComponent(conversation.profile.id) + ')'">
                     <ion-avatar>
                         <img [src]="conversation.profile.avatars[0]">
                     </ion-avatar>
@@ -38,11 +43,18 @@ export class ConversationListPage {
 
     conversations: Conversation[];
 
-    constructor(loadingController: LoadingController, service: ConversationsService) {
+    constructor(private loadingController: LoadingController, private service: ConversationsService) {
         processLoading(loadingController,
-            service.getConversations()
+            this.service.getConversations()
                 .pipe(tap(it => this.conversations = it))
         ).subscribe();
+    }
+
+    onRefresh(event: CustomEvent<RefresherEventDetail>) {
+        this.service.getConversations()
+            .pipe(tap(it => this.conversations = it))
+            .pipe(tap(event.detail.complete))
+            .subscribe();
     }
 
 }
