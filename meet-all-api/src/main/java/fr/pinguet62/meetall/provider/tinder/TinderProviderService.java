@@ -13,6 +13,8 @@ import fr.pinguet62.meetall.provider.tinder.dto.TinderGetMetaResponseDto;
 import fr.pinguet62.meetall.provider.tinder.dto.TinderGetUserResponseDto;
 import fr.pinguet62.meetall.provider.tinder.dto.TinderMatchDto;
 import fr.pinguet62.meetall.provider.tinder.dto.TinderMessageDto;
+import fr.pinguet62.meetall.provider.tinder.dto.TinderSendMessageRequestDto;
+import fr.pinguet62.meetall.provider.tinder.dto.TinderSendMessageResponseDto;
 import fr.pinguet62.meetall.provider.tinder.dto.TinderUserDto;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -20,6 +22,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import static fr.pinguet62.meetall.provider.Provider.TINDER;
+import static org.springframework.web.reactive.function.BodyInserters.fromObject;
 
 /**
  * <ol>
@@ -105,6 +108,16 @@ public class TinderProviderService implements ProviderService {
         return metaMono.flatMapMany(me ->
                 tinderMessageDtoFlux.map(tinderMessageDto ->
                         TinderConverters.convert(tinderMessageDto, me.get_id())));
+    }
+
+    @Override
+    public Mono<MessageDto> sendMessage(String authToken, String matchId, String text) {
+        return webClient.post()
+                .uri("/user/matches/{matchId}", matchId)
+                .body(fromObject(new TinderSendMessageRequestDto(text)))
+                .header(HEADER, authToken)
+                .retrieve().bodyToMono(TinderSendMessageResponseDto.class)
+                .map(TinderConverters::convert);
     }
 
 }

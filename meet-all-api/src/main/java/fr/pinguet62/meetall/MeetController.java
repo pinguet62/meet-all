@@ -11,12 +11,16 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
 
+import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.PARTIAL_CONTENT;
 import static reactor.core.publisher.Mono.error;
 
@@ -45,6 +49,16 @@ public class MeetController {
                 .switchIfEmpty(error(new UnauthorizedException()))
                 .map(SecurityContext::getUserId)
                 .flatMapMany(userId -> providersService.getMessagesForUser(userId, transformedId.getCredentialId(), transformedId.getValueId()));
+    }
+
+    @PostMapping("/conversations/{id}/message")
+    @ResponseStatus(CREATED)
+    public Mono<MessageDto> sendMessage(@PathVariable String id, @RequestBody String text) {
+        TransformedId transformedId = TransformedId.parse(id);
+        return SecurityContextHolder.getContext()
+                .switchIfEmpty(error(new UnauthorizedException()))
+                .map(SecurityContext::getUserId)
+                .flatMap(userId -> providersService.sendMessage(userId, transformedId.getCredentialId(), transformedId.getValueId(), text));
     }
 
     /**

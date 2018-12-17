@@ -128,6 +128,25 @@ public class HappnProviderServiceTest {
                 "Ah compris : fameux tiers des personnes pas très sincères qui n'envoient plus de message.")));
     }
 
+    @Test
+    public void sendMessage() throws Exception {
+        final String matchId = "matchId";
+        server.enqueue(new MockResponse()
+                .setHeader(CONTENT_TYPE, APPLICATION_JSON_UTF8_VALUE)
+                .setBody(readFile("sendMessage.json")));
+
+        MessageDto message = happnProvider.sendMessage(authToken, matchId, "text").block();
+
+        assertThat(server, takingRequest(allOf(
+                url(with(HttpUrl::url, with(URL::toString, containsString("conversations/" + matchId + "/messages")))),
+                header(HEADER, "OAuth=\"" + authToken + "\""))));
+        assertThat(message, is(new MessageDto(
+                "1545053021_f867e470-01fe-11e9-8e3d-ab647b2d0947",
+                OffsetDateTime.parse("2018-12-17T13:23:41+00:00").toZonedDateTime(),
+                true,
+                "test")));
+    }
+
     private String readFile(String resource) throws IOException, URISyntaxException {
         Path path = Paths.get(getClass().getResource(resource).toURI());
         try (Stream<String> lines = Files.lines(path)) {

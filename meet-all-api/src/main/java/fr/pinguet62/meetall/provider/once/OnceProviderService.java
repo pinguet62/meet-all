@@ -8,6 +8,8 @@ import fr.pinguet62.meetall.provider.ProviderService;
 import fr.pinguet62.meetall.provider.once.dto.OnceConversationsResponseDto;
 import fr.pinguet62.meetall.provider.once.dto.OnceMatchResponseDto;
 import fr.pinguet62.meetall.provider.once.dto.OnceMessagesResponseDto;
+import fr.pinguet62.meetall.provider.once.dto.OnceSendMessageRequestDto;
+import fr.pinguet62.meetall.provider.once.dto.OnceSendMessageResponseDto;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
@@ -16,6 +18,7 @@ import reactor.core.publisher.Mono;
 import static fr.pinguet62.meetall.provider.Provider.ONCE;
 import static java.util.stream.Collectors.toList;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
+import static org.springframework.web.reactive.function.BodyInserters.fromObject;
 
 /**
  * Target user is identified by {@link ConversationDto#getId()},
@@ -71,4 +74,16 @@ public class OnceProviderService implements ProviderService {
                 .map(OnceMessagesResponseDto::getResult)
                 .flatMapIterable(result -> result.getMessages().stream().map(x -> OnceConverters.convert(x, result.getUser())).collect(toList()));
     }
+
+    @Override
+    public Mono<MessageDto> sendMessage(String authorization, String matchId, String text) {
+        return this.webClient.post()
+                .uri("/v1/message")
+                .body(fromObject(new OnceSendMessageRequestDto(matchId, text)))
+                .header(HEADER, authorization)
+                .retrieve().bodyToMono(OnceSendMessageResponseDto.class)
+                .map(OnceSendMessageResponseDto::getResult)
+                .map(OnceConverters::convertSentMessage);
+    }
+
 }

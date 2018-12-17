@@ -6,6 +6,7 @@ import fr.pinguet62.meetall.dto.ProfileDto;
 import fr.pinguet62.meetall.provider.tinder.dto.TinderMatchDto;
 import fr.pinguet62.meetall.provider.tinder.dto.TinderMessageDto;
 import fr.pinguet62.meetall.provider.tinder.dto.TinderPhotoDto;
+import fr.pinguet62.meetall.provider.tinder.dto.TinderSendMessageResponseDto;
 import fr.pinguet62.meetall.provider.tinder.dto.TinderUserDto;
 
 import java.time.temporal.ChronoUnit;
@@ -36,6 +37,14 @@ public class TinderConverters {
                 input.get_id(),
                 input.getSent_date(),
                 input.getFrom().equals(currentUserId),
+                input.getMessage());
+    }
+
+    public static MessageDto convert(TinderSendMessageResponseDto input) {
+        return new MessageDto(
+                input.get_id(),
+                input.getSent_date(),
+                true,
                 input.getMessage());
     }
 

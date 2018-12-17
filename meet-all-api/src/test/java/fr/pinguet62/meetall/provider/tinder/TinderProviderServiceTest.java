@@ -16,6 +16,8 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -29,6 +31,7 @@ import static java.util.stream.Collectors.joining;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
@@ -107,6 +110,25 @@ public class TinderProviderServiceTest {
                 url(with(HttpUrl::url, with(URL::toString, containsString("v2/matches/" + matchId + "/messages")))),
                 header(HEADER, authToken))));
         assertThat(messages, hasSize(2));
+    }
+
+    @Test
+    public void sendMessage() throws Exception {
+        final String matchId = "matchId";
+        server.enqueue(new MockResponse()
+                .setHeader(CONTENT_TYPE, APPLICATION_JSON_UTF8_VALUE)
+                .setBody(readFile("sendMessage.json")));
+
+        MessageDto message = tinderProvider.sendMessage(authToken, matchId, "text").block();
+
+        assertThat(server, takingRequest(allOf(
+                url(with(HttpUrl::url, with(URL::toString, containsString("user/matches/" + matchId)))),
+                header(HEADER, authToken))));
+        assertThat(message, is(new MessageDto(
+                "5c157885c5ee3f110007b6fc",
+                ZonedDateTime.of(2018, 12, 15, 21, 56, 21, 322 * 1000000, ZoneId.of("UTC")),
+                true,
+                "Et perso je fonctionne beaucoup au feeling")));
     }
 
     private String readFile(String resource) throws IOException, URISyntaxException {

@@ -98,4 +98,22 @@ public class ProvidersService {
                 .sort(comparing(MessageDto::getDate));
     }
 
+    /**
+     * Update {@link MessageDto#getId()}.
+     *
+     * @param userId         {@link User#getId()}
+     * @param credentialId   {@link ProviderCredential#getId()}
+     * @param conversationId {@link ConversationDto#getId()}
+     * @param text           {@link MessageDto#getText()}
+     */
+    public Mono<MessageDto> sendMessage(int userId, int credentialId, String conversationId, String text) {
+        return Mono.justOrEmpty(userRepository.findById(userId))
+                .flatMapIterable(User::getProviderCredentials)
+                .filter(providerCredential -> providerCredential.getId().equals(credentialId))
+                .next()
+                .flatMap(providerCredential ->
+                        getProviderService(providerCredential.getProvider()).sendMessage(providerCredential.getCredential(), conversationId, text)
+                                .map(it -> it.withId(TransformedId.format(providerCredential.getId(), it.getId()))));
+    }
+
 }

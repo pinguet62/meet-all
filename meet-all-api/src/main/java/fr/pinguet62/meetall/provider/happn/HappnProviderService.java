@@ -7,6 +7,8 @@ import fr.pinguet62.meetall.provider.Provider;
 import fr.pinguet62.meetall.provider.ProviderService;
 import fr.pinguet62.meetall.provider.happn.dto.HappnConversationsResponseDto;
 import fr.pinguet62.meetall.provider.happn.dto.HappnMessagesResponseDto;
+import fr.pinguet62.meetall.provider.happn.dto.HappnSendMessageRequestDto;
+import fr.pinguet62.meetall.provider.happn.dto.HappnSendMessageResponseDto;
 import fr.pinguet62.meetall.provider.happn.dto.HappnUserResponseDto;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -15,6 +17,7 @@ import reactor.core.publisher.Mono;
 
 import static fr.pinguet62.meetall.provider.Provider.HAPPN;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
+import static org.springframework.web.reactive.function.BodyInserters.fromObject;
 
 /**
  * <ol>
@@ -73,6 +76,17 @@ public class HappnProviderService implements ProviderService {
                 .header(HEADER, "OAuth=\"" + authToken + "\"")
                 .retrieve().bodyToMono(HappnMessagesResponseDto.class)
                 .flatMapIterable(HappnMessagesResponseDto::getData)
+                .map(HappnConverters::convert);
+    }
+
+    @Override
+    public Mono<MessageDto> sendMessage(String authToken, String conversationId, String text) {
+        return this.webClient.post()
+                .uri("/conversations/" + conversationId + "/messages?fields=id,message,creation_date,sender.fields(id,profiles)")
+                .body(fromObject(new HappnSendMessageRequestDto(text)))
+                .header(HEADER, "OAuth=\"" + authToken + "\"")
+                .retrieve().bodyToMono(HappnSendMessageResponseDto.class)
+                .map(HappnSendMessageResponseDto::getData)
                 .map(HappnConverters::convert);
     }
 

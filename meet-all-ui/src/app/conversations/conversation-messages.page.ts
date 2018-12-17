@@ -4,7 +4,7 @@ import {Location} from '@angular/common';
 import {processLoading} from '../loading-controller.utils';
 import {ConversationsService, Message, Profile} from './conversations.service';
 import {forkJoin} from 'rxjs';
-import {tap} from 'rxjs/operators';
+import {finalize, tap} from 'rxjs/operators';
 import {ActivatedRoute} from '@angular/router';
 
 @Component({
@@ -38,6 +38,16 @@ import {ActivatedRoute} from '@angular/router';
                 </ion-item>
             </ion-list>
         </ion-content>
+
+        <ion-footer>
+            <ion-item>
+                <ion-input [(ngModel)]="text" type="text" [disabled]="sendingMessage" required placeholder="Message..."></ion-input>
+                <ion-button [disabled]="text === ''" (click)="sendMessage()">
+                    <ion-icon *ngIf="!sendingMessage" name="send"></ion-icon>
+                    <ion-spinner *ngIf="sendingMessage"></ion-spinner>
+                </ion-button>
+            </ion-item>
+        </ion-footer>
     `,
     styles: [
             `
@@ -58,25 +68,37 @@ import {ActivatedRoute} from '@angular/router';
 })
 export class ConversationMessagesPage {
 
+    readonly conversationId: string;
+
     profile: Profile = null;
     messages: Message[] = null;
+
+    text = '';
+    sendingMessage = false;
 
     constructor(
         route: ActivatedRoute,
         public location: Location,
         loadingController: LoadingController,
-        service: ConversationsService,
+        private service: ConversationsService,
     ) {
-        let conversationId = route.snapshot.paramMap.get('conversationId');
-        console.log('conversationId', conversationId);
-        let profileId = route.snapshot.paramMap.get('profileId');
-        console.log('profileId', profileId);
+        this.conversationId = route.snapshot.paramMap.get('conversationId');
+        const profileId = route.snapshot.paramMap.get('profileId');
         processLoading(loadingController, forkJoin(
-            service.getMessagesByConversation(conversationId)
+            service.getMessagesByConversation(this.conversationId)
                 .pipe(tap(it => this.messages = it)),
             service.getProfile(profileId)
                 .pipe(tap(it => this.profile = it)),
         )).subscribe();
+    }
+
+    public sendMessage() {
+        this.sendingMessage = true;
+        this.service.sendMessage(this.conversationId, this.text)
+            .pipe(tap(() => this.text = ''))
+            .pipe(tap(it => this.messages.push(it)))
+            .pipe(finalize(() => this.sendingMessage = false))
+            .subscribe();
     }
 
 }

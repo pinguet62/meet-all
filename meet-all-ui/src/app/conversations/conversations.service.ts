@@ -39,6 +39,12 @@ export class ConversationsService {
         return this.http.get<Message[]>(environment.apiUrl + `/conversations/${encodeURIComponent(conversationId)}/messages`);
     }
 
+    public sendMessage(conversationId: string, text: string): Observable<Message> {
+        return this.http.post<any>(
+            environment.apiUrl + `/conversations/${encodeURIComponent(conversationId)}/message`,
+            text);
+    }
+
     public getProfile(profileId: string): Observable<Profile> {
         return this.http.get<Profile>(environment.apiUrl + `/profile/${encodeURIComponent(profileId)}`);
     }

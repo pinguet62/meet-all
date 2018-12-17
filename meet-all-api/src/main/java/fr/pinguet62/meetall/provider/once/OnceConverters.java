@@ -6,6 +6,7 @@ import fr.pinguet62.meetall.dto.ProfileDto;
 import fr.pinguet62.meetall.provider.once.dto.OnceConnectionDto;
 import fr.pinguet62.meetall.provider.once.dto.OnceMessagesDto;
 import fr.pinguet62.meetall.provider.once.dto.OncePictureDto;
+import fr.pinguet62.meetall.provider.once.dto.OnceSendMessageResponseDto;
 import fr.pinguet62.meetall.provider.once.dto.OnceUserDto;
 
 import java.time.Instant;
@@ -46,6 +47,14 @@ public class OnceConverters {
                 input.getId(),
                 Instant.ofEpochSecond(input.getCreated_at()).atZone(ZONE_ID),
                 !input.getSender_id().equals(user.getId()),
+                input.getMessage());
+    }
+
+    public static MessageDto convertSentMessage(OnceMessagesDto input) {
+        return new MessageDto(
+                input.getId(),
+                Instant.ofEpochSecond(input.getCreated_at()).atZone(ZONE_ID),
+                true,
                 input.getMessage());
     }
 

@@ -130,6 +130,25 @@ public class OnceProviderServiceTest {
                 "Vous avez été connectés")));
     }
 
+    @Test
+    public void sendMessages() throws Exception {
+        final String matchId = "matchId";
+        server.enqueue(new MockResponse()
+                .setHeader(CONTENT_TYPE, APPLICATION_JSON_UTF8_VALUE)
+                .setBody(readFile("sendMessage.json")));
+
+        MessageDto message = onceProvider.sendMessage(authToken, matchId, "text").block();
+
+        assertThat(server, takingRequest(allOf(
+                url(with(HttpUrl::url, with(URL::toString, containsString("v1/message")))),
+                header(HEADER, authToken))));
+        assertThat(message, is(new MessageDto(
+                "MEA346007886::3",
+                ZonedDateTime.of(2018, 12, 17, 12, 19, 31, 0, UTC),
+                true,
+                "text")));
+    }
+
     private String readFile(String resource) throws IOException, URISyntaxException {
         Path path = Paths.get(getClass().getResource(resource).toURI());
         try (Stream<String> lines = Files.lines(path)) {

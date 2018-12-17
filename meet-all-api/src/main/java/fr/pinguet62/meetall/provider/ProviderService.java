@@ -22,4 +22,6 @@ public interface ProviderService {
 
     Flux<MessageDto> getMessages(String credential, String conversationId);
 
+    Mono<MessageDto> sendMessage(String credential, String conversationId, String text);
+
 }
