@@ -39,7 +39,7 @@ public class MeetControllerTest {
     public void getConversations() {
         final int currentUserId = 3;
 
-        when(providersService.getConversationsForUser(currentUserId)).thenReturn(Mono.just(new PartialList<>(asList(
+        when(providersService.getConversationsForUser(currentUserId)).thenReturn(Mono.just(new PartialArrayList<>(asList(
                 new ConversationDto("conversation-1", new ProfileDto("profile-id-1", "profile-name-1", 1, emptyList()), now(), new MessageDto("message-1", now(), true, "message-text-1")),
                 new ConversationDto("conversation-2", new ProfileDto("profile-id-2", "profile-name-2", 2, emptyList()), now(), new MessageDto("message-2", now(), false, "message-text-2"))), false)));
 
@@ -57,7 +57,7 @@ public class MeetControllerTest {
     public void getConversations_partial() {
         final int currentUserId = 3;
 
-        when(providersService.getConversationsForUser(currentUserId)).thenReturn(Mono.just(new PartialList<>(emptyList(), true)));
+        when(providersService.getConversationsForUser(currentUserId)).thenReturn(Mono.just(new PartialArrayList<>(emptyList(), true)));
 
         webTestClient.get()
                 .uri("/conversations")

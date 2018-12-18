@@ -18,8 +18,6 @@ import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.util.List;
-
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.PARTIAL_CONTENT;
 import static reactor.core.publisher.Mono.error;
@@ -31,12 +29,12 @@ public class MeetController {
     private final ProvidersService providersService;
 
     @GetMapping("/conversations")
-    public Mono<ResponseEntity<List<ConversationDto>>> getConversations() {
+    public Mono<ResponseEntity<PartialList<ConversationDto>>> getConversations() {
         return SecurityContextHolder.getContext()
                 .switchIfEmpty(error(new UnauthorizedException()))
                 .map(SecurityContext::getUserId)
                 .flatMap(providersService::getConversationsForUser)
-                .map(it -> it.isPartial() ? new ResponseEntity(it.getData(), PARTIAL_CONTENT) : ResponseEntity.ok(it.getData()));
+                .map(it -> it.isPartial() ? new ResponseEntity<>(it, PARTIAL_CONTENT) : ResponseEntity.ok(it));
     }
 
     /**

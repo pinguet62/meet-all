@@ -90,7 +90,7 @@ public class ProvidersServiceTest {
 
         PartialList<ConversationDto> conversations = result.block();
         assertThat(conversations.isPartial(), is(false));
-        assertThat(conversations.getData(), contains(
+        assertThat(conversations, contains(
                 new ConversationDto("91#convTinder12", new ProfileDto("91#profTinder12", "profile name 12", 12, emptyList()), ZonedDateTime.of(2003, 8, 12, 5, 28, 56, 98, UTC), null),
                 new ConversationDto("92#convHappn21", new ProfileDto("92#profHappn21", "profile name 21", 21, emptyList()), ZonedDateTime.of(2002, 7, 9, 19, 52, 59, 12, UTC), new MessageDto("92#messHappn21", ZonedDateTime.of(2002, 7, 9, 19, 52, 59, 12, UTC), false, "message Happn 21")),
                 new ConversationDto("91#convTinder11", new ProfileDto("91#profTinder11", "profile name 11", 11, emptyList()), ZonedDateTime.of(2001, 4, 7, 9, 13, 37, 27, UTC), new MessageDto("91#messTinder11", ZonedDateTime.of(2001, 4, 7, 9, 13, 37, 27, UTC), true, "message Tinder 11"))));
@@ -122,7 +122,7 @@ public class ProvidersServiceTest {
 
         PartialList<ConversationDto> conversations = result.block();
         assertThat(conversations.isPartial(), is(true));
-        assertThat(conversations.getData(), contains(
+        assertThat(conversations, contains(
                 new ConversationDto("91#convTinder12", new ProfileDto("91#profTinder12", "profile name 12", 12, emptyList()), ZonedDateTime.of(2003, 8, 12, 5, 28, 56, 98, UTC), null)));
     }
 

@@ -1,5 +1,6 @@
 package fr.pinguet62.meetall.provider;
 
+import fr.pinguet62.meetall.PartialArrayList;
 import fr.pinguet62.meetall.PartialList;
 import fr.pinguet62.meetall.TransformedId;
 import fr.pinguet62.meetall.database.ProviderCredential;
@@ -14,8 +15,10 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.stream.Collectors;
 
+import static fr.pinguet62.meetall.PartialListUtils.concatPartialList;
+import static fr.pinguet62.meetall.PartialListUtils.partialEmpty;
 import static java.util.Comparator.comparing;
 
 @RequiredArgsConstructor
@@ -59,24 +62,22 @@ public class ProvidersService {
      * @param userId {@link User#getId()}
      */
     public Mono<PartialList<ConversationDto>> getConversationsForUser(int userId) {
-        AtomicBoolean partial = new AtomicBoolean(false);
         return Mono.justOrEmpty(userRepository.findById(userId))
                 .flatMapIterable(User::getProviderCredentials)
-                .flatMap(providerCredential ->
-                        getProviderService(providerCredential.getProvider())
-                                .getConversations(providerCredential.getCredential())
-                                .doOnError(error -> partial.set(true))
-                                .onErrorResume(error -> Flux.empty())
-                                .map(it -> {
-                                    it = it.withId(TransformedId.format(providerCredential.getId(), it.getId()));
-                                    it = it.withProfile(it.getProfile().withId(TransformedId.format(providerCredential.getId(), it.getProfile().getId())));
-                                    if (it.getLastMessage() != null)
-                                        it = it.withLastMessage(it.getLastMessage().withId(TransformedId.format(providerCredential.getId(), it.getLastMessage().getId())));
-                                    return it;
-                                }))
-                .sort(comparing(ConversationDto::getDate).reversed())
-                .collectList()
-                .map(it -> new PartialList<>(it, partial.get()));
+                .flatMap(providerCredential -> getProviderService(providerCredential.getProvider())
+                        .getConversations(providerCredential.getCredential())
+                        .map(it -> {
+                            it = it.withId(TransformedId.format(providerCredential.getId(), it.getId()));
+                            it = it.withProfile(it.getProfile().withId(TransformedId.format(providerCredential.getId(), it.getProfile().getId())));
+                            if (it.getLastMessage() != null)
+                                it = it.withLastMessage(it.getLastMessage().withId(TransformedId.format(providerCredential.getId(), it.getLastMessage().getId())));
+                            return it;
+                        })
+                        // success or error(=partial)
+                        .collect(Collectors.<ConversationDto, PartialList<ConversationDto>>toCollection(PartialArrayList::new))
+                        .onErrorReturn(partialEmpty()))
+                .reduce(concatPartialList())
+                .doOnNext(it -> it.sort(comparing(ConversationDto::getDate).reversed()));
     }
 
     /**
