@@ -21,6 +21,8 @@ import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.HttpStatus.PARTIAL_CONTENT;
+import static org.springframework.security.test.web.reactive.server.SecurityMockServerConfigurers.csrf;
+import static org.springframework.web.reactive.function.BodyInserters.fromObject;
 
 @RunWith(SpringRunner.class)
 @WebFluxTest(MeetController.class)
@@ -80,6 +82,28 @@ public class MeetControllerTest {
                 .expectBody()
                 .jsonPath("$[0].id").isEqualTo("message-1")
                 .jsonPath("$[1].id").isEqualTo("message-2");
+    }
+
+    @Test
+    public void sendMessage() {
+        final int credentialId = 42;
+        final String id = "99";
+        final String text = "text";
+
+        when(providersService.sendMessage(currentUserId, credentialId, id, text)).thenReturn(Mono.justOrEmpty(new MessageDto("message-9", now(), true, text)));
+
+        String transformedId = TransformedId.format(credentialId, id);
+        webTestClient.mutateWith(csrf())
+                .post()
+                .uri(uriBuilder -> uriBuilder.path("/conversations").pathSegment(transformedId).pathSegment("message").build())
+                .body(fromObject(text))
+                .exchange()
+                .expectStatus().isCreated()
+                .expectBody()
+                .jsonPath("$.id").isEqualTo("message-9")
+                .jsonPath("$.date").isNotEmpty()
+                .jsonPath("$.sent").isEqualTo(true)
+                .jsonPath("$.text").isEqualTo(text);
     }
 
     @Test

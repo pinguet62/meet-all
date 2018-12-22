@@ -3,8 +3,8 @@ package fr.pinguet62.meetall.provider;
 import fr.pinguet62.meetall.PartialArrayList;
 import fr.pinguet62.meetall.PartialList;
 import fr.pinguet62.meetall.TransformedId;
-import fr.pinguet62.meetall.database.ProviderCredential;
-import fr.pinguet62.meetall.database.ProviderCredentialRepository;
+import fr.pinguet62.meetall.credential.Credential;
+import fr.pinguet62.meetall.credential.CredentialRepository;
 import fr.pinguet62.meetall.dto.ConversationDto;
 import fr.pinguet62.meetall.dto.MessageDto;
 import fr.pinguet62.meetall.dto.ProfileDto;
@@ -24,7 +24,7 @@ import static java.util.Comparator.comparing;
 @Service
 public class ProvidersService {
 
-    private final ProviderCredentialRepository providerCredentialRepository;
+    private final CredentialRepository credentialRepository;
     private final List<ProviderService> providerServices;
 
     /**
@@ -38,12 +38,12 @@ public class ProvidersService {
     /**
      * Update {@link ProfileDto#getId()}.
      *
-     * @param userId       {@link ProviderCredential#getUserId()}
-     * @param credentialId {@link ProviderCredential#getId()}
+     * @param userId       {@link Credential#getUserId()}
+     * @param credentialId {@link Credential#getId()}
      * @param profileId    {@link ProfileDto#getId()}
      */
     public Mono<ProfileDto> getProfileForUser(String userId, int credentialId, String profileId) {
-        return Flux.fromIterable(providerCredentialRepository.findByUserId(userId))
+        return Flux.fromIterable(credentialRepository.findByUserId(userId))
                 .filter(providerCredential -> providerCredential.getId().equals(credentialId))
                 .next()
                 .flatMap(providerCredential ->
@@ -56,10 +56,10 @@ public class ProvidersService {
      * Update {@link ConversationDto#getId()}, {@link ProfileDto#getId()}, {@link MessageDto#getId()}.<br>
      * Order by descending {@link ConversationDto#getDate()}.
      *
-     * @param userId {@link ProviderCredential#getUserId()}
+     * @param userId {@link Credential#getUserId()}
      */
     public Mono<PartialList<ConversationDto>> getConversationsForUser(String userId) {
-        return Flux.fromIterable(providerCredentialRepository.findByUserId(userId))
+        return Flux.fromIterable(credentialRepository.findByUserId(userId))
                 .flatMap(providerCredential -> getProviderService(providerCredential.getProvider())
                         .getConversations(providerCredential.getCredential())
                         .map(it -> {
@@ -80,12 +80,12 @@ public class ProvidersService {
      * Update {@link MessageDto#getId()}.<br>
      * Order by ascending {@link MessageDto#getDate()}.
      *
-     * @param userId         {@link ProviderCredential#getUserId()}
-     * @param credentialId   {@link ProviderCredential#getId()}
+     * @param userId         {@link Credential#getUserId()}
+     * @param credentialId   {@link Credential#getId()}
      * @param conversationId {@link ConversationDto#getId()}
      */
     public Flux<MessageDto> getMessagesForUser(String userId, int credentialId, String conversationId) {
-        return Flux.fromIterable(providerCredentialRepository.findByUserId(userId))
+        return Flux.fromIterable(credentialRepository.findByUserId(userId))
                 .filter(providerCredential -> providerCredential.getId().equals(credentialId))
                 .next()
                 .flatMapMany(providerCredential ->
@@ -97,13 +97,13 @@ public class ProvidersService {
     /**
      * Update {@link MessageDto#getId()}.
      *
-     * @param userId         {@link ProviderCredential#getUserId()}
-     * @param credentialId   {@link ProviderCredential#getId()}
+     * @param userId         {@link Credential#getUserId()}
+     * @param credentialId   {@link Credential#getId()}
      * @param conversationId {@link ConversationDto#getId()}
      * @param text           {@link MessageDto#getText()}
      */
     public Mono<MessageDto> sendMessage(String userId, int credentialId, String conversationId, String text) {
-        return Flux.fromIterable(providerCredentialRepository.findByUserId(userId))
+        return Flux.fromIterable(credentialRepository.findByUserId(userId))
                 .filter(providerCredential -> providerCredential.getId().equals(credentialId))
                 .next()
                 .flatMap(providerCredential ->

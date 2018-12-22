@@ -1,4 +1,4 @@
-package fr.pinguet62.meetall.database;
+package fr.pinguet62.meetall.credential;
 
 import fr.pinguet62.meetall.provider.Provider;
 import fr.pinguet62.meetall.provider.ProviderService;
@@ -20,7 +20,7 @@ import static javax.persistence.EnumType.STRING;
 @NoArgsConstructor
 @Getter
 @Setter
-public class ProviderCredential {
+public class Credential {
 
     @Id
     @GeneratedValue
@@ -49,11 +49,11 @@ public class ProviderCredential {
     @Column(nullable = false)
     private String label;
 
-    public ProviderCredential(String userId, Provider provider, String credential, String label) {
+    public Credential(String userId, Provider provider, String credential, String label) {
         this(null, userId, provider, credential, label);
     }
 
-    public ProviderCredential(Integer id, String userId, Provider provider, String credential, String label) {
+    public Credential(Integer id, String userId, Provider provider, String credential, String label) {
         this.id = id;
         this.userId = requireNonNull(userId);
         this.label = requireNonNull(label);

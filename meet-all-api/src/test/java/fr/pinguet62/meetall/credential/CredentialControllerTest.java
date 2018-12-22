@@ -1,4 +1,4 @@
-package fr.pinguet62.meetall;
+package fr.pinguet62.meetall.credential;
 
 import fr.pinguet62.meetall.dto.RegisteredCredentialDto;
 import fr.pinguet62.meetall.provider.Provider;
@@ -14,8 +14,8 @@ import org.springframework.util.LinkedMultiValueMap;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import static fr.pinguet62.meetall.CredentialControllerTest.currentUserId;
 import static fr.pinguet62.meetall.Utils.mapOf;
+import static fr.pinguet62.meetall.credential.CredentialControllerTest.currentUserId;
 import static fr.pinguet62.meetall.provider.Provider.HAPPN;
 import static fr.pinguet62.meetall.provider.Provider.TINDER;
 import static java.lang.String.valueOf;

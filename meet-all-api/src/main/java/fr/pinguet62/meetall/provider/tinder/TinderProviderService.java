@@ -54,7 +54,7 @@ public class TinderProviderService implements ProviderService {
         this("https://api.gotinder.com");
     }
 
-    // for testing
+    // testing
     TinderProviderService(String baseUrl) {
         webClient = WebClient.builder().baseUrl(baseUrl).build();
     }

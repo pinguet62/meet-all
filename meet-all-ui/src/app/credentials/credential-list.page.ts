@@ -1,7 +1,7 @@
 import {Component} from '@angular/core';
 import {LoadingController} from '@ionic/angular';
 import {RefresherEventDetail} from '@ionic/core';
-import {tap} from "rxjs/operators";
+import {tap} from 'rxjs/operators';
 import {processLoading} from '../loading-controller.utils';
 import {CredentialService, RegisteredCredential} from './credential.service';
 
@@ -34,7 +34,7 @@ import {CredentialService, RegisteredCredential} from './credential.service';
             </ion-list>
 
             <ion-fab vertical="bottom" horizontal="end" slot="fixed">
-                <ion-fab-button href="/tabs/(credentials:credentials/create)">
+                <ion-fab-button href="/tabs/credentials/create">
                     <ion-icon name="add"></ion-icon>
                 </ion-fab-button>
             </ion-fab>

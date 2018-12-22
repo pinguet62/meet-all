@@ -6,7 +6,7 @@ import {TabsPage} from './tabs.page';
     imports: [RouterModule.forChild([
         {
             path: '',
-            redirectTo: '/tabs/(conversations:conversations)',
+            redirectTo: '/tabs/conversations',
             pathMatch: 'full',
         },
         {
@@ -14,19 +14,18 @@ import {TabsPage} from './tabs.page';
             component: TabsPage,
             children: [
                 {
-                    path: '',
-                    redirectTo: '/tabs/(conversations:conversations)',
-                    pathMatch: 'full',
-                },
-                {
                     path: 'conversations',
-                    outlet: 'conversations',
-                    loadChildren: '../conversations/conversations.module#ConversationsPageModule',
+                    children: [{
+                        path: '',
+                        loadChildren: '../conversations/conversations.module#ConversationsPageModule',
+                    }]
                 },
                 {
                     path: 'credentials',
-                    outlet: 'credentials',
-                    loadChildren: '../credentials/credentials.module#CredentialsModule',
+                    children: [{
+                        path: '',
+                        loadChildren: '../credentials/credentials.module#CredentialsModule',
+                    }]
                 },
             ],
         },

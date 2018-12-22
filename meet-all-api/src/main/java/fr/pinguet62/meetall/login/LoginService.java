@@ -1,4 +1,4 @@
-package fr.pinguet62.meetall;
+package fr.pinguet62.meetall.login;
 
 import fr.pinguet62.meetall.security.JwtTokenGenerator;
 import org.springframework.stereotype.Service;

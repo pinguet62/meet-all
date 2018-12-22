@@ -1,6 +1,8 @@
-package fr.pinguet62.meetall;
+package fr.pinguet62.meetall.login;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
@@ -9,8 +11,10 @@ import reactor.core.publisher.Mono;
 public class FacebookApi {
 
     @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class MeResponseDto {
-        private String name;
+        //private String name;
         private String id;
     }
 
@@ -20,7 +24,7 @@ public class FacebookApi {
         this("https://graph.facebook.com");
     }
 
-    // for testing
+    // testing
     FacebookApi(String baseUrl) {
         this.webClient = WebClient.builder().baseUrl(baseUrl).build();
     }

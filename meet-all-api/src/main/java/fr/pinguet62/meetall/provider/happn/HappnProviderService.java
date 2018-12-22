@@ -36,7 +36,7 @@ public class HappnProviderService implements ProviderService {
         this("https://api.happn.fr/api");
     }
 
-    // for testing
+    // testing
     HappnProviderService(String baseUrl) {
         webClient = WebClient.builder().baseUrl(baseUrl).build();
     }

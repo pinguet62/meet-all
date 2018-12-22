@@ -25,7 +25,7 @@ public class JwtTokenGenerator {
         this.secret = requireNonNull(secret);
     }
 
-    // for testing
+    // testing
     String generateToken(String userId, Function<String, Algorithm> algorithm, String secret) {
         return JWT.create().withSubject(userId).sign(algorithm.apply(secret));
     }

@@ -23,7 +23,7 @@ import {Conversation, ConversationsService} from './conversations.service';
                     <ion-label>Messages</ion-label>
                 </ion-list-header>
                 <ion-item *ngFor="let conversation of conversations"
-                          [href]="'/tabs/(conversations:conversations/' + encodeURIComponent(conversation.id) + '/' + encodeURIComponent(conversation.profile.id) + ')'">
+                          [href]="'/tabs/conversations/' + encodeURIComponent(conversation.id) + '/' + encodeURIComponent(conversation.profile.id)">
                     <ion-avatar>
                         <img [src]="conversation.profile.avatars[0]">
                     </ion-avatar>

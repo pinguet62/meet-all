@@ -1,4 +1,4 @@
-package fr.pinguet62.meetall;
+package fr.pinguet62.meetall.login;
 
 import fr.pinguet62.meetall.security.utils.DisableWebFluxSecurity;
 import org.junit.Test;
@@ -10,7 +10,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import reactor.core.publisher.Mono;
 
-import static fr.pinguet62.meetall.LoginController.TOKEN_PARAM;
+import static fr.pinguet62.meetall.login.LoginController.TOKEN_PARAM;
 import static org.mockito.Mockito.when;
 
 @RunWith(SpringRunner.class)

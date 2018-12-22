@@ -1,6 +1,5 @@
-package fr.pinguet62.meetall;
+package fr.pinguet62.meetall.credential;
 
-import fr.pinguet62.meetall.database.ProviderCredential;
 import fr.pinguet62.meetall.dto.RegisteredCredentialDto;
 import fr.pinguet62.meetall.provider.Provider;
 import fr.pinguet62.meetall.security.ApplicationAuthentication;
@@ -34,9 +33,9 @@ public class CredentialController {
     }
 
     /**
-     * @param provider   {@link ProviderCredential#getProvider()}
-     * @param credential {@link ProviderCredential#getCredential()}
-     * @param label      {@link ProviderCredential#getLabel()}
+     * @param provider   {@link Credential#getProvider()}
+     * @param credential {@link Credential#getCredential()}
+     * @param label      {@link Credential#getLabel()}
      */
     @PostMapping("/credential")
     @ResponseStatus(CREATED)
@@ -47,9 +46,9 @@ public class CredentialController {
     }
 
     /**
-     * @param id         {@link ProviderCredential#getId()}
-     * @param credential {@link ProviderCredential#getCredential()}
-     * @param label      {@link ProviderCredential#getLabel()}
+     * @param id         {@link Credential#getId()}
+     * @param credential {@link Credential#getCredential()}
+     * @param label      {@link Credential#getLabel()}
      */
     @PutMapping("/credential/{id}")
     public Mono<RegisteredCredentialDto> updateCredential(@PathVariable int id, @RequestPart(required = false) String credential, @RequestPart(required = false) String label) {
@@ -59,7 +58,7 @@ public class CredentialController {
     }
 
     /**
-     * @param id {@link ProviderCredential#getId()}
+     * @param id {@link Credential#getId()}
      */
     @DeleteMapping("/credential/{id}")
     public Mono<RegisteredCredentialDto> deleteCredential(@PathVariable int id) {

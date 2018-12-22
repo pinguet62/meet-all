@@ -1,4 +1,4 @@
-package fr.pinguet62.meetall;
+package fr.pinguet62.meetall.login;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;

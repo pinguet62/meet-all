@@ -1,6 +1,5 @@
 package fr.pinguet62.meetall;
 
-import fr.pinguet62.meetall.provider.Provider;
 import org.junit.Test;
 
 import static fr.pinguet62.meetall.MatcherUtils.throwing;

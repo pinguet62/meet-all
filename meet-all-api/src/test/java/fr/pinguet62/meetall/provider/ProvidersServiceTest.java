@@ -1,8 +1,8 @@
 package fr.pinguet62.meetall.provider;
 
 import fr.pinguet62.meetall.PartialList;
-import fr.pinguet62.meetall.database.ProviderCredential;
-import fr.pinguet62.meetall.database.ProviderCredentialRepository;
+import fr.pinguet62.meetall.credential.Credential;
+import fr.pinguet62.meetall.credential.CredentialRepository;
 import fr.pinguet62.meetall.dto.ConversationDto;
 import fr.pinguet62.meetall.dto.MessageDto;
 import fr.pinguet62.meetall.dto.ProfileDto;
@@ -29,15 +29,15 @@ import static org.mockito.Mockito.when;
 
 public class ProvidersServiceTest {
 
-    private ProviderCredentialRepository providerCredentialRepository;
+    private CredentialRepository credentialRepository;
     private List<ProviderService> providerServices;
     private ProvidersService service;
 
     @Before
     public void initMocks() {
-        providerCredentialRepository = mock(ProviderCredentialRepository.class);
+        credentialRepository = mock(CredentialRepository.class);
         providerServices = new ArrayList<>();
-        service = new ProvidersService(providerCredentialRepository, providerServices);
+        service = new ProvidersService(credentialRepository, providerServices);
     }
 
     @Test
@@ -47,8 +47,8 @@ public class ProvidersServiceTest {
         final String profileId = "c11#99";
 
         // Credentials
-        ProviderCredential providerCredential = new ProviderCredential(credentialId, userId, TINDER, "secret", "label");
-        when(providerCredentialRepository.findByUserId(userId)).thenReturn(singletonList(providerCredential));
+        Credential credential = new Credential(credentialId, userId, TINDER, "secret", "label");
+        when(credentialRepository.findByUserId(userId)).thenReturn(singletonList(credential));
         // Provider
         ProviderService tinderProviderService = mock(ProviderService.class);
         when(tinderProviderService.getId()).thenReturn(TINDER);
@@ -65,9 +65,9 @@ public class ProvidersServiceTest {
         final String userId = "userId";
 
         // Credentials
-        when(providerCredentialRepository.findByUserId(userId)).thenReturn(asList(
-                new ProviderCredential(91, userId, TINDER, "tinderCredential_91", "label 91"),
-                new ProviderCredential(92, userId, HAPPN, "happnCredential_92", "label 92")));
+        when(credentialRepository.findByUserId(userId)).thenReturn(asList(
+                new Credential(91, userId, TINDER, "tinderCredential_91", "label 91"),
+                new Credential(92, userId, HAPPN, "happnCredential_92", "label 92")));
         // Provider: TINDER
         ProviderService tinderProviderService = mock(ProviderService.class);
         when(tinderProviderService.getId()).thenReturn(TINDER);
@@ -97,9 +97,9 @@ public class ProvidersServiceTest {
         final String userId = "userId";
 
         // Credentials
-        when(providerCredentialRepository.findByUserId(userId)).thenReturn(asList(
-                new ProviderCredential(91, userId, TINDER, "tinderCredential_91", "label 91"),
-                new ProviderCredential(92, userId, HAPPN, "happnCredential_92", "label 92")));
+        when(credentialRepository.findByUserId(userId)).thenReturn(asList(
+                new Credential(91, userId, TINDER, "tinderCredential_91", "label 91"),
+                new Credential(92, userId, HAPPN, "happnCredential_92", "label 92")));
         // Provider: TINDER
         ProviderService tinderProviderService = mock(ProviderService.class);
         when(tinderProviderService.getId()).thenReturn(TINDER);
@@ -127,7 +127,7 @@ public class ProvidersServiceTest {
         final String profileId = "99";
 
         // Credentials
-        when(providerCredentialRepository.findByUserId(userId)).thenReturn(singletonList(new ProviderCredential(credentialId, userId, TINDER, "secret", "label")));
+        when(credentialRepository.findByUserId(userId)).thenReturn(singletonList(new Credential(credentialId, userId, TINDER, "secret", "label")));
         // Provider
         ProviderService tinderProviderService = mock(ProviderService.class);
         when(tinderProviderService.getId()).thenReturn(TINDER);

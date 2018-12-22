@@ -1,9 +1,8 @@
 package fr.pinguet62.meetall;
 
-import fr.pinguet62.meetall.database.ProviderCredential;
+import fr.pinguet62.meetall.credential.Credential;
 import fr.pinguet62.meetall.dto.ConversationDto;
 import fr.pinguet62.meetall.dto.ProfileDto;
-import fr.pinguet62.meetall.provider.Provider;
 import lombok.Getter;
 
 import static java.util.Objects.requireNonNull;
@@ -13,7 +12,7 @@ public class TransformedId {
     static final String SEPARATOR = "#";
 
     /**
-     * @see ProviderCredential#getId()
+     * @see Credential#getId()
      */
     @Getter
     private final int credentialId;
