@@ -1,6 +1,12 @@
 import {LoadingController} from '@ionic/angular';
 import {Components, LoadingOptions} from '@ionic/core';
 
+export function buildLocation(url: string): Location {
+    const a = document.createElement('a');
+    a.href = url;
+    return a as any as Location;
+}
+
 interface HTMLIonLoadingElement extends Components.IonLoading, HTMLStencilElement {}
 var HTMLIonLoadingElement: {
     prototype: HTMLIonLoadingElement;

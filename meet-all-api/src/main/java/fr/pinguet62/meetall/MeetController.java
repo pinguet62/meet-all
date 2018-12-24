@@ -3,10 +3,9 @@ package fr.pinguet62.meetall;
 import fr.pinguet62.meetall.dto.ConversationDto;
 import fr.pinguet62.meetall.dto.MessageDto;
 import fr.pinguet62.meetall.dto.ProfileDto;
-import fr.pinguet62.meetall.exception.UnauthorizedException;
 import fr.pinguet62.meetall.provider.ProvidersService;
-import fr.pinguet62.meetall.security.SecurityContext;
-import fr.pinguet62.meetall.security.SecurityContextHolder;
+import fr.pinguet62.meetall.security.ApplicationAuthentication;
+import fr.pinguet62.meetall.security.ApplicationReactiveSecurityContextHolder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,7 +19,6 @@ import reactor.core.publisher.Mono;
 
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.PARTIAL_CONTENT;
-import static reactor.core.publisher.Mono.error;
 
 @RequiredArgsConstructor
 @RestController
@@ -30,9 +28,8 @@ public class MeetController {
 
     @GetMapping("/conversations")
     public Mono<ResponseEntity<PartialList<ConversationDto>>> getConversations() {
-        return SecurityContextHolder.getContext()
-                .switchIfEmpty(error(new UnauthorizedException()))
-                .map(SecurityContext::getUserId)
+        return ApplicationReactiveSecurityContextHolder.getAuthentication()
+                .map(ApplicationAuthentication::getUserId)
                 .flatMap(providersService::getConversationsForUser)
                 .map(it -> it.isPartial() ? new ResponseEntity<>(it, PARTIAL_CONTENT) : ResponseEntity.ok(it));
     }
@@ -43,9 +40,8 @@ public class MeetController {
     @GetMapping("/conversations/{id}/messages")
     public Flux<MessageDto> getMessages(@PathVariable String id) {
         TransformedId transformedId = TransformedId.parse(id);
-        return SecurityContextHolder.getContext()
-                .switchIfEmpty(error(new UnauthorizedException()))
-                .map(SecurityContext::getUserId)
+        return ApplicationReactiveSecurityContextHolder.getAuthentication()
+                .map(ApplicationAuthentication::getUserId)
                 .flatMapMany(userId -> providersService.getMessagesForUser(userId, transformedId.getCredentialId(), transformedId.getValueId()));
     }
 
@@ -53,9 +49,8 @@ public class MeetController {
     @ResponseStatus(CREATED)
     public Mono<MessageDto> sendMessage(@PathVariable String id, @RequestBody String text) {
         TransformedId transformedId = TransformedId.parse(id);
-        return SecurityContextHolder.getContext()
-                .switchIfEmpty(error(new UnauthorizedException()))
-                .map(SecurityContext::getUserId)
+        return ApplicationReactiveSecurityContextHolder.getAuthentication()
+                .map(ApplicationAuthentication::getUserId)
                 .flatMap(userId -> providersService.sendMessage(userId, transformedId.getCredentialId(), transformedId.getValueId(), text));
     }
 
@@ -65,9 +60,8 @@ public class MeetController {
     @GetMapping("/profile/{id}")
     public Mono<ProfileDto> getProfile(@PathVariable String id) {
         TransformedId transformedId = TransformedId.parse(id);
-        return SecurityContextHolder.getContext()
-                .switchIfEmpty(error(new UnauthorizedException()))
-                .map(SecurityContext::getUserId)
+        return ApplicationReactiveSecurityContextHolder.getAuthentication()
+                .map(ApplicationAuthentication::getUserId)
                 .flatMap(userId -> providersService.getProfileForUser(userId, transformedId.getCredentialId(), transformedId.getValueId()));
     }
 

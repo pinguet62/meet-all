@@ -11,7 +11,7 @@ export class AuthorizationHttpInterceptor implements HttpInterceptor {
 
     intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
         if (this.securityService.isLogged()) {
-            req = req.clone({headers: req.headers.set('Authorization', this.securityService.token)});
+            req = req.clone({headers: req.headers.set('Authorization', 'Bearer ' + this.securityService.token)});
         }
         return next.handle(req);
     }

@@ -11,7 +11,6 @@ import javax.persistence.Entity;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotEmpty;
 
 import static java.util.Objects.requireNonNull;
@@ -28,8 +27,8 @@ public class ProviderCredential {
     @Column(nullable = true) // because of @Id
     private Integer id;
 
-    @ManyToOne(optional = false)
-    private User user;
+    @Column(nullable = false)
+    private String userId;
 
     /**
      * @see ProviderService#getId()
@@ -50,13 +49,13 @@ public class ProviderCredential {
     @Column(nullable = false)
     private String label;
 
-    public ProviderCredential(User user, Provider provider, String credential, String label) {
-        this(null, user, provider, credential, label);
+    public ProviderCredential(String userId, Provider provider, String credential, String label) {
+        this(null, userId, provider, credential, label);
     }
 
-    public ProviderCredential(Integer id, User user, Provider provider, String credential, String label) {
+    public ProviderCredential(Integer id, String userId, Provider provider, String credential, String label) {
         this.id = id;
-        this.user = requireNonNull(user);
+        this.userId = requireNonNull(userId);
         this.label = requireNonNull(label);
         this.provider = requireNonNull(provider);
         this.credential = requireNonNull(credential);

@@ -2,8 +2,6 @@ package fr.pinguet62.meetall;
 
 import fr.pinguet62.meetall.database.ProviderCredential;
 import fr.pinguet62.meetall.database.ProviderCredentialRepository;
-import fr.pinguet62.meetall.database.User;
-import fr.pinguet62.meetall.database.UserRepository;
 import fr.pinguet62.meetall.dto.RegisteredCredentialDto;
 import fr.pinguet62.meetall.exception.ForbiddenException;
 import fr.pinguet62.meetall.exception.NotFoundException;
@@ -22,16 +20,14 @@ import java.util.Optional;
 @Transactional
 public class CredentialService {
 
-    private final UserRepository userRepository;
     private final ProviderCredentialRepository providerCredentialRepository;
     private final ProvidersService providersService;
 
     /**
-     * @param userId {@link User#getId()}
+     * @param userId {@link ProviderCredential#getUserId()}
      */
-    public Flux<RegisteredCredentialDto> getRegisteredCredentials(int userId) {
-        return Mono.justOrEmpty(userRepository.findById(userId))
-                .flatMapIterable(User::getProviderCredentials)
+    public Flux<RegisteredCredentialDto> getRegisteredCredentials(String userId) {
+        return Flux.fromIterable(providerCredentialRepository.findByUserId(userId))
                 .flatMap(providerCredential ->
                         providersService.getProviderService(providerCredential.getProvider())
                                 .checkCredential(providerCredential.getCredential())
@@ -39,16 +35,16 @@ public class CredentialService {
     }
 
     /**
-     * @param userId     {@link User#getId()}
+     * @param userId     {@link ProviderCredential#getUserId()}
      * @param provider   {@link ProviderCredential#getProvider()}
      * @param credential {@link ProviderCredential#getCredential()}
      * @param label      {@link ProviderCredential#getLabel()}
      */
-    public Mono<RegisteredCredentialDto> registerCredential(int userId, Provider provider, String credential, String label) {
+    public Mono<RegisteredCredentialDto> registerCredential(String userId, Provider provider, String credential, String label) {
         // TODO ConflictException when provider.getMeta().get_id() already exists
 
         ProviderCredential createdProviderCredential = new ProviderCredential(
-                userRepository.findById(userId).get(),
+                userId,
                 provider,
                 credential,
                 label);
@@ -61,16 +57,16 @@ public class CredentialService {
     }
 
     /**
-     * @param userId     {@link User#getId()}
+     * @param userId     {@link ProviderCredential#getUserId()}
      * @param id         {@link ProviderCredential#getId()}
      * @param credential {@link ProviderCredential#getCredential()}
      * @param label      {@link ProviderCredential#getLabel()}
      */
-    public Mono<RegisteredCredentialDto> updateCredential(int userId, int id, Optional<String> credential, Optional<String> label) {
+    public Mono<RegisteredCredentialDto> updateCredential(String userId, int id, Optional<String> credential, Optional<String> label) {
         ProviderCredential updatedProviderCredential = providerCredentialRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(ProviderCredential.class, id));
 
-        if (updatedProviderCredential.getUser().getId() != userId) {
+        if (!updatedProviderCredential.getUserId().equals(userId)) {
             throw new ForbiddenException();
         }
 
@@ -87,14 +83,14 @@ public class CredentialService {
     }
 
     /**
-     * @param userId {@link User#getId()}
+     * @param userId {@link ProviderCredential#getUserId()}
      * @param id     {@link ProviderCredential#getId()}
      */
-    public Mono<RegisteredCredentialDto> deleteCredential(int userId, int id) {
+    public Mono<RegisteredCredentialDto> deleteCredential(String userId, int id) {
         ProviderCredential deletedProviderCredential = providerCredentialRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(ProviderCredential.class, id));
 
-        if (deletedProviderCredential.getUser().getId() != userId) {
+        if (!deletedProviderCredential.getUserId().equals(userId)) {
             throw new ForbiddenException();
         }
 

@@ -2,8 +2,6 @@ package fr.pinguet62.meetall;
 
 import fr.pinguet62.meetall.database.ProviderCredential;
 import fr.pinguet62.meetall.database.ProviderCredentialRepository;
-import fr.pinguet62.meetall.database.User;
-import fr.pinguet62.meetall.database.UserRepository;
 import fr.pinguet62.meetall.dto.RegisteredCredentialDto;
 import fr.pinguet62.meetall.provider.ProviderService;
 import fr.pinguet62.meetall.provider.ProvidersService;
@@ -27,7 +25,6 @@ import static org.mockito.Mockito.when;
 
 public class CredentialServiceTest {
 
-    private UserRepository userRepository;
     private ProviderCredentialRepository providerCredentialRepository;
     private List<ProviderService> providerServices;
     private ProvidersService providersService;
@@ -35,25 +32,22 @@ public class CredentialServiceTest {
 
     @Before
     public void buildService() {
-        userRepository = mock(UserRepository.class);
         providerCredentialRepository = mock(ProviderCredentialRepository.class);
         providerServices = new ArrayList<>();
-        providersService = new ProvidersService(userRepository, providerServices);
-        service = new CredentialService(userRepository, providerCredentialRepository, providersService);
+        providersService = new ProvidersService(providerCredentialRepository, providerServices);
+        service = new CredentialService(providerCredentialRepository, providersService);
     }
 
     @Before
     public void initMockBehavior() {
-        final int userId = 3;
+        final String userId = "userId";
 
-        // User: credentials
-        User user = new User(userId, "email", "password");
-        ProviderCredential providerCredential91 = new ProviderCredential(91, user, TINDER, "tinderCredential_91", "label 91");
+        // Credentials
+        ProviderCredential providerCredential91 = new ProviderCredential(91, userId, TINDER, "tinderCredential_91", "label 91");
         when(providerCredentialRepository.findById(91)).thenReturn(Optional.of(providerCredential91));
-        ProviderCredential providerCredential92 = new ProviderCredential(92, user, HAPPN, "happnCredential_92", "label 92");
+        ProviderCredential providerCredential92 = new ProviderCredential(92, userId, HAPPN, "happnCredential_92", "label 92");
         when(providerCredentialRepository.findById(92)).thenReturn(Optional.of(providerCredential92));
-        user.getProviderCredentials().addAll(asList(providerCredential91, providerCredential92));
-        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+        when(providerCredentialRepository.findByUserId(userId)).thenReturn(asList(providerCredential91, providerCredential92));
         // Provider: TINDER
         ProviderService tinderProviderService = mock(ProviderService.class);
         when(tinderProviderService.getId()).thenReturn(TINDER);
@@ -68,7 +62,7 @@ public class CredentialServiceTest {
 
     @Test
     public void getRegisteredCredentials() {
-        final int userId = 3;
+        final String userId = "userId";
 
         Flux<RegisteredCredentialDto> registeredCredentials = service.getRegisteredCredentials(userId);
 
@@ -79,7 +73,7 @@ public class CredentialServiceTest {
 
     @Test
     public void deleteCredential() {
-        final int userId = 3;
+        final String userId = "userId";
 
         assertThat(service.deleteCredential(userId, 91).block(), is(new RegisteredCredentialDto(91, "label 91", TINDER, true)));
         assertThat(service.deleteCredential(userId, 92).block(), is(new RegisteredCredentialDto(92, "label 92", HAPPN, false)));

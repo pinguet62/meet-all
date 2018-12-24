@@ -1,25 +1,21 @@
 package fr.pinguet62.meetall;
 
-import fr.pinguet62.meetall.security.SecurityWebFilter;
+import fr.pinguet62.meetall.security.utils.DisableWebFluxSecurity;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.reactive.server.WebTestClient;
-import org.springframework.util.LinkedMultiValueMap;
 import reactor.core.publisher.Mono;
 
-import static fr.pinguet62.meetall.Utils.mapOf;
-import static java.util.Collections.singletonList;
+import static fr.pinguet62.meetall.LoginController.TOKEN_PARAM;
 import static org.mockito.Mockito.when;
-import static org.springframework.web.reactive.function.BodyInserters.fromMultipartData;
 
 @RunWith(SpringRunner.class)
 @WebFluxTest(LoginController.class)
-@Import(SecurityWebFilter.class)
+@DisableWebFluxSecurity // public routes
 public class LoginControllerTest {
 
     @Autowired
@@ -29,45 +25,23 @@ public class LoginControllerTest {
     private LoginService loginService;
 
     /**
-     * @see LoginController#createAccount(String, String)
-     */
-    @Test
-    public void createAccount() {
-        final String email = "email";
-        final String password = "password";
-        final String token = "token";
-
-        when(loginService.createAccount(email, password)).thenReturn(Mono.just(token));
-
-        webTestClient.post()
-                .uri("/user")
-                .body(fromMultipartData(new LinkedMultiValueMap<>(mapOf(
-                        "email", singletonList(email),
-                        "password", singletonList(password)))))
-                .exchange()
-                .expectStatus().isCreated()
-                .expectBody(String.class).isEqualTo(token);
-    }
-
-    /**
-     * @see LoginController#login(String, String)
+     * @see LoginController#login(String)
      */
     @Test
     public void login() {
-        final String email = "email";
-        final String password = "password";
-        final String token = "token";
+        final String accessToken = "accessToken";
+        final String jwtToken = "jwtToken";
 
-        when(loginService.login(email, password)).thenReturn(Mono.just(token));
+        when(loginService.login(accessToken)).thenReturn(Mono.just(jwtToken));
 
         webTestClient.post()
-                .uri("/login")
-                .body(fromMultipartData(new LinkedMultiValueMap<>(mapOf(
-                        "email", singletonList(email),
-                        "password", singletonList(password)))))
+                .uri(uriBuilder -> uriBuilder
+                        .path("/login")
+                        .queryParam(TOKEN_PARAM, accessToken)
+                        .build())
                 .exchange()
                 .expectStatus().isOk()
-                .expectBody(String.class).isEqualTo(token);
+                .expectBody(String.class).isEqualTo(jwtToken);
     }
 
 }

@@ -1,0 +1,5 @@
+spring:
+  security:
+    oauth2:
+      jwt:
+        secret: meet-all

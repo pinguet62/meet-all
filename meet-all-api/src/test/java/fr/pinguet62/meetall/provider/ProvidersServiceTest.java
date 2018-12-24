@@ -2,8 +2,7 @@ package fr.pinguet62.meetall.provider;
 
 import fr.pinguet62.meetall.PartialList;
 import fr.pinguet62.meetall.database.ProviderCredential;
-import fr.pinguet62.meetall.database.User;
-import fr.pinguet62.meetall.database.UserRepository;
+import fr.pinguet62.meetall.database.ProviderCredentialRepository;
 import fr.pinguet62.meetall.dto.ConversationDto;
 import fr.pinguet62.meetall.dto.MessageDto;
 import fr.pinguet62.meetall.dto.ProfileDto;
@@ -15,13 +14,13 @@ import reactor.core.publisher.Mono;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import static fr.pinguet62.meetall.provider.Provider.HAPPN;
 import static fr.pinguet62.meetall.provider.Provider.TINDER;
 import static java.time.ZoneOffset.UTC;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
+import static java.util.Collections.singletonList;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
@@ -30,27 +29,26 @@ import static org.mockito.Mockito.when;
 
 public class ProvidersServiceTest {
 
-    private UserRepository userRepository;
+    private ProviderCredentialRepository providerCredentialRepository;
     private List<ProviderService> providerServices;
     private ProvidersService service;
 
     @Before
     public void initMocks() {
-        userRepository = mock(UserRepository.class);
+        providerCredentialRepository = mock(ProviderCredentialRepository.class);
         providerServices = new ArrayList<>();
-        service = new ProvidersService(userRepository, providerServices);
+        service = new ProvidersService(providerCredentialRepository, providerServices);
     }
 
     @Test
     public void getProfileForUser() {
-        final int userId = 3;
+        final String userId = "userId";
         final int credentialId = 42;
         final String profileId = "c11#99";
 
-        // User: credentials
-        User user = new User(userId, "email", "password");
-        user.getProviderCredentials().add(new ProviderCredential(credentialId, user, TINDER, "secret", "label"));
-        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+        // Credentials
+        ProviderCredential providerCredential = new ProviderCredential(credentialId, userId, TINDER, "secret", "label");
+        when(providerCredentialRepository.findByUserId(userId)).thenReturn(singletonList(providerCredential));
         // Provider
         ProviderService tinderProviderService = mock(ProviderService.class);
         when(tinderProviderService.getId()).thenReturn(TINDER);
@@ -64,14 +62,12 @@ public class ProvidersServiceTest {
 
     @Test
     public void getConversationsForUser() {
-        final int userId = 3;
+        final String userId = "userId";
 
-        // User: credentials
-        User user = new User(userId, "email", "password");
-        user.getProviderCredentials().addAll(asList(
-                new ProviderCredential(91, user, TINDER, "tinderCredential_91", "label 91"),
-                new ProviderCredential(92, user, HAPPN, "happnCredential_92", "label 92")));
-        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+        // Credentials
+        when(providerCredentialRepository.findByUserId(userId)).thenReturn(asList(
+                new ProviderCredential(91, userId, TINDER, "tinderCredential_91", "label 91"),
+                new ProviderCredential(92, userId, HAPPN, "happnCredential_92", "label 92")));
         // Provider: TINDER
         ProviderService tinderProviderService = mock(ProviderService.class);
         when(tinderProviderService.getId()).thenReturn(TINDER);
@@ -98,14 +94,12 @@ public class ProvidersServiceTest {
 
     @Test
     public void getConversationsForUser_partial() {
-        final int userId = 3;
+        final String userId = "userId";
 
-        // User: credentials
-        User user = new User(userId, "email", "password");
-        user.getProviderCredentials().addAll(asList(
-                new ProviderCredential(91, user, TINDER, "tinderCredential_91", "label 91"),
-                new ProviderCredential(92, user, HAPPN, "happnCredential_92", "label 92")));
-        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+        // Credentials
+        when(providerCredentialRepository.findByUserId(userId)).thenReturn(asList(
+                new ProviderCredential(91, userId, TINDER, "tinderCredential_91", "label 91"),
+                new ProviderCredential(92, userId, HAPPN, "happnCredential_92", "label 92")));
         // Provider: TINDER
         ProviderService tinderProviderService = mock(ProviderService.class);
         when(tinderProviderService.getId()).thenReturn(TINDER);
@@ -128,14 +122,12 @@ public class ProvidersServiceTest {
 
     @Test
     public void getMessagesForUser() {
-        final int userId = 3;
+        final String userId = "userId";
         final int credentialId = 42;
         final String profileId = "99";
 
-        // User: credentials
-        User user = new User(userId, "email", "password");
-        user.getProviderCredentials().add(new ProviderCredential(credentialId, user, TINDER, "secret", "label"));
-        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+        // Credentials
+        when(providerCredentialRepository.findByUserId(userId)).thenReturn(singletonList(new ProviderCredential(credentialId, userId, TINDER, "secret", "label")));
         // Provider
         ProviderService tinderProviderService = mock(ProviderService.class);
         when(tinderProviderService.getId()).thenReturn(TINDER);

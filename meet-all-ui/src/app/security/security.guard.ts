@@ -16,7 +16,7 @@ export class SecurityGuard implements CanActivate {
             return true;
         }
 
-        this.router.navigate([`/login`], {queryParams: {['redirect_url']: state.url}});
+        this.router.navigate(['/login']);
         return false;
     }
 

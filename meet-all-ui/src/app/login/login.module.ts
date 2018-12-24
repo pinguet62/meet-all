@@ -7,6 +7,7 @@ import {IonicModule} from '@ionic/angular';
 import {LoginPage} from './login.page';
 import {LoginService} from './login.service';
 import {SecurityModule} from '../security';
+import {OAuthInterceptorPage} from './oauth-interceptor.page';
 
 @NgModule({
     imports: [
@@ -16,11 +17,15 @@ import {SecurityModule} from '../security';
         HttpClientModule,
         FormsModule,
         // app
-        RouterModule.forChild([{path: '', component: LoginPage}]),
+        RouterModule.forChild([
+            {path: '', component: LoginPage},
+            {path: 'oauth', component: OAuthInterceptorPage}
+        ]),
         SecurityModule,
     ],
     declarations: [
         LoginPage,
+        OAuthInterceptorPage,
     ],
     providers: [
         LoginService,
