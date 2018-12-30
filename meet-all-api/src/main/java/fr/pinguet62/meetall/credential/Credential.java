@@ -15,6 +15,7 @@ import javax.validation.constraints.NotEmpty;
 
 import static java.util.Objects.requireNonNull;
 import static javax.persistence.EnumType.STRING;
+import static javax.persistence.GenerationType.IDENTITY;
 
 @Entity
 @NoArgsConstructor
@@ -23,7 +24,7 @@ import static javax.persistence.EnumType.STRING;
 public class Credential {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = IDENTITY)
     @Column(nullable = true) // because of @Id
     private Integer id;
 

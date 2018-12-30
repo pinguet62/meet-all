@@ -1,4 +1,6 @@
 spring:
+  datasource:
+    url: ${JDBC_DATABASE_URL:}
   security:
     oauth2:
       jwt:
