@@ -34,7 +34,7 @@ import {CredentialService, RegisteredCredential} from './credential.service';
             </ion-list>
 
             <ion-fab vertical="bottom" horizontal="end" slot="fixed">
-                <ion-fab-button href="/tabs/credentials/create">
+                <ion-fab-button routerLink="./create">
                     <ion-icon name="add"></ion-icon>
                 </ion-fab-button>
             </ion-fab>

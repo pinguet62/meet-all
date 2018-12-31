@@ -23,7 +23,7 @@ import {Conversation, ConversationsService} from './conversations.service';
                     <ion-label>Messages</ion-label>
                 </ion-list-header>
                 <ion-item *ngFor="let conversation of conversations"
-                          [href]="'/tabs/conversations/' + encodeURIComponent(conversation.id) + '/' + encodeURIComponent(conversation.profile.id)">
+                          [routerLink]="['./', conversation.id, conversation.profile.id]">
                     <ion-avatar>
                         <img [src]="conversation.profile.avatars[0]">
                     </ion-avatar>
@@ -38,8 +38,6 @@ import {Conversation, ConversationsService} from './conversations.service';
     `
 })
 export class ConversationListPage {
-
-    readonly encodeURIComponent = encodeURIComponent;
 
     conversations: Conversation[];
 
