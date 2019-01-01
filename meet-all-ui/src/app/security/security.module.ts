@@ -1,9 +1,10 @@
+import {CommonModule} from '@angular/common';
 import {HTTP_INTERCEPTORS} from '@angular/common/http';
 import {ModuleWithProviders, NgModule} from '@angular/core';
+import {AuthorizationHttpInterceptor} from './authorization.http-interceptor';
 import {SecurityGuard} from './security.guard';
 import {SecurityService} from './security.service';
-import {AuthorizationHttpInterceptor} from './authorization.http-interceptor';
-import {CommonModule} from '@angular/common';
+import {TokenHttpInterceptor} from './token.http-interceptor';
 
 @NgModule({
     imports: [
@@ -11,6 +12,7 @@ import {CommonModule} from '@angular/common';
         CommonModule,
     ],
     providers: [
+        {provide: HTTP_INTERCEPTORS, useClass: TokenHttpInterceptor, multi: true},
         {provide: HTTP_INTERCEPTORS, useClass: AuthorizationHttpInterceptor, multi: true},
         SecurityGuard,
     ],
