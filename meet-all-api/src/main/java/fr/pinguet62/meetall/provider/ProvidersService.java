@@ -71,7 +71,7 @@ public class ProvidersService {
                         })
                         // success or error(=partial)
                         .collect(Collectors.<ConversationDto, PartialList<ConversationDto>>toCollection(PartialArrayList::new))
-                        .onErrorReturn(partialEmpty()))
+                        .onErrorResume(err -> Mono.just(partialEmpty())))
                 .reduce(concatPartialList())
                 .doOnNext(it -> it.sort(comparing(ConversationDto::getDate).reversed()));
     }

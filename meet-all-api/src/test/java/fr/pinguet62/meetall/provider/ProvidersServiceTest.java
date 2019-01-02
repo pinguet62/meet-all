@@ -10,13 +10,17 @@ import org.junit.Before;
 import org.junit.Test;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.test.StepVerifier;
 
+import java.time.Duration;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 import static fr.pinguet62.meetall.provider.Provider.HAPPN;
 import static fr.pinguet62.meetall.provider.Provider.TINDER;
+import static java.time.Duration.ofNanos;
+import static java.time.Duration.ofSeconds;
 import static java.time.ZoneOffset.UTC;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
@@ -118,6 +122,42 @@ public class ProvidersServiceTest {
         assertThat(conversations.isPartial(), is(true));
         assertThat(conversations, contains(
                 new ConversationDto("91#convTinder12", new ProfileDto("91#profTinder12", "profile name 12", 12, emptyList()), ZonedDateTime.of(2003, 8, 12, 5, 28, 56, 98, UTC), null)));
+    }
+
+    /**
+     * Total execution for all providers = max(execution of provider)
+     */
+    @Test
+    public void getConversationsForUser_parallel() {
+        final String userId = "userId";
+        final Duration delay = ofSeconds(5);
+
+        StepVerifier.withVirtualTime(() -> {
+            // Credentials
+            when(credentialRepository.findByUserId(userId)).thenReturn(asList(
+                    new Credential(91, userId, TINDER, "tinderCredential_91", "label 91"),
+                    new Credential(92, userId, HAPPN, "happnCredential_92", "label 92")));
+            // Provider: TINDER
+            ProviderService tinderProviderService = mock(ProviderService.class);
+            when(tinderProviderService.getId()).thenReturn(TINDER);
+            when(tinderProviderService.getConversations("tinderCredential_91")).thenReturn(
+                    Mono.delay(delay)
+                            .flatMapIterable(it -> singletonList(new ConversationDto("convTinder11", new ProfileDto("profTinder11", "profile name 11", 11, emptyList()), ZonedDateTime.of(2001, 4, 7, 9, 13, 37, 27, UTC), new MessageDto("messTinder11", ZonedDateTime.of(2001, 4, 7, 9, 13, 37, 27, UTC), true, "message Tinder 11")))));
+            providerServices.add(tinderProviderService);
+            // Provider: HAPPN
+            ProviderService happnProviderService = mock(ProviderService.class);
+            when(happnProviderService.getId()).thenReturn(HAPPN);
+            when(happnProviderService.getConversations("happnCredential_92")).thenReturn(
+                    Mono.delay(delay).flatMapIterable(it -> singletonList(new ConversationDto("convHappn21", new ProfileDto("profHappn21", "profile name 21", 21, emptyList()), ZonedDateTime.of(2002, 7, 9, 19, 52, 59, 12, UTC), new MessageDto("messHappn21", ZonedDateTime.of(2002, 7, 9, 19, 52, 59, 12, UTC), false, "message Happn 21")))));
+            providerServices.add(happnProviderService);
+
+            return service.getConversationsForUser(userId);
+        })
+                .expectSubscription()
+                .expectNoEvent(ofNanos((long) (delay.toNanos() * 0.8))) // waiting for provider response
+                .thenAwait(ofNanos((long) (delay.toNanos() * 0.4))) // 120% (80+40) of delay < providerServices.size() * delay
+                .expectNextMatches(it -> !it.isPartial() && it.size() == 2)
+                .verifyComplete();
     }
 
     @Test
