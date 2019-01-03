@@ -1,5 +1,6 @@
 package fr.pinguet62.meetall.provider.happn.dto;
 
+import fr.pinguet62.meetall.provider.happn.GraphQLField;
 import lombok.Data;
 
 import java.time.OffsetDateTime;
@@ -13,6 +14,7 @@ public class HappnMessageDto {
      * @example {@code 2018-11-26T10:05:52+00:00}
      */
     private OffsetDateTime creation_date;
+    @GraphQLField
     private HappnUserDto sender;
 
 }

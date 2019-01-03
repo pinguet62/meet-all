@@ -5,10 +5,13 @@ import fr.pinguet62.meetall.dto.MessageDto;
 import fr.pinguet62.meetall.dto.ProfileDto;
 import fr.pinguet62.meetall.provider.Provider;
 import fr.pinguet62.meetall.provider.ProviderService;
+import fr.pinguet62.meetall.provider.happn.dto.HappnConversationDto;
 import fr.pinguet62.meetall.provider.happn.dto.HappnConversationsResponseDto;
+import fr.pinguet62.meetall.provider.happn.dto.HappnMessageDto;
 import fr.pinguet62.meetall.provider.happn.dto.HappnMessagesResponseDto;
 import fr.pinguet62.meetall.provider.happn.dto.HappnSendMessageRequestDto;
 import fr.pinguet62.meetall.provider.happn.dto.HappnSendMessageResponseDto;
+import fr.pinguet62.meetall.provider.happn.dto.HappnUserDto;
 import fr.pinguet62.meetall.provider.happn.dto.HappnUserResponseDto;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -16,6 +19,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import static fr.pinguet62.meetall.provider.Provider.HAPPN;
+import static fr.pinguet62.meetall.provider.happn.GraphQLUtils.parseGraph;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.web.reactive.function.BodyInserters.fromObject;
 
@@ -49,7 +53,10 @@ public class HappnProviderService implements ProviderService {
     @Override
     public Mono<ProfileDto> getProfile(String authToken, String profileId) {
         return this.webClient.get()
-                .uri("/users/" + profileId + "?fields=birth_date,first_name,fb_id,last_name,display_name,credits,referal,matching_preferences,notification_settings,unread_conversations,about,is_accepted,age,job,workplace,school,modification_date,last_meet_position,my_relation,is_charmed,distance,gender,profiles.mode(0).width(1000).height(1000).fields(url,width,height,mode)")
+                .uri(uriBuilder -> uriBuilder
+                        .pathSegment("users").pathSegment(profileId)
+                        .queryParam("fields", parseGraph(HappnUserDto.class))
+                        .build())
                 .header(HEADER, "OAuth=\"" + authToken + "\"")
                 .retrieve().bodyToMono(HappnUserResponseDto.class)
                 .map(HappnUserResponseDto::getData)
@@ -59,7 +66,11 @@ public class HappnProviderService implements ProviderService {
     @Override
     public Flux<ConversationDto> getConversations(String authToken) {
         return this.webClient.get()
-                .uri("/users/me/conversations?limit=99999999&fields=modification_date,participants.fields(user.fields(birth_date,first_name,fb_id,last_name,display_name,credits,referal,matching_preferences,notification_settings,unread_conversations,about,is_accepted,age,job,workplace,school,modification_date,last_meet_position,my_relation,is_charmed,distance,gender,profiles.mode(0).width(1000).height(1000).fields(url,width,height,mode))),messages.fields(message,creation_date,sender.fields(id,profiles))")
+                .uri(uriBuilder -> uriBuilder
+                        .path("/users/me/conversations")
+                        .queryParam("limit", 99999999)
+                        .queryParam("fields", parseGraph(HappnConversationDto.class))
+                        .build())
                 .header(HEADER, "OAuth=\"" + authToken + "\"")
                 .retrieve().bodyToMono(HappnConversationsResponseDto.class)
                 .flatMapIterable(HappnConversationsResponseDto::getData)
@@ -72,7 +83,10 @@ public class HappnProviderService implements ProviderService {
     @Override
     public Flux<MessageDto> getMessages(String authToken, String conversationId) {
         return this.webClient.get()
-                .uri("/conversations/" + conversationId + "/messages?fields=id,message,creation_date,sender.fields(id,profiles)")
+                .uri(uriBuilder -> uriBuilder
+                        .pathSegment("conversations").pathSegment(conversationId).pathSegment("messages")
+                        .queryParam("fields", parseGraph(HappnMessageDto.class))
+                        .build())
                 .header(HEADER, "OAuth=\"" + authToken + "\"")
                 .retrieve().bodyToMono(HappnMessagesResponseDto.class)
                 .flatMapIterable(HappnMessagesResponseDto::getData)
@@ -82,7 +96,10 @@ public class HappnProviderService implements ProviderService {
     @Override
     public Mono<MessageDto> sendMessage(String authToken, String conversationId, String text) {
         return this.webClient.post()
-                .uri("/conversations/" + conversationId + "/messages?fields=id,message,creation_date,sender.fields(id,profiles)")
+                .uri(uriBuilder -> uriBuilder
+                        .pathSegment("conversations").pathSegment(conversationId).pathSegment("messages")
+                        .queryParam("fields", parseGraph(HappnMessageDto.class))
+                        .build())
                 .body(fromObject(new HappnSendMessageRequestDto(text)))
                 .header(HEADER, "OAuth=\"" + authToken + "\"")
                 .retrieve().bodyToMono(HappnSendMessageResponseDto.class)
