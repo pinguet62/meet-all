@@ -1,9 +1,8 @@
 import {Component} from '@angular/core';
-import {Location} from '@angular/common';
-import {CredentialService, Provider} from './credential.service';
-import {processLoading} from '../loading-controller.utils';
-import {LoadingController} from '@ionic/angular';
+import {LoadingController, NavController} from '@ionic/angular';
 import {tap} from 'rxjs/operators';
+import {processLoading} from '../../loading-controller.utils';
+import {CredentialService, Provider} from '../credential.service';
 
 @Component({
     selector: 'app-credential-create',
@@ -11,10 +10,7 @@ import {tap} from 'rxjs/operators';
         <ion-header>
             <ion-toolbar>
                 <ion-buttons slot="start">
-                    <ion-button (click)="location.back()">
-                        <ion-icon name="close"></ion-icon>
-                        Back
-                    </ion-button>
+                    <ion-back-button></ion-back-button>
                 </ion-buttons>
                 <ion-title>Credentials</ion-title>
                 <ion-buttons slot="primary">
@@ -57,8 +53,8 @@ export class CredentialCreatePage {
     credential = '';
 
     constructor(
-        public location: Location,
         private loadingController: LoadingController,
+        private navController: NavController,
         private service: CredentialService,
     ) {
     }
@@ -66,7 +62,7 @@ export class CredentialCreatePage {
     onCreate() {
         processLoading(this.loadingController,
             this.service.registerCredential(this.provider, this.credential, this.label)
-                .pipe(tap(() => this.location.back()))
+                .pipe(tap(() => this.navController.goBack()))
         ).subscribe();
     }
 

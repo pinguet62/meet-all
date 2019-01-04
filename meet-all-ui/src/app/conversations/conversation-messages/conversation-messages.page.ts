@@ -1,11 +1,10 @@
 import {Component} from '@angular/core';
+import {ActivatedRoute} from '@angular/router';
 import {LoadingController} from '@ionic/angular';
-import {Location} from '@angular/common';
-import {processLoading} from '../loading-controller.utils';
-import {ConversationsService, Message, Profile} from './conversations.service';
 import {forkJoin} from 'rxjs';
 import {finalize, tap} from 'rxjs/operators';
-import {ActivatedRoute} from '@angular/router';
+import {processLoading} from '../../loading-controller.utils';
+import {ConversationsService, Message, Profile} from '../conversations.service';
 
 @Component({
     selector: 'app-conversation-messages',
@@ -13,10 +12,7 @@ import {ActivatedRoute} from '@angular/router';
         <ion-header>
             <ion-toolbar>
                 <ion-buttons slot="start">
-                    <ion-button (click)="location.back()">
-                        <ion-icon name="close"></ion-icon>
-                        Back
-                    </ion-button>
+                    <ion-back-button></ion-back-button>
                 </ion-buttons>
                 <div style="display: flex;">
                     <ion-avatar>
@@ -78,7 +74,6 @@ export class ConversationMessagesPage {
 
     constructor(
         route: ActivatedRoute,
-        public location: Location,
         loadingController: LoadingController,
         private service: ConversationsService,
     ) {

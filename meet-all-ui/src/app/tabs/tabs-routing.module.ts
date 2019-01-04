@@ -17,14 +17,14 @@ import {TabsPage} from './tabs.page';
                     path: 'conversations',
                     children: [{
                         path: '',
-                        loadChildren: '../conversations/conversations.module#ConversationsPageModule',
+                        loadChildren: '../conversations/conversation-list/conversation-list.module#ConversationListModule',
                     }]
                 },
                 {
                     path: 'credentials',
                     children: [{
                         path: '',
-                        loadChildren: '../credentials/credentials.module#CredentialsModule',
+                        loadChildren: '../credentials/credential-list/credential-list.module#CredentialListModule',
                     }]
                 },
             ],

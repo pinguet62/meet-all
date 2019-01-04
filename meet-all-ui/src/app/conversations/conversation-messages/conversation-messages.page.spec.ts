@@ -1,13 +1,12 @@
-import {Location} from '@angular/common';
 import {NO_ERRORS_SCHEMA} from '@angular/core';
-import {ActivatedRoute, convertToParamMap, RouterModule} from '@angular/router';
 import {async, fakeAsync, TestBed} from '@angular/core/testing';
 import {By} from '@angular/platform-browser';
+import {ActivatedRoute, convertToParamMap, RouterModule} from '@angular/router';
 import {IonicModule, LoadingController} from '@ionic/angular';
 import {of} from 'rxjs';
-import {LoadingControllerFake} from '../test-utils';
+import {LoadingControllerFake} from '../../test-utils';
 import {ConversationMessagesPage} from './conversation-messages.page';
-import {ConversationsService, Message, Profile} from './conversations.service';
+import {ConversationsService, Message, Profile} from '../conversations.service';
 
 xdescribe('conversation-messages.page', () => {
     // service dependencies
@@ -31,7 +30,6 @@ xdescribe('conversation-messages.page', () => {
             declarations: [ConversationMessagesPage],
             providers: [
                 {provide: ActivatedRoute, useValue: activatedRoute},
-                {provide: Location, useValue: {} as Location},
                 {provide: LoadingController, useClass: LoadingControllerFake},
                 {provide: ConversationsService, useValue: conversationsService},
             ],

@@ -1,14 +1,12 @@
-import {IonicModule} from '@ionic/angular';
-import {NgModule} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {HttpClientModule} from '@angular/common/http';
+import {NgModule} from '@angular/core';
 import {FormsModule} from '@angular/forms';
+import {RouterModule} from '@angular/router';
+import {IonicModule} from '@ionic/angular';
+import {SecurityModule} from '../../security';
+import {CredentialService} from '../credential.service';
 import {CredentialCreatePage} from './credential-create.page';
-import {CredentialListPage} from './credential-list.page';
-import {CredentialsPage} from './credentials.page';
-import {CredentialsRoutingModule} from './credentials-routing.module';
-import {CredentialService} from './credential.service';
-import {SecurityModule} from '../security';
 
 @NgModule({
     imports: [
@@ -18,17 +16,15 @@ import {SecurityModule} from '../security';
         HttpClientModule,
         FormsModule,
         // app
-        CredentialsRoutingModule,
         SecurityModule,
+        RouterModule.forChild([{path: '', component: CredentialCreatePage}]),
     ],
     declarations: [
-        CredentialsPage,
-        CredentialListPage,
         CredentialCreatePage,
     ],
     providers: [
         CredentialService,
     ],
 })
-export class CredentialsModule {
+export class CredentialCreateModule {
 }

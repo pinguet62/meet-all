@@ -2,8 +2,8 @@ import {Component} from '@angular/core';
 import {LoadingController} from '@ionic/angular';
 import {RefresherEventDetail} from '@ionic/core';
 import {tap} from "rxjs/operators";
-import {processLoading} from '../loading-controller.utils';
-import {Conversation, ConversationsService} from './conversations.service';
+import {processLoading} from '../../loading-controller.utils';
+import {Conversation, ConversationsService} from '../conversations.service';
 
 @Component({
     selector: 'app-conversation-list',
@@ -23,7 +23,7 @@ import {Conversation, ConversationsService} from './conversations.service';
                     <ion-label>Messages</ion-label>
                 </ion-list-header>
                 <ion-item *ngFor="let conversation of conversations"
-                          [routerLink]="['./', conversation.id, conversation.profile.id]">
+                          [routerLink]="['/tabs/conversations/', conversation.id, conversation.profile.id]">
                     <ion-avatar>
                         <img [src]="conversation.profile.avatars[0]">
                     </ion-avatar>

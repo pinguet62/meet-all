@@ -1,14 +1,12 @@
-import {NgModule} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {HttpClientModule} from '@angular/common/http';
+import {NgModule} from '@angular/core';
 import {FormsModule} from '@angular/forms';
+import {RouterModule} from '@angular/router';
 import {IonicModule} from '@ionic/angular';
-import {ConversationsPage} from './conversations.page';
-import {ConversationsRoutingModule} from './conversations-routing.module';
-import {ConversationMessagesPage} from './conversation-messages.page';
+import {SecurityModule} from '../../security';
+import {ConversationsService} from '../conversations.service';
 import {ConversationListPage} from './conversation-list.page';
-import {SecurityModule} from '../security';
-import {ConversationsService} from './conversations.service';
 
 @NgModule({
     imports: [
@@ -18,17 +16,15 @@ import {ConversationsService} from './conversations.service';
         HttpClientModule,
         FormsModule,
         // app
-        ConversationsRoutingModule,
         SecurityModule,
+        RouterModule.forChild([{path: '', component: ConversationListPage}]),
     ],
     declarations: [
-        ConversationsPage,
         ConversationListPage,
-        ConversationMessagesPage,
     ],
     providers: [
         ConversationsService,
     ],
 })
-export class ConversationsPageModule {
+export class ConversationListModule {
 }
