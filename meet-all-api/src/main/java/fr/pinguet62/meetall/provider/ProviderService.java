@@ -19,6 +19,8 @@ public interface ProviderService {
 
     Flux<ProposalDto> getProposals(String credential);
 
+    Mono<Boolean> likeOrUnlikeProposal(String credential, String proposalId, boolean likeOrUnlike);
+
     Flux<ConversationDto> getConversations(String credential);
 
     Flux<MessageDto> getMessages(String credential, String conversationId);

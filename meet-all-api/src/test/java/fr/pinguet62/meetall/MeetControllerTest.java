@@ -20,6 +20,7 @@ import static fr.pinguet62.meetall.MeetControllerTest.currentUserId;
 import static java.time.ZonedDateTime.now;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.HttpStatus.PARTIAL_CONTENT;
 import static org.springframework.security.test.web.reactive.server.SecurityMockServerConfigurers.csrf;
@@ -64,6 +65,42 @@ public class MeetControllerTest {
                 .uri("/proposals")
                 .exchange()
                 .expectStatus().isEqualTo(PARTIAL_CONTENT);
+    }
+
+    @Test
+    public void unlikeProposal() {
+        final int credentialId = 42;
+        final String id = "99";
+
+        when(providersService.likeOrUnlikeProposal(currentUserId, credentialId, id, false)).thenReturn(Mono.empty());
+
+        String transformedId = TransformedId.format(credentialId, id);
+        webTestClient.mutateWith(csrf())
+                .post()
+                .uri(uriBuilder -> uriBuilder.path("/proposals").pathSegment(transformedId).pathSegment("unlike").build())
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody().isEmpty();
+
+        verify(providersService).likeOrUnlikeProposal(currentUserId, credentialId, id, false);
+    }
+
+    @Test
+    public void likeProposal() {
+        final int credentialId = 42;
+        final String id = "99";
+
+        when(providersService.likeOrUnlikeProposal(currentUserId, credentialId, id, true)).thenReturn(Mono.just(true));
+
+        String transformedId = TransformedId.format(credentialId, id);
+        webTestClient.mutateWith(csrf())
+                .post()
+                .uri(uriBuilder -> uriBuilder.path("/proposals").pathSegment(transformedId).pathSegment("like").build())
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(Boolean.class).isEqualTo(true);
+
+        verify(providersService).likeOrUnlikeProposal(currentUserId, credentialId, id, true);
     }
 
     @Test
@@ -116,7 +153,7 @@ public class MeetControllerTest {
         final String id = "99";
         final String text = "text";
 
-        when(providersService.sendMessage(currentUserId, credentialId, id, text)).thenReturn(Mono.justOrEmpty(new MessageDto("message-9", now(), true, text)));
+        when(providersService.sendMessage(currentUserId, credentialId, id, text)).thenReturn(Mono.just(new MessageDto("message-9", now(), true, text)));
 
         String transformedId = TransformedId.format(credentialId, id);
         webTestClient.mutateWith(csrf())
@@ -137,7 +174,7 @@ public class MeetControllerTest {
         final int credentialId = 42;
         final String id = "99";
 
-        when(providersService.getProfileForUser(currentUserId, credentialId, id)).thenReturn(Mono.justOrEmpty(new ProfileDto("profile-id", "profile-name", 29, emptyList())));
+        when(providersService.getProfileForUser(currentUserId, credentialId, id)).thenReturn(Mono.just(new ProfileDto("profile-id", "profile-name", 29, emptyList())));
 
         String transformedId = TransformedId.format(credentialId, id);
         webTestClient.get()

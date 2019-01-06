@@ -28,6 +28,8 @@ import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
 import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
@@ -79,6 +81,55 @@ public class HappnProviderServiceTest {
                                 26,
                                 asList(
                                         "https://1675564c27.optimicdn.com/cache/images/1eeeb72a-6ae8-4d0f-aea7-68a0852d5063/320-320.0_b0ec72e0-bd1c-11e8-9958-372c0714599a.jpg")))));
+    }
+
+    @Test
+    public void likeOrUnlikeProposal_unlike() {
+        final String userId = "userId";
+        server.enqueue(new MockResponse()
+                .setHeader(CONTENT_TYPE, APPLICATION_JSON_UTF8_VALUE)
+                .setBody(readResource("/fr/pinguet62/meetall/provider/happn/rejected.json")));
+
+        Boolean matched = happnProvider.likeOrUnlikeProposal(authToken, userId, false).block();
+
+        assertThat(server, takingRequest(allOf(
+                url(with(HttpUrl::url, with(URL::toString, containsString("users/me/rejected/" + userId)))),
+                header(HEADER, "OAuth=\"" + authToken + "\""))));
+        assertThat(matched, nullValue());
+    }
+
+    @Test
+    public void likeOrUnlikeProposal_like_notMatched() {
+        final String userId = "userId";
+        server.enqueue(new MockResponse()
+                .setHeader(CONTENT_TYPE, APPLICATION_JSON_UTF8_VALUE)
+                .setBody(readResource("/fr/pinguet62/meetall/provider/happn/accepted_not-matched.json")));
+
+        Boolean matched = happnProvider.likeOrUnlikeProposal(authToken, userId, true).block();
+
+        assertThat(server, takingRequest(allOf(
+                url(with(HttpUrl::url, with(URL::toString, containsString("users/me/accepted/" + userId)))),
+                header(HEADER, "OAuth=\"" + authToken + "\""))));
+        assertThat(matched, allOf(
+                notNullValue(),
+                is(false)));
+    }
+
+    @Test
+    public void likeOrUnlikeProposal_like_matched() {
+        final String userId = "userId";
+        server.enqueue(new MockResponse()
+                .setHeader(CONTENT_TYPE, APPLICATION_JSON_UTF8_VALUE)
+                .setBody(readResource("/fr/pinguet62/meetall/provider/happn/accepted_matched.json")));
+
+        Boolean matched = happnProvider.likeOrUnlikeProposal(authToken, userId, true).block();
+
+        assertThat(server, takingRequest(allOf(
+                url(with(HttpUrl::url, with(URL::toString, containsString("users/me/accepted/" + userId)))),
+                header(HEADER, "OAuth=\"" + authToken + "\""))));
+        assertThat(matched, allOf(
+                notNullValue(),
+                is(true)));
     }
 
     @Test

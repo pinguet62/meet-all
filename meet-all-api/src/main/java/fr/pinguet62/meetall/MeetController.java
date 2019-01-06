@@ -35,6 +35,22 @@ public class MeetController {
                 .map(it -> it.isPartial() ? new ResponseEntity<>(it, PARTIAL_CONTENT) : ResponseEntity.ok(it));
     }
 
+    @PostMapping("/proposals/{id}/like")
+    public Mono<Boolean> likeProposal(@PathVariable String id) {
+        TransformedId transformedId = TransformedId.parse(id);
+        return ApplicationReactiveSecurityContextHolder.getAuthentication()
+                .map(ApplicationAuthentication::getUserId)
+                .flatMap(userId -> providersService.likeOrUnlikeProposal(userId, transformedId.getCredentialId(), transformedId.getValueId(), true));
+    }
+
+    @PostMapping("/proposals/{id}/unlike")
+    public Mono<Boolean> unlikeProposal(@PathVariable String id) {
+        TransformedId transformedId = TransformedId.parse(id);
+        return ApplicationReactiveSecurityContextHolder.getAuthentication()
+                .map(ApplicationAuthentication::getUserId)
+                .flatMap(userId -> providersService.likeOrUnlikeProposal(userId, transformedId.getCredentialId(), transformedId.getValueId(), false));
+    }
+
     @GetMapping("/conversations")
     public Mono<ResponseEntity<PartialList<ConversationDto>>> getConversations() {
         return ApplicationReactiveSecurityContextHolder.getAuthentication()

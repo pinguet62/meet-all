@@ -19,6 +19,7 @@ import java.util.List;
 
 import static fr.pinguet62.meetall.MatcherUtils.header;
 import static fr.pinguet62.meetall.MatcherUtils.takingRequest;
+import static fr.pinguet62.meetall.MatcherUtils.throwing;
 import static fr.pinguet62.meetall.MatcherUtils.url;
 import static fr.pinguet62.meetall.MatcherUtils.with;
 import static fr.pinguet62.meetall.TestUtils.readResource;
@@ -29,6 +30,8 @@ import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
 import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
@@ -55,10 +58,16 @@ public class TinderProviderServiceTest {
     public void getProposals() {
         server.enqueue(new MockResponse()
                 .setHeader(CONTENT_TYPE, APPLICATION_JSON_UTF8_VALUE)
+                .setBody(readResource("/fr/pinguet62/meetall/provider/tinder/profile.json")));
+        server.enqueue(new MockResponse()
+                .setHeader(CONTENT_TYPE, APPLICATION_JSON_UTF8_VALUE)
                 .setBody(readResource("/fr/pinguet62/meetall/provider/tinder/recs_core.json")));
 
         List<ProposalDto> proposals = tinderProvider.getProposals(authToken).collectList().block();
 
+        assertThat(server, takingRequest(allOf(
+                url(with(HttpUrl::url, with(URL::toString, containsString("profile")))),
+                header(HEADER, authToken))));
         assertThat(server, takingRequest(allOf(
                 url(with(HttpUrl::url, with(URL::toString, containsString("recs/core")))),
                 header(HEADER, authToken))));
@@ -68,7 +77,7 @@ public class TinderProviderServiceTest {
                         new ProfileDto(
                                 "5c309d64cbb73e636034dc15",
                                 "Laetitia",
-                                27,
+                                28,
                                 asList(
                                         "https://images-ssl.gotinder.com/5c309d64cbb73e636034dc15/1080x1080_3cfd9990-392c-42c4-8c70-dae8fa620930.jpg",
                                         "https://images-ssl.gotinder.com/5c309d64cbb73e636034dc15/1080x1080_496f518b-a369-4740-8d95-f19bdb2a3572.jpg"))),
@@ -77,9 +86,71 @@ public class TinderProviderServiceTest {
                         new ProfileDto(
                                 "5c30dbfb7f49061862de6256",
                                 "Florine",
-                                27,
-                                asList(
+                                28,
+                                singletonList(
                                         "https://images-ssl.gotinder.com/5c30dbfb7f49061862de6256/1080x1080_8b718deb-9c11-4835-86e7-100c613f865e.jpg")))));
+    }
+
+    @Test
+    public void likeOrUnlikeProposal_unlike() {
+        final String userId = "userId";
+        server.enqueue(new MockResponse()
+                .setHeader(CONTENT_TYPE, APPLICATION_JSON_UTF8_VALUE)
+                .setBody(readResource("/fr/pinguet62/meetall/provider/tinder/pass.json")));
+
+        Boolean matched = tinderProvider.likeOrUnlikeProposal(authToken, userId, false).block();
+
+        assertThat(server, takingRequest(allOf(
+                url(with(HttpUrl::url, with(URL::toString, containsString("pass/" + userId)))),
+                header(HEADER, authToken))));
+        assertThat(matched, nullValue());
+    }
+
+    @Test
+    public void likeOrUnlikeProposal_like_notMatched() {
+        final String userId = "userId";
+        server.enqueue(new MockResponse()
+                .setHeader(CONTENT_TYPE, APPLICATION_JSON_UTF8_VALUE)
+                .setBody(readResource("/fr/pinguet62/meetall/provider/tinder/like_not-matched.json")));
+
+        Boolean matched = tinderProvider.likeOrUnlikeProposal(authToken, userId, true).block();
+
+        assertThat(server, takingRequest(allOf(
+                url(with(HttpUrl::url, with(URL::toString, containsString("like/" + userId)))),
+                header(HEADER, authToken))));
+        assertThat(matched, allOf(
+                notNullValue(),
+                is(false)));
+    }
+
+    @Test
+    public void likeOrUnlikeProposal_like_matched() {
+        final String userId = "userId";
+        server.enqueue(new MockResponse()
+                .setHeader(CONTENT_TYPE, APPLICATION_JSON_UTF8_VALUE)
+                .setBody(readResource("/fr/pinguet62/meetall/provider/tinder/like_matched.json")));
+
+        Boolean matched = tinderProvider.likeOrUnlikeProposal(authToken, userId, true).block();
+
+        assertThat(server, takingRequest(allOf(
+                url(with(HttpUrl::url, with(URL::toString, containsString("like/" + userId)))),
+                header(HEADER, authToken))));
+        assertThat(matched, allOf(
+                notNullValue(),
+                is(true)));
+    }
+
+    @Test
+    public void likeOrUnlikeProposal_like_likeRemaining() {
+        final String userId = "userId";
+        server.enqueue(new MockResponse()
+                .setHeader(CONTENT_TYPE, APPLICATION_JSON_UTF8_VALUE)
+                .setBody(readResource("/fr/pinguet62/meetall/provider/tinder/like_like-remaining.json")));
+
+        assertThat(() -> tinderProvider.likeOrUnlikeProposal(authToken, userId, true).block(), throwing(RuntimeException.class));
+        assertThat(server, takingRequest(allOf(
+                url(with(HttpUrl::url, with(URL::toString, containsString("like/" + userId)))),
+                header(HEADER, authToken))));
     }
 
     @Test

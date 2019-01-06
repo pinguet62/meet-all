@@ -1,0 +1,9 @@
+{
+  "success": true,
+  "status": 200,
+  "error": null,
+  "data": {
+    "message": "user rejected"
+  },
+  "error_code": 0
+}

@@ -14,6 +14,7 @@ import fr.pinguet62.meetall.provider.happn.dto.HappnNotificationDto;
 import fr.pinguet62.meetall.provider.happn.dto.HappnNotificationsResponseDto;
 import fr.pinguet62.meetall.provider.happn.dto.HappnSendMessageRequestDto;
 import fr.pinguet62.meetall.provider.happn.dto.HappnSendMessageResponseDto;
+import fr.pinguet62.meetall.provider.happn.dto.HappnUserAcceptedResponseDto;
 import fr.pinguet62.meetall.provider.happn.dto.HappnUserDto;
 import fr.pinguet62.meetall.provider.happn.dto.HappnUserResponseDto;
 import org.springframework.stereotype.Component;
@@ -67,6 +68,16 @@ public class HappnProviderService implements ProviderService {
                 .flatMapIterable(HappnNotificationsResponseDto::getData)
                 .filter(it -> it.getNotifier().getMy_relation().equals(NEW_RELATION))
                 .map(HappnConverters::convert);
+    }
+
+    @Override
+    public Mono<Boolean> likeOrUnlikeProposal(String authToken, String userId, boolean likeOrUnlike) {
+        return this.webClient.get()
+                .uri(uriBuilder -> uriBuilder.path("/users/me").pathSegment(likeOrUnlike ? "accepted" : "rejected").pathSegment(userId).build())
+                .header(HEADER, "OAuth=\"" + authToken + "\"")
+                .retrieve().bodyToMono(HappnUserAcceptedResponseDto.class)
+                .map(HappnUserAcceptedResponseDto::getData)
+                .flatMap(it -> likeOrUnlike ? Mono.just(it.getHas_crushed()) : Mono.empty());
     }
 
     @Override

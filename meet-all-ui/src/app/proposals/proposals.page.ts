@@ -24,6 +24,15 @@ import {processLoading} from '../loading-controller.utils';
                     <ion-card-subtitle>{{currentProposal.profile.age}} ans</ion-card-subtitle>
                 </ion-card-header>
             </ion-card>
+
+            <ion-fab vertical="bottom" slot="fixed" class="fab-space">
+                <ion-fab-button (click)="clickOnUnlike()" color="danger">
+                    <ion-icon name="close"></ion-icon>
+                </ion-fab-button>
+                <ion-fab-button (click)="clickOnLike()" color="success">
+                    <ion-icon name="heart"></ion-icon>
+                </ion-fab-button>
+            </ion-fab>
         </ion-content>
     `,
     styles: [`
@@ -32,6 +41,13 @@ import {processLoading} from '../loading-controller.utils';
             margin: 0;
             height: 100%;
         }
+    `, `
+        .fab-space {
+            width: 100%;
+            display: flex;
+            flex-direction: row;
+            justify-content: space-evenly;
+        }
     `],
 })
 export class ProposalsPage {
@@ -39,12 +55,29 @@ export class ProposalsPage {
     proposals: Proposal[];
     currentProposal: Proposal = undefined;
 
-    constructor(loadingController: LoadingController, service: ProposalsService) {
+    constructor(loadingController: LoadingController, private service: ProposalsService) {
         processLoading(loadingController,
             service.getProposals()
                 .pipe(tap(it => this.proposals = it))
                 .pipe(tap(() => this.currentProposal = this.proposals[0])))
             .subscribe();
+    }
+
+    clickOnUnlike() {
+        this.service.unlikeProposal(this.currentProposal.id)
+            .pipe(tap(() => this.popNextProfile()))
+            .subscribe();
+    }
+
+    clickOnLike() {
+        this.service.likeProposal(this.currentProposal.id)
+            .pipe(tap(() => this.popNextProfile()))
+            .subscribe();
+    }
+
+    private popNextProfile() {
+        this.proposals.splice(0, 1);
+        this.currentProposal = this.proposals[0];
     }
 
 }

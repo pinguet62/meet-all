@@ -4,6 +4,7 @@ import fr.pinguet62.meetall.dto.ConversationDto;
 import fr.pinguet62.meetall.dto.MessageDto;
 import fr.pinguet62.meetall.dto.ProfileDto;
 import fr.pinguet62.meetall.dto.ProposalDto;
+import fr.pinguet62.meetall.provider.tinder.dto.TinderLikeResponseDto;
 import fr.pinguet62.meetall.provider.tinder.dto.TinderMatchDto;
 import fr.pinguet62.meetall.provider.tinder.dto.TinderMessageDto;
 import fr.pinguet62.meetall.provider.tinder.dto.TinderPhotoDto;
@@ -22,6 +23,10 @@ public class TinderConverters {
         return new ProposalDto(
                 input.getUser().get_id(),
                 convert(input.getUser()));
+    }
+
+    public static boolean convert(TinderLikeResponseDto input) {
+        return !(input.getMatch() instanceof Boolean);
     }
 
     public static ProfileDto convert(TinderUserDto input) {

@@ -14,8 +14,12 @@ import fr.pinguet62.meetall.provider.tinder.dto.TinderGetMetaResponseDto;
 import fr.pinguet62.meetall.provider.tinder.dto.TinderGetRecommendationsResponseDto;
 import fr.pinguet62.meetall.provider.tinder.dto.TinderGetRecommendationsResponseDto.TinderGetRecommendationsDataResponseDto;
 import fr.pinguet62.meetall.provider.tinder.dto.TinderGetUserResponseDto;
+import fr.pinguet62.meetall.provider.tinder.dto.TinderLikeResponseDto;
 import fr.pinguet62.meetall.provider.tinder.dto.TinderMatchDto;
 import fr.pinguet62.meetall.provider.tinder.dto.TinderMessageDto;
+import fr.pinguet62.meetall.provider.tinder.dto.TinderProfileDto;
+import fr.pinguet62.meetall.provider.tinder.dto.TinderProfileLikesDto;
+import fr.pinguet62.meetall.provider.tinder.dto.TinderProfileResponseDto;
 import fr.pinguet62.meetall.provider.tinder.dto.TinderSendMessageRequestDto;
 import fr.pinguet62.meetall.provider.tinder.dto.TinderSendMessageResponseDto;
 import fr.pinguet62.meetall.provider.tinder.dto.TinderUserDto;
@@ -67,15 +71,36 @@ public class TinderProviderService implements ProviderService {
         return TINDER;
     }
 
+    /**
+     * Count limited by {@code "data.likes.likes_remaining"} from {@code "/profile"} result.
+     */
     @Override
     public Flux<ProposalDto> getProposals(String authToken) {
+        return getProfile(authToken)
+                .map(TinderProfileDto::getLikes)
+                .map(TinderProfileLikesDto::getLikes_remaining)
+                .flatMapMany(limit ->
+                        webClient.get()
+                                .uri("/v2/recs/core")
+                                .header(HEADER, authToken)
+                                .retrieve().bodyToMono(TinderGetRecommendationsResponseDto.class)
+                                .map(TinderGetRecommendationsResponseDto::getData)
+                                .flatMapIterable(TinderGetRecommendationsDataResponseDto::getResults)
+                                .map(TinderConverters::convert)
+                                .take(limit));
+    }
+
+    /**
+     * @throws RuntimeException When {@code "data.likes.likes_remaining"} is {@code 0}.
+     */
+    @Override
+    public Mono<Boolean> likeOrUnlikeProposal(String authToken, String userId, boolean likeOrUnlike) {
         return webClient.get()
-                .uri("/v2/recs/core")
+                .uri(uriBuilder -> uriBuilder.path(likeOrUnlike ? "like" : "pass").pathSegment(userId).build())
                 .header(HEADER, authToken)
-                .retrieve().bodyToFlux(TinderGetRecommendationsResponseDto.class)
-                .map(tinderGetRecommendationsResponseDto -> tinderGetRecommendationsResponseDto.getData())
-                .flatMapIterable(TinderGetRecommendationsDataResponseDto::getResults)
-                .map(TinderConverters::convert);
+                .retrieve().bodyToMono(TinderLikeResponseDto.class)
+                .flatMap(it -> it.getRate_limited_until() != null ? Mono.error(new RuntimeException()) : Mono.just(it)) // "likes remaining" support
+                .flatMap(it -> likeOrUnlike ? Mono.just(TinderConverters.convert(it)) : Mono.empty());
     }
 
     @Override
@@ -83,7 +108,7 @@ public class TinderProviderService implements ProviderService {
         Flux<TinderMatchDto> tinderMatchDtoFlux = webClient.get()
                 .uri("/v2/matches?count=60")
                 .header(HEADER, authToken)
-                .retrieve().bodyToFlux(TinderGetConversationResponseDto.class)
+                .retrieve().bodyToMono(TinderGetConversationResponseDto.class)
                 .map(TinderGetConversationResponseDto::getData)
                 .flatMapIterable(TinderGetConversationDataResponseDto::getMatches);
         Mono<TinderUserDto> metaMono = getMeta(authToken);
@@ -97,7 +122,7 @@ public class TinderProviderService implements ProviderService {
         Flux<TinderMessageDto> tinderMessageDtoFlux = webClient.get()
                 .uri("/v2/matches/{matchId}/messages?count=100", matchId)
                 .header(HEADER, authToken)
-                .retrieve().bodyToFlux(TinderGetMessagesResponseDto.class)
+                .retrieve().bodyToMono(TinderGetMessagesResponseDto.class)
                 .map(TinderGetMessagesResponseDto::getData)
                 .flatMapIterable(TinderGetMessagesDataResponseDto::getMessages);
         Mono<TinderUserDto> metaMono = getMeta(authToken);
@@ -132,6 +157,17 @@ public class TinderProviderService implements ProviderService {
                 .header(HEADER, authToken)
                 .retrieve().bodyToMono(TinderGetMetaResponseDto.class)
                 .map(TinderGetMetaResponseDto::getUser);
+    }
+
+    private Mono<TinderProfileDto> getProfile(String authToken) {
+        return webClient.get()
+                .uri(uriBuilder -> uriBuilder
+                        .path("/v2/profile")
+                        .queryParam("include", "likes")
+                        .build())
+                .header(HEADER, authToken)
+                .retrieve().bodyToMono(TinderProfileResponseDto.class)
+                .map(TinderProfileResponseDto::getData);
     }
 
 }

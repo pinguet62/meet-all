@@ -1,0 +1,10 @@
+{
+  "meta": {
+    "status": 200
+  },
+  "data": {
+    "likes": {
+      "likes_remaining": 2
+    }
+  }
+}

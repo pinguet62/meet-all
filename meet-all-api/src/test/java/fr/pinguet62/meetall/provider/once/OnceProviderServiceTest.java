@@ -30,6 +30,8 @@ import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
 import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
@@ -72,6 +74,55 @@ public class OnceProviderServiceTest {
                         asList(
                                 "https://d110abryny6tab.cloudfront.net/pictures/EA6728641/33787916_original.jpg",
                                 "https://d110abryny6tab.cloudfront.net/pictures/EA6728641/33803466_original.jpg")))));
+    }
+
+    @Test
+    public void likeOrUnlikeProposal_unlike() {
+        final String matchId = "MEA356800065";
+        server.enqueue(new MockResponse()
+                .setHeader(CONTENT_TYPE, APPLICATION_JSON_UTF8_VALUE)
+                .setBody(readResource("/fr/pinguet62/meetall/provider/once/match_pass.json")));
+
+        Boolean matched = onceProvider.likeOrUnlikeProposal(authToken, matchId, false).block();
+
+        assertThat(server, takingRequest(allOf(
+                url(with(HttpUrl::url, with(URL::toString, containsString("match/" + matchId + "/pass")))),
+                header(HEADER, authToken))));
+        assertThat(matched, nullValue());
+    }
+
+    @Test
+    public void likeOrUnlikeProposal_like_notMatched() {
+        final String matchId = "MEA356800065";
+        server.enqueue(new MockResponse()
+                .setHeader(CONTENT_TYPE, APPLICATION_JSON_UTF8_VALUE)
+                .setBody(readResource("/fr/pinguet62/meetall/provider/once/match_like_not-matched.json")));
+
+        Boolean matched = onceProvider.likeOrUnlikeProposal(authToken, matchId, true).block();
+
+        assertThat(server, takingRequest(allOf(
+                url(with(HttpUrl::url, with(URL::toString, containsString("match/" + matchId + "/like")))),
+                header(HEADER, authToken))));
+        assertThat(matched, allOf(
+                notNullValue(),
+                is(false)));
+    }
+
+    @Test
+    public void likeOrUnlikeProposal_like_matched() {
+        final String matchId = "MEA356800065";
+        server.enqueue(new MockResponse()
+                .setHeader(CONTENT_TYPE, APPLICATION_JSON_UTF8_VALUE)
+                .setBody(readResource("/fr/pinguet62/meetall/provider/once/match_like_matched.json")));
+
+        Boolean matched = onceProvider.likeOrUnlikeProposal(authToken, matchId, true).block();
+
+        assertThat(server, takingRequest(allOf(
+                url(with(HttpUrl::url, with(URL::toString, containsString("match/" + matchId + "/like")))),
+                header(HEADER, authToken))));
+        assertThat(matched, allOf(
+                notNullValue(),
+                is(true)));
     }
 
     @Test

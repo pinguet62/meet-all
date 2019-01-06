@@ -54,6 +54,13 @@ public class ProvidersService {
                 .reduce(concatPartialList());
     }
 
+    public Mono<Boolean> likeOrUnlikeProposal(String userId, int credentialId, String proposalId, boolean likeOrUnlike) {
+        return Flux.fromIterable(credentialRepository.findByUserId(userId))
+                .filter(providerCredential -> providerCredential.getId().equals(credentialId))
+                .next()
+                .flatMap(providerCredential -> getProviderService(providerCredential.getProvider()).likeOrUnlikeProposal(providerCredential.getCredential(), proposalId, likeOrUnlike));
+    }
+
     /**
      * Merge result of each {@link ProviderService#getConversations(String)}.<br>
      * Update {@link ConversationDto#getId()}, {@link ProfileDto#getId()}, {@link MessageDto#getId()}.<br>

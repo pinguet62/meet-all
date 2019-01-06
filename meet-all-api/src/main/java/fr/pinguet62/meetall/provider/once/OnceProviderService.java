@@ -10,12 +10,15 @@ import fr.pinguet62.meetall.provider.once.dto.OnceConversationsResponseDto;
 import fr.pinguet62.meetall.provider.once.dto.OnceMatchAllResponseDto;
 import fr.pinguet62.meetall.provider.once.dto.OnceMatchAllResultDto;
 import fr.pinguet62.meetall.provider.once.dto.OnceMatchByIdResponseDto;
+import fr.pinguet62.meetall.provider.once.dto.OnceMatchLikeResponseDto;
+import fr.pinguet62.meetall.provider.once.dto.OnceMatchLikeResultDto;
 import fr.pinguet62.meetall.provider.once.dto.OnceMatchResultMatchDto;
 import fr.pinguet62.meetall.provider.once.dto.OnceMessagesResponseDto;
 import fr.pinguet62.meetall.provider.once.dto.OnceSendMessageRequestDto;
 import fr.pinguet62.meetall.provider.once.dto.OnceSendMessageResponseDto;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClient.ResponseSpec;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -60,6 +63,20 @@ public class OnceProviderService implements ProviderService {
                         .map((OnceMatchResultMatchDto it) -> new ProposalDto(
                                 it.getId(),
                                 OnceConverters.convert(it.getId(), it.getUser(), res.getBase_url()))));
+    }
+
+    @Override
+    public Mono<Boolean> likeOrUnlikeProposal(String authorization, String matchId, boolean likeOrUnlike) {
+        ResponseSpec response = this.webClient.post()
+                .uri(uriBuilder -> uriBuilder.path("/v1/match").pathSegment(matchId).pathSegment(likeOrUnlike ? "like" : "pass").build())
+                .header(HEADER, authorization)
+                .retrieve();
+        return likeOrUnlike ?
+                response.bodyToMono(OnceMatchLikeResponseDto.class)
+                        .map(OnceMatchLikeResponseDto::getResult)
+                        .map(OnceMatchLikeResultDto::getConnected) :
+                response.bodyToMono(Void.class)
+                        .map(it -> null);
     }
 
     @Override
