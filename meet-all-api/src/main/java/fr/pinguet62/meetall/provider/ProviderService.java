@@ -3,6 +3,7 @@ package fr.pinguet62.meetall.provider;
 import fr.pinguet62.meetall.dto.ConversationDto;
 import fr.pinguet62.meetall.dto.MessageDto;
 import fr.pinguet62.meetall.dto.ProfileDto;
+import fr.pinguet62.meetall.dto.ProposalDto;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -15,6 +16,8 @@ public interface ProviderService {
                 .collectList().map(it -> true)
                 .onErrorReturn(false);
     }
+
+    Flux<ProposalDto> getProposals(String credential);
 
     Mono<ProfileDto> getProfile(String credential, String profileId);
 

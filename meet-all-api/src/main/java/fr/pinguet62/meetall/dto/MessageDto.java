@@ -16,7 +16,6 @@ import static java.util.Objects.requireNonNull;
 @Getter
 public class MessageDto {
 
-    @NotNull
     @NotEmpty
     private final String id;
 
@@ -24,10 +23,8 @@ public class MessageDto {
     @Past
     private final ZonedDateTime date;
 
-    @NotNull
     private final boolean sent;
 
-    @NotNull
     @NotEmpty
     private final String text;
 

@@ -3,6 +3,7 @@ package fr.pinguet62.meetall.provider.tinder;
 import fr.pinguet62.meetall.dto.ConversationDto;
 import fr.pinguet62.meetall.dto.MessageDto;
 import fr.pinguet62.meetall.dto.ProfileDto;
+import fr.pinguet62.meetall.dto.ProposalDto;
 import fr.pinguet62.meetall.provider.Provider;
 import fr.pinguet62.meetall.provider.ProviderService;
 import fr.pinguet62.meetall.provider.tinder.dto.TinderGetConversationResponseDto;
@@ -10,6 +11,8 @@ import fr.pinguet62.meetall.provider.tinder.dto.TinderGetConversationResponseDto
 import fr.pinguet62.meetall.provider.tinder.dto.TinderGetMessagesResponseDto;
 import fr.pinguet62.meetall.provider.tinder.dto.TinderGetMessagesResponseDto.TinderGetMessagesDataResponseDto;
 import fr.pinguet62.meetall.provider.tinder.dto.TinderGetMetaResponseDto;
+import fr.pinguet62.meetall.provider.tinder.dto.TinderGetRecommendationsResponseDto;
+import fr.pinguet62.meetall.provider.tinder.dto.TinderGetRecommendationsResponseDto.TinderGetRecommendationsDataResponseDto;
 import fr.pinguet62.meetall.provider.tinder.dto.TinderGetUserResponseDto;
 import fr.pinguet62.meetall.provider.tinder.dto.TinderMatchDto;
 import fr.pinguet62.meetall.provider.tinder.dto.TinderMessageDto;
@@ -70,6 +73,17 @@ public class TinderProviderService implements ProviderService {
                 .header(HEADER, authToken)
                 .retrieve().bodyToMono(TinderGetMetaResponseDto.class)
                 .map(TinderGetMetaResponseDto::getUser);
+    }
+
+    @Override
+    public Flux<ProposalDto> getProposals(String authToken) {
+        return webClient.get()
+                .uri("/v2/recs/core")
+                .header(HEADER, authToken)
+                .retrieve().bodyToFlux(TinderGetRecommendationsResponseDto.class)
+                .map(tinderGetRecommendationsResponseDto -> tinderGetRecommendationsResponseDto.getData())
+                .flatMapIterable(TinderGetRecommendationsDataResponseDto::getResults)
+                .map(TinderConverters::convert);
     }
 
     @Override

@@ -15,7 +15,6 @@ import static java.util.Objects.requireNonNull;
 @Getter
 public class RegisteredCredentialDto {
 
-    @NotNull
     private final int id;
 
     @NotEmpty
@@ -24,7 +23,6 @@ public class RegisteredCredentialDto {
     @NotNull
     private final Provider provider;
 
-    @NotNull
     private final boolean ok;
 
     public RegisteredCredentialDto(int id, String label, Provider provider, boolean ok) {

@@ -5,6 +5,8 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.time.ZonedDateTime;
 
@@ -16,10 +18,11 @@ import static java.util.Objects.requireNonNull;
 @Getter
 public class ConversationDto {
 
-    @NotNull
+    @NotEmpty
     private final String id;
 
     @NotNull
+    @Valid
     private final ProfileDto profile; // TODO LazyProfileDto
 
     /**

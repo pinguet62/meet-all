@@ -14,6 +14,13 @@ import {TabsPage} from './tabs.page';
             component: TabsPage,
             children: [
                 {
+                    path: 'proposals',
+                    children: [{
+                        path: '',
+                        loadChildren: '../proposals/proposals.module#ProposalsModule',
+                    }]
+                },
+                {
                     path: 'conversations',
                     children: [{
                         path: '',

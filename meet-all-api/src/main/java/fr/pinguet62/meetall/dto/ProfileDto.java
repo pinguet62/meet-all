@@ -16,19 +16,17 @@ import static java.util.Objects.requireNonNull;
 @Getter
 public class ProfileDto {
 
-    @NotNull
     @NotEmpty
     private final String id;
 
-    @NotNull
     @NotEmpty
     private final String name;
 
-    @NotNull
     @PositiveOrZero
     private final int age;
 
-    private final List<String> avatars;
+    @NotNull
+    private final List<@NotEmpty String> avatars;
 
     public ProfileDto(String id, String name, int age, List<String> avatars) {
         this.id = requireNonNull(id);

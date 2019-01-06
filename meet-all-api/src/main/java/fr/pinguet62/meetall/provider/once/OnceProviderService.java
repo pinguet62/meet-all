@@ -3,10 +3,14 @@ package fr.pinguet62.meetall.provider.once;
 import fr.pinguet62.meetall.dto.ConversationDto;
 import fr.pinguet62.meetall.dto.MessageDto;
 import fr.pinguet62.meetall.dto.ProfileDto;
+import fr.pinguet62.meetall.dto.ProposalDto;
 import fr.pinguet62.meetall.provider.Provider;
 import fr.pinguet62.meetall.provider.ProviderService;
 import fr.pinguet62.meetall.provider.once.dto.OnceConversationsResponseDto;
-import fr.pinguet62.meetall.provider.once.dto.OnceMatchResponseDto;
+import fr.pinguet62.meetall.provider.once.dto.OnceMatchAllResponseDto;
+import fr.pinguet62.meetall.provider.once.dto.OnceMatchAllResultDto;
+import fr.pinguet62.meetall.provider.once.dto.OnceMatchByIdResponseDto;
+import fr.pinguet62.meetall.provider.once.dto.OnceMatchResultMatchDto;
 import fr.pinguet62.meetall.provider.once.dto.OnceMessagesResponseDto;
 import fr.pinguet62.meetall.provider.once.dto.OnceSendMessageRequestDto;
 import fr.pinguet62.meetall.provider.once.dto.OnceSendMessageResponseDto;
@@ -46,12 +50,25 @@ public class OnceProviderService implements ProviderService {
     }
 
     @Override
+    public Flux<ProposalDto> getProposals(String authorization) {
+        return this.webClient.get()
+                .uri("/v1/match")
+                .header(HEADER, authorization)
+                .retrieve().bodyToMono(OnceMatchAllResponseDto.class)
+                .map(OnceMatchAllResponseDto::getResult)
+                .flatMapMany((OnceMatchAllResultDto res) -> Flux.fromIterable(res.getMatches())
+                        .map((OnceMatchResultMatchDto it) -> new ProposalDto(
+                                it.getId(),
+                                OnceConverters.convert(it.getId(), it.getUser(), res.getBase_url()))));
+    }
+
+    @Override
     public Mono<ProfileDto> getProfile(String authorization, String matchId) {
         return this.webClient.get()
                 .uri("/v1/match/{matchId}", matchId)
                 .header(HEADER, authorization)
-                .retrieve().bodyToMono(OnceMatchResponseDto.class)
-                .map(OnceMatchResponseDto::getResult)
+                .retrieve().bodyToMono(OnceMatchByIdResponseDto.class)
+                .map(OnceMatchByIdResponseDto::getResult)
                 .map(it -> OnceConverters.convert(it.getMatch().getId(), it.getMatch().getUser(), it.getBase_url()));
     }
 

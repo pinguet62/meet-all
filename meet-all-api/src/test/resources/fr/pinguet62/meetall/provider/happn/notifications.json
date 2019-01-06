@@ -1,0 +1,73 @@
+{
+  "success": true,
+  "status": 200,
+  "error": null,
+  "data": [
+    {
+      "id": "6758b9e9-7691-4acb-8096-9a8c596098dc_1489726553",
+      "notifier": {
+        "id": "1489726553",
+        "role": "CLIENT",
+        "type": "CLIENT",
+        "clickable_message_link": false,
+        "display_name": "Virginie",
+        "my_relation": 0,
+        "age": 26,
+        "profiles": [
+          {
+            "id": "21576359045",
+            "url": "https://1675564c27.optimicdn.com/cache/images/1489726553/320-320.0_592356f68d916-592356f68d95e.jpg",
+            "width": 320,
+            "height": 320
+          },
+          {
+            "id": "21079468338",
+            "url": "https://1675564c27.optimicdn.com/cache/images/1489726553/320-320.0_57c80a2f98d74-57c80a2f98dc7.jpg",
+            "width": 320,
+            "height": 320
+          }
+        ],
+        "nb_photos": 4,
+        "birth_date": null
+      }
+    },
+    {
+      "id": "6758b9e9-7691-4acb-8096-9a8c596098dc_21086711847",
+      "notifier": {
+        "id": "21086711847",
+        "role": "CLIENT",
+        "type": "CLIENT",
+        "clickable_message_link": false,
+        "display_name": "Justine",
+        "my_relation": 1,
+        "age": 30,
+        "profiles": [],
+        "nb_photos": 4,
+        "birth_date": null
+      }
+    },
+    {
+      "id": "6758b9e9-7691-4acb-8096-9a8c596098dc_1eeeb72a-6ae8-4d0f-aea7-68a0852d5063",
+      "notifier": {
+        "id": "1eeeb72a-6ae8-4d0f-aea7-68a0852d5063",
+        "role": "CLIENT",
+        "type": "CLIENT",
+        "clickable_message_link": false,
+        "display_name": "Takoua",
+        "my_relation": 0,
+        "age": 26,
+        "profiles": [
+          {
+            "id": "b0ec72e0-bd1c-11e8-9958-372c0714599a",
+            "url": "https://1675564c27.optimicdn.com/cache/images/1eeeb72a-6ae8-4d0f-aea7-68a0852d5063/320-320.0_b0ec72e0-bd1c-11e8-9958-372c0714599a.jpg",
+            "width": 320,
+            "height": 320
+          }
+        ],
+        "nb_photos": 5,
+        "birth_date": null
+      }
+    }
+  ],
+  "error_code": 0
+}

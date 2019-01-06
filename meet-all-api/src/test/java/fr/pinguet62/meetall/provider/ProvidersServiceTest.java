@@ -6,6 +6,7 @@ import fr.pinguet62.meetall.credential.CredentialRepository;
 import fr.pinguet62.meetall.dto.ConversationDto;
 import fr.pinguet62.meetall.dto.MessageDto;
 import fr.pinguet62.meetall.dto.ProfileDto;
+import fr.pinguet62.meetall.dto.ProposalDto;
 import org.junit.Before;
 import org.junit.Test;
 import reactor.core.publisher.Flux;
@@ -26,6 +27,7 @@ import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
@@ -42,6 +44,66 @@ public class ProvidersServiceTest {
         credentialRepository = mock(CredentialRepository.class);
         providerServices = new ArrayList<>();
         service = new ProvidersService(credentialRepository, providerServices);
+    }
+
+    @Test
+    public void getProposalsForUser() {
+        final String userId = "userId";
+
+        // Credentials
+        when(credentialRepository.findByUserId(userId)).thenReturn(asList(
+                new Credential(91, userId, TINDER, "tinderCredential_91", "label 91"),
+                new Credential(92, userId, HAPPN, "happnCredential_92", "label 92")));
+        // Provider: TINDER
+        ProviderService tinderProviderService = mock(ProviderService.class);
+        when(tinderProviderService.getId()).thenReturn(TINDER);
+        when(tinderProviderService.getProposals("tinderCredential_91")).thenReturn(Flux.just(
+                new ProposalDto("propTinder11", new ProfileDto("profTinder11", "profile name 11", 11, emptyList())),
+                new ProposalDto("propTinder12", new ProfileDto("profTinder12", "profile name 12", 12, emptyList()))));
+        providerServices.add(tinderProviderService);
+        // Provider: HAPPN
+        ProviderService happnProviderService = mock(ProviderService.class);
+        when(happnProviderService.getId()).thenReturn(HAPPN);
+        when(happnProviderService.getProposals("happnCredential_92")).thenReturn(Flux.just(
+                new ProposalDto("propHappn21", new ProfileDto("profHappn21", "profile name 21", 21, emptyList()))));
+        providerServices.add(happnProviderService);
+
+        Mono<PartialList<ProposalDto>> result = service.getProposalsForUser(userId);
+
+        PartialList<ProposalDto> proposals = result.block();
+        assertThat(proposals.isPartial(), is(false));
+        assertThat(proposals, containsInAnyOrder(
+                new ProposalDto("91#propTinder11", new ProfileDto("91#profTinder11", "profile name 11", 11, emptyList())),
+                new ProposalDto("91#propTinder12", new ProfileDto("91#profTinder12", "profile name 12", 12, emptyList())),
+                new ProposalDto("92#propHappn21", new ProfileDto("92#profHappn21", "profile name 21", 21, emptyList()))));
+    }
+
+    @Test
+    public void getProposalsForUser_partial() {
+        final String userId = "userId";
+
+        // Credentials
+        when(credentialRepository.findByUserId(userId)).thenReturn(asList(
+                new Credential(91, userId, TINDER, "tinderCredential_91", "label 91"),
+                new Credential(92, userId, HAPPN, "happnCredential_92", "label 92")));
+        // Provider: TINDER
+        ProviderService tinderProviderService = mock(ProviderService.class);
+        when(tinderProviderService.getId()).thenReturn(TINDER);
+        when(tinderProviderService.getProposals("tinderCredential_91")).thenReturn(Flux.just(
+                new ProposalDto("propTinder12", new ProfileDto("profTinder12", "profile name 12", 12, emptyList()))));
+        providerServices.add(tinderProviderService);
+        // Provider: HAPPN
+        ProviderService happnProviderService = mock(ProviderService.class);
+        when(happnProviderService.getId()).thenReturn(HAPPN);
+        when(happnProviderService.getProposals("happnCredential_92")).thenReturn(Flux.error(new RuntimeException()));
+        providerServices.add(happnProviderService);
+
+        Mono<PartialList<ProposalDto>> result = service.getProposalsForUser(userId);
+
+        PartialList<ProposalDto> proposals = result.block();
+        assertThat(proposals.isPartial(), is(true));
+        assertThat(proposals, containsInAnyOrder(
+                new ProposalDto("91#propTinder12", new ProfileDto("91#profTinder12", "profile name 12", 12, emptyList()))));
     }
 
     @Test

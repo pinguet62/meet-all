@@ -7,6 +7,11 @@ import {Component} from '@angular/core';
 
             <ion-tab-bar slot="bottom">
 
+                <ion-tab-button tab="proposals">
+                    <ion-icon name="heart"></ion-icon>
+                    <ion-label>Proposals</ion-label>
+                </ion-tab-button>
+
                 <ion-tab-button tab="conversations">
                     <ion-icon name="chatboxes"></ion-icon>
                     <ion-label>Conversations</ion-label>

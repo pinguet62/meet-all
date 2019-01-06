@@ -11,6 +11,7 @@ public class HappnUserDto {
 
     private String id;
     private String display_name;
+    private HappnRelation my_relation;
     private Integer age;
     @GraphQLField(additional = ".mode(0).width(1000).height(1000)")
     private List<HappnProfileDto> profiles;

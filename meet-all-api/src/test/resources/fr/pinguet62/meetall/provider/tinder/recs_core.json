@@ -1,0 +1,212 @@
+{
+  "meta": {
+    "status": 200
+  },
+  "data": {
+    "results": [
+      {
+        "type": "user",
+        "user": {
+          "_id": "5c309d64cbb73e636034dc15",
+          "bio": "",
+          "birth_date": "1991-01-08T17:18:24.039Z",
+          "name": "Laetitia",
+          "photos": [
+            {
+              "id": "3cfd9990-392c-42c4-8c70-dae8fa620930",
+              "crop_info": {
+                "user": {
+                  "width_pct": 1,
+                  "x_offset_pct": 0,
+                  "height_pct": 1,
+                  "y_offset_pct": 0
+                },
+                "algo": {
+                  "width_pct": 0.2717192769050598,
+                  "x_offset_pct": 0.3491598963737488,
+                  "height_pct": 0.37558943033218384,
+                  "y_offset_pct": 0.2871495187282562
+                },
+                "processed_by_bullseye": true,
+                "user_customized": false
+              },
+              "url": "https://images-ssl.gotinder.com/5c309d64cbb73e636034dc15/1080x1080_3cfd9990-392c-42c4-8c70-dae8fa620930.jpg",
+              "processedFiles": [
+                {
+                  "url": "https://images-ssl.gotinder.com/5c309d64cbb73e636034dc15/640x640_3cfd9990-392c-42c4-8c70-dae8fa620930.jpg",
+                  "height": 640,
+                  "width": 640
+                },
+                {
+                  "url": "https://images-ssl.gotinder.com/5c309d64cbb73e636034dc15/320x320_3cfd9990-392c-42c4-8c70-dae8fa620930.jpg",
+                  "height": 320,
+                  "width": 320
+                },
+                {
+                  "url": "https://images-ssl.gotinder.com/5c309d64cbb73e636034dc15/172x172_3cfd9990-392c-42c4-8c70-dae8fa620930.jpg",
+                  "height": 172,
+                  "width": 172
+                },
+                {
+                  "url": "https://images-ssl.gotinder.com/5c309d64cbb73e636034dc15/84x84_3cfd9990-392c-42c4-8c70-dae8fa620930.jpg",
+                  "height": 84,
+                  "width": 84
+                }
+              ],
+              "fileName": "3cfd9990-392c-42c4-8c70-dae8fa620930.jpg",
+              "extension": "jpg"
+            },
+            {
+              "id": "496f518b-a369-4740-8d95-f19bdb2a3572",
+              "crop_info": {
+                "user": {
+                  "width_pct": 1,
+                  "x_offset_pct": 0,
+                  "height_pct": 1,
+                  "y_offset_pct": 0
+                },
+                "algo": {
+                  "width_pct": 0.2610776722431183,
+                  "x_offset_pct": 0.35103002190589905,
+                  "height_pct": 0.31662869453430176,
+                  "y_offset_pct": 0.15336917340755463
+                },
+                "processed_by_bullseye": true,
+                "user_customized": false
+              },
+              "url": "https://images-ssl.gotinder.com/5c309d64cbb73e636034dc15/1080x1080_496f518b-a369-4740-8d95-f19bdb2a3572.jpg",
+              "processedFiles": [
+                {
+                  "url": "https://images-ssl.gotinder.com/5c309d64cbb73e636034dc15/640x640_496f518b-a369-4740-8d95-f19bdb2a3572.jpg",
+                  "height": 640,
+                  "width": 640
+                },
+                {
+                  "url": "https://images-ssl.gotinder.com/5c309d64cbb73e636034dc15/320x320_496f518b-a369-4740-8d95-f19bdb2a3572.jpg",
+                  "height": 320,
+                  "width": 320
+                },
+                {
+                  "url": "https://images-ssl.gotinder.com/5c309d64cbb73e636034dc15/172x172_496f518b-a369-4740-8d95-f19bdb2a3572.jpg",
+                  "height": 172,
+                  "width": 172
+                },
+                {
+                  "url": "https://images-ssl.gotinder.com/5c309d64cbb73e636034dc15/84x84_496f518b-a369-4740-8d95-f19bdb2a3572.jpg",
+                  "height": 84,
+                  "width": 84
+                }
+              ],
+              "fileName": "496f518b-a369-4740-8d95-f19bdb2a3572.jpg",
+              "extension": "jpg"
+            }
+          ],
+          "gender": 1,
+          "jobs": [
+            {
+              "title": {
+                "name": "Ressources Humaines"
+              }
+            }
+          ],
+          "schools": []
+        },
+        "facebook": {
+          "common_connections": [],
+          "connection_count": 0,
+          "common_interests": []
+        },
+        "spotify": {
+          "spotify_connected": false
+        },
+        "distance_mi": 1,
+        "content_hash": "dYzCQGT43Fx2T2DFMgs3eU9lC97u3LuXGHR0CEDT1LHJUVa",
+        "s_number": 684525366,
+        "teaser": {
+          "type": "job",
+          "string": "Ressources Humaines"
+        },
+        "teasers": [
+          {
+            "type": "job",
+            "string": "Ressources Humaines"
+          }
+        ]
+      },
+      {
+        "type": "user",
+        "user": {
+          "_id": "5c30dbfb7f49061862de6256",
+          "bio": "Steuplé, Fais moi rire !",
+          "birth_date": "1991-01-08T17:18:24.039Z",
+          "name": "Florine",
+          "photos": [
+            {
+              "id": "8b718deb-9c11-4835-86e7-100c613f865e",
+              "crop_info": {
+                "user": {
+                  "width_pct": 1,
+                  "x_offset_pct": 0,
+                  "height_pct": 1,
+                  "y_offset_pct": 0
+                },
+                "algo": {
+                  "width_pct": 0.7011240720748901,
+                  "x_offset_pct": 0.15856537222862244,
+                  "height_pct": 0.725202739238739,
+                  "y_offset_pct": 0
+                },
+                "processed_by_bullseye": true,
+                "user_customized": false
+              },
+              "url": "https://images-ssl.gotinder.com/5c30dbfb7f49061862de6256/1080x1080_8b718deb-9c11-4835-86e7-100c613f865e.jpg",
+              "processedFiles": [
+                {
+                  "url": "https://images-ssl.gotinder.com/5c30dbfb7f49061862de6256/640x640_8b718deb-9c11-4835-86e7-100c613f865e.jpg",
+                  "height": 640,
+                  "width": 640
+                },
+                {
+                  "url": "https://images-ssl.gotinder.com/5c30dbfb7f49061862de6256/320x320_8b718deb-9c11-4835-86e7-100c613f865e.jpg",
+                  "height": 320,
+                  "width": 320
+                },
+                {
+                  "url": "https://images-ssl.gotinder.com/5c30dbfb7f49061862de6256/172x172_8b718deb-9c11-4835-86e7-100c613f865e.jpg",
+                  "height": 172,
+                  "width": 172
+                },
+                {
+                  "url": "https://images-ssl.gotinder.com/5c30dbfb7f49061862de6256/84x84_8b718deb-9c11-4835-86e7-100c613f865e.jpg",
+                  "height": 84,
+                  "width": 84
+                }
+              ],
+              "fileName": "8b718deb-9c11-4835-86e7-100c613f865e.jpg",
+              "extension": "jpg",
+              "main": true
+            }
+          ],
+          "gender": 1,
+          "jobs": [],
+          "schools": []
+        },
+        "facebook": {
+          "common_connections": [],
+          "connection_count": 0,
+          "common_interests": []
+        },
+        "spotify": {
+          "spotify_connected": false
+        },
+        "distance_mi": 5,
+        "content_hash": "AMXiveIgbHoOTDGfQFQ8s6vcRosmRIdsxfrat5lTlmfEv",
+        "s_number": 684646430,
+        "teaser": {
+          "string": ""
+        },
+        "teasers": []
+      }
+    ]
+  }
+}

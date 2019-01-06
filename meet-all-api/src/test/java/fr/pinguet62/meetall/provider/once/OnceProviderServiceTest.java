@@ -3,6 +3,7 @@ package fr.pinguet62.meetall.provider.once;
 import fr.pinguet62.meetall.dto.ConversationDto;
 import fr.pinguet62.meetall.dto.MessageDto;
 import fr.pinguet62.meetall.dto.ProfileDto;
+import fr.pinguet62.meetall.dto.ProposalDto;
 import okhttp3.HttpUrl;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
@@ -58,11 +59,33 @@ public class OnceProviderServiceTest {
     }
 
     @Test
+    public void getProposals() throws Exception {
+        server.enqueue(new MockResponse()
+                .setHeader(CONTENT_TYPE, APPLICATION_JSON_UTF8_VALUE)
+                .setBody(readFile("match.json")));
+
+        List<ProposalDto> proposal = onceProvider.getProposals(authToken).collectList().block();
+
+        assertThat(server, takingRequest(allOf(
+                url(with(HttpUrl::url, with(URL::toString, containsString("match")))),
+                header(HEADER, authToken))));
+        assertThat(proposal, contains(new ProposalDto(
+                "MEA353970154",
+                new ProfileDto(
+                        "MEA353970154",
+                        "Anne-marie",
+                        27,
+                        asList(
+                                "https://d110abryny6tab.cloudfront.net/pictures/EA6728641/33787916_original.jpg",
+                                "https://d110abryny6tab.cloudfront.net/pictures/EA6728641/33803466_original.jpg")))));
+    }
+
+    @Test
     public void getProfile() throws Exception {
         final String userId = "userId";
         server.enqueue(new MockResponse()
                 .setHeader(CONTENT_TYPE, APPLICATION_JSON_UTF8_VALUE)
-                .setBody(readFile("match.json")));
+                .setBody(readFile("match_id.json")));
 
         ProfileDto profile = onceProvider.getProfile(authToken, userId).block();
 

@@ -3,12 +3,16 @@ package fr.pinguet62.meetall.provider.happn;
 import fr.pinguet62.meetall.dto.ConversationDto;
 import fr.pinguet62.meetall.dto.MessageDto;
 import fr.pinguet62.meetall.dto.ProfileDto;
+import fr.pinguet62.meetall.dto.ProposalDto;
 import fr.pinguet62.meetall.provider.Provider;
 import fr.pinguet62.meetall.provider.ProviderService;
 import fr.pinguet62.meetall.provider.happn.dto.HappnConversationDto;
 import fr.pinguet62.meetall.provider.happn.dto.HappnConversationsResponseDto;
 import fr.pinguet62.meetall.provider.happn.dto.HappnMessageDto;
 import fr.pinguet62.meetall.provider.happn.dto.HappnMessagesResponseDto;
+import fr.pinguet62.meetall.provider.happn.dto.HappnNotificationDto;
+import fr.pinguet62.meetall.provider.happn.dto.HappnNotificationsResponseDto;
+import fr.pinguet62.meetall.provider.happn.dto.HappnRelation;
 import fr.pinguet62.meetall.provider.happn.dto.HappnSendMessageRequestDto;
 import fr.pinguet62.meetall.provider.happn.dto.HappnSendMessageResponseDto;
 import fr.pinguet62.meetall.provider.happn.dto.HappnUserDto;
@@ -20,6 +24,7 @@ import reactor.core.publisher.Mono;
 
 import static fr.pinguet62.meetall.provider.Provider.HAPPN;
 import static fr.pinguet62.meetall.provider.happn.GraphQLUtils.parseGraph;
+import static fr.pinguet62.meetall.provider.happn.dto.HappnRelation.NEW_RELATION;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.web.reactive.function.BodyInserters.fromObject;
 
@@ -48,6 +53,21 @@ public class HappnProviderService implements ProviderService {
     @Override
     public Provider getId() {
         return HAPPN;
+    }
+
+    @Override
+    public Flux<ProposalDto> getProposals(String authToken) {
+        return this.webClient.get()
+                .uri(uriBuilder -> uriBuilder
+                        .path("/users/me/notifications")
+                        .queryParam("limit", 9999)
+                        .queryParam("fields", parseGraph(HappnNotificationDto.class))
+                        .build())
+                .header(HEADER, "OAuth=\"" + authToken + "\"")
+                .retrieve().bodyToMono(HappnNotificationsResponseDto.class)
+                .flatMapIterable(HappnNotificationsResponseDto::getData)
+                .filter(it -> it.getNotifier().getMy_relation().equals(NEW_RELATION))
+                .map(HappnConverters::convert);
     }
 
     @Override

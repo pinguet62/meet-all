@@ -3,6 +3,7 @@ package fr.pinguet62.meetall;
 import fr.pinguet62.meetall.dto.ConversationDto;
 import fr.pinguet62.meetall.dto.MessageDto;
 import fr.pinguet62.meetall.dto.ProfileDto;
+import fr.pinguet62.meetall.dto.ProposalDto;
 import fr.pinguet62.meetall.provider.ProvidersService;
 import fr.pinguet62.meetall.security.utils.WithMockUserId;
 import org.junit.Test;
@@ -39,6 +40,31 @@ public class MeetControllerTest {
 
     @MockBean
     private ProvidersService providersService;
+
+    @Test
+    public void getProposals() {
+        when(providersService.getProposalsForUser(currentUserId)).thenReturn(Mono.just(new PartialArrayList<>(asList(
+                new ProposalDto("proposal-1", new ProfileDto("profile-id-1", "profile-name-1", 1, emptyList())),
+                new ProposalDto("proposal-2", new ProfileDto("profile-id-2", "profile-name-2", 2, emptyList()))))));
+
+        webTestClient.get()
+                .uri("/proposals")
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody()
+                .jsonPath("$[0].id").isEqualTo("proposal-1")
+                .jsonPath("$[1].id").isEqualTo("proposal-2");
+    }
+
+    @Test
+    public void getProposals_partial() {
+        when(providersService.getProposalsForUser(currentUserId)).thenReturn(Mono.just(new PartialArrayList<>(emptyList(), true)));
+
+        webTestClient.get()
+                .uri("/proposals")
+                .exchange()
+                .expectStatus().isEqualTo(PARTIAL_CONTENT);
+    }
 
     @Test
     public void getConversations() {

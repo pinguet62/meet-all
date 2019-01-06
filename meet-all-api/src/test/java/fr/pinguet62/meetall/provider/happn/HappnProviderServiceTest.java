@@ -3,6 +3,7 @@ package fr.pinguet62.meetall.provider.happn;
 import fr.pinguet62.meetall.dto.ConversationDto;
 import fr.pinguet62.meetall.dto.MessageDto;
 import fr.pinguet62.meetall.dto.ProfileDto;
+import fr.pinguet62.meetall.dto.ProposalDto;
 import okhttp3.HttpUrl;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
@@ -29,6 +30,7 @@ import static java.lang.System.lineSeparator;
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.joining;
 import static org.hamcrest.Matchers.allOf;
+import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
@@ -52,6 +54,37 @@ public class HappnProviderServiceTest {
     @After
     public void stopServer() throws IOException {
         server.shutdown();
+    }
+
+    @Test
+    public void getProposals() throws Exception {
+        server.enqueue(new MockResponse()
+                .setHeader(CONTENT_TYPE, APPLICATION_JSON_UTF8_VALUE)
+                .setBody(readFile("notifications.json")));
+
+        List<ProposalDto> proposals = happnProvider.getProposals(authToken).collectList().block();
+
+        assertThat(server, takingRequest(allOf(
+                url(with(HttpUrl::url, with(URL::toString, containsString("users/me/notifications")))),
+                header(HEADER, "OAuth=\"" + authToken + "\""))));
+        assertThat(proposals, contains(
+                new ProposalDto(
+                        "1489726553",
+                        new ProfileDto(
+                                "1489726553",
+                                "Virginie",
+                                26,
+                                asList(
+                                        "https://1675564c27.optimicdn.com/cache/images/1489726553/320-320.0_592356f68d916-592356f68d95e.jpg",
+                                        "https://1675564c27.optimicdn.com/cache/images/1489726553/320-320.0_57c80a2f98d74-57c80a2f98dc7.jpg"))),
+                new ProposalDto(
+                        "1eeeb72a-6ae8-4d0f-aea7-68a0852d5063",
+                        new ProfileDto(
+                                "1eeeb72a-6ae8-4d0f-aea7-68a0852d5063",
+                                "Takoua",
+                                26,
+                                asList(
+                                        "https://1675564c27.optimicdn.com/cache/images/1eeeb72a-6ae8-4d0f-aea7-68a0852d5063/320-320.0_b0ec72e0-bd1c-11e8-9958-372c0714599a.jpg")))));
     }
 
     @Test

@@ -3,6 +3,7 @@ package fr.pinguet62.meetall.provider.tinder;
 import fr.pinguet62.meetall.dto.ConversationDto;
 import fr.pinguet62.meetall.dto.MessageDto;
 import fr.pinguet62.meetall.dto.ProfileDto;
+import fr.pinguet62.meetall.dto.ProposalDto;
 import okhttp3.HttpUrl;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
@@ -27,8 +28,10 @@ import static fr.pinguet62.meetall.MatcherUtils.url;
 import static fr.pinguet62.meetall.MatcherUtils.with;
 import static fr.pinguet62.meetall.provider.tinder.TinderProviderService.HEADER;
 import static java.lang.System.lineSeparator;
+import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.joining;
 import static org.hamcrest.Matchers.allOf;
+import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
@@ -54,6 +57,37 @@ public class TinderProviderServiceTest {
     @After
     public void stopServer() throws IOException {
         server.shutdown();
+    }
+
+    @Test
+    public void getProposals() throws Exception {
+        server.enqueue(new MockResponse()
+                .setHeader(CONTENT_TYPE, APPLICATION_JSON_UTF8_VALUE)
+                .setBody(readFile("recs_core.json")));
+
+        List<ProposalDto> proposals = tinderProvider.getProposals(authToken).collectList().block();
+
+        assertThat(server, takingRequest(allOf(
+                url(with(HttpUrl::url, with(URL::toString, containsString("recs/core")))),
+                header(HEADER, authToken))));
+        assertThat(proposals, contains(
+                new ProposalDto(
+                        "5c309d64cbb73e636034dc15",
+                        new ProfileDto(
+                                "5c309d64cbb73e636034dc15",
+                                "Laetitia",
+                                27,
+                                asList(
+                                        "https://images-ssl.gotinder.com/5c309d64cbb73e636034dc15/1080x1080_3cfd9990-392c-42c4-8c70-dae8fa620930.jpg",
+                                        "https://images-ssl.gotinder.com/5c309d64cbb73e636034dc15/1080x1080_496f518b-a369-4740-8d95-f19bdb2a3572.jpg"))),
+                new ProposalDto(
+                        "5c30dbfb7f49061862de6256",
+                        new ProfileDto(
+                                "5c30dbfb7f49061862de6256",
+                                "Florine",
+                                27,
+                                asList(
+                                        "https://images-ssl.gotinder.com/5c30dbfb7f49061862de6256/1080x1080_8b718deb-9c11-4835-86e7-100c613f865e.jpg")))));
     }
 
     @Test

@@ -3,6 +3,7 @@ package fr.pinguet62.meetall;
 import fr.pinguet62.meetall.dto.ConversationDto;
 import fr.pinguet62.meetall.dto.MessageDto;
 import fr.pinguet62.meetall.dto.ProfileDto;
+import fr.pinguet62.meetall.dto.ProposalDto;
 import fr.pinguet62.meetall.provider.ProvidersService;
 import fr.pinguet62.meetall.security.ApplicationAuthentication;
 import fr.pinguet62.meetall.security.ApplicationReactiveSecurityContextHolder;
@@ -25,6 +26,14 @@ import static org.springframework.http.HttpStatus.PARTIAL_CONTENT;
 public class MeetController {
 
     private final ProvidersService providersService;
+
+    @GetMapping("/proposals")
+    public Mono<ResponseEntity<PartialList<ProposalDto>>> getProposals() {
+        return ApplicationReactiveSecurityContextHolder.getAuthentication()
+                .map(ApplicationAuthentication::getUserId)
+                .flatMap(providersService::getProposalsForUser)
+                .map(it -> it.isPartial() ? new ResponseEntity<>(it, PARTIAL_CONTENT) : ResponseEntity.ok(it));
+    }
 
     @GetMapping("/conversations")
     public Mono<ResponseEntity<PartialList<ConversationDto>>> getConversations() {

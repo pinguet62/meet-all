@@ -8,6 +8,7 @@ import fr.pinguet62.meetall.credential.CredentialRepository;
 import fr.pinguet62.meetall.dto.ConversationDto;
 import fr.pinguet62.meetall.dto.MessageDto;
 import fr.pinguet62.meetall.dto.ProfileDto;
+import fr.pinguet62.meetall.dto.ProposalDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
@@ -33,6 +34,24 @@ public class ProvidersService {
     public ProviderService getProviderService(Provider provider) {
         return providerServices.stream().filter(p -> p.getId().equals(provider)).findFirst()
                 .orElseThrow(() -> new NoProviderFoundException(provider));
+    }
+
+    /**
+     * Update {@link ProposalDto#getId()}, {@link ProfileDto#getId()}.
+     *
+     * @param userId {@link Credential#getUserId()}
+     */
+    public Mono<PartialList<ProposalDto>> getProposalsForUser(String userId) {
+        return Flux.fromIterable(credentialRepository.findByUserId(userId))
+                .flatMap(providerCredential -> getProviderService(providerCredential.getProvider())
+                        .getProposals(providerCredential.getCredential())
+                        .map(it -> it
+                                .withId(TransformedId.format(providerCredential.getId(), it.getId()))
+                                .withProfile(it.getProfile().withId(TransformedId.format(providerCredential.getId(), it.getProfile().getId()))))
+                        // success or error(=partial)
+                        .collect(Collectors.<ProposalDto, PartialList<ProposalDto>>toCollection(PartialArrayList::new))
+                        .onErrorReturn(partialEmpty()))
+                .reduce(concatPartialList());
     }
 
     /**

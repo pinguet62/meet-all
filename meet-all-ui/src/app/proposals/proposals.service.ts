@@ -1,0 +1,28 @@
+import {HttpClient} from '@angular/common/http';
+import {Injectable} from '@angular/core';
+import {Observable} from 'rxjs';
+import {environment} from '../../environments/environment';
+
+export interface Profile {
+    id: string;
+    name: string;
+    age: number;
+    avatars: string[];
+}
+
+export interface Proposal {
+    id: string;
+    profile: Profile;
+}
+
+@Injectable()
+export class ProposalsService {
+
+    constructor(private http: HttpClient) {
+    }
+
+    getProposals(): Observable<Proposal[]> {
+        return this.http.get<Proposal[]>(environment.apiUrl + '/proposals');
+    }
+
+}
