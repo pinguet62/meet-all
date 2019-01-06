@@ -107,26 +107,6 @@ public class ProvidersServiceTest {
     }
 
     @Test
-    public void getProfileForUser() {
-        final String userId = "userId";
-        final int credentialId = 42;
-        final String profileId = "c11#99";
-
-        // Credentials
-        Credential credential = new Credential(credentialId, userId, TINDER, "secret", "label");
-        when(credentialRepository.findByUserId(userId)).thenReturn(singletonList(credential));
-        // Provider
-        ProviderService tinderProviderService = mock(ProviderService.class);
-        when(tinderProviderService.getId()).thenReturn(TINDER);
-        when(tinderProviderService.getProfile("secret", profileId)).thenReturn(Mono.just(new ProfileDto("profTinder", "profile name", 1, emptyList())));
-        providerServices.add(tinderProviderService);
-
-        Mono<ProfileDto> profile = service.getProfileForUser(userId, credentialId, profileId);
-
-        assertThat(profile.block(), is(new ProfileDto(credentialId + "#" + "profTinder", "profile name", 1, emptyList())));
-    }
-
-    @Test
     public void getConversationsForUser() {
         final String userId = "userId";
 
@@ -245,6 +225,26 @@ public class ProvidersServiceTest {
                 new MessageDto(credentialId + "#" + "mess1", ZonedDateTime.of(2001, 4, 7, 9, 13, 37, 27, UTC), false, "text 1"),
                 new MessageDto(credentialId + "#" + "mess2", ZonedDateTime.of(2002, 7, 9, 19, 52, 59, 12, UTC), false, "text 2"),
                 new MessageDto(credentialId + "#" + "mess3", ZonedDateTime.of(2003, 8, 12, 5, 28, 56, 98, UTC), false, "text 3")));
+    }
+
+    @Test
+    public void getProfileForUser() {
+        final String userId = "userId";
+        final int credentialId = 42;
+        final String profileId = "c11#99";
+
+        // Credentials
+        Credential credential = new Credential(credentialId, userId, TINDER, "secret", "label");
+        when(credentialRepository.findByUserId(userId)).thenReturn(singletonList(credential));
+        // Provider
+        ProviderService tinderProviderService = mock(ProviderService.class);
+        when(tinderProviderService.getId()).thenReturn(TINDER);
+        when(tinderProviderService.getProfile("secret", profileId)).thenReturn(Mono.just(new ProfileDto("profTinder", "profile name", 1, emptyList())));
+        providerServices.add(tinderProviderService);
+
+        Mono<ProfileDto> profile = service.getProfileForUser(userId, credentialId, profileId);
+
+        assertThat(profile.block(), is(new ProfileDto(credentialId + "#" + "profTinder", "profile name", 1, emptyList())));
     }
 
 }

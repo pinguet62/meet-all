@@ -63,16 +63,6 @@ public class OnceProviderService implements ProviderService {
     }
 
     @Override
-    public Mono<ProfileDto> getProfile(String authorization, String matchId) {
-        return this.webClient.get()
-                .uri("/v1/match/{matchId}", matchId)
-                .header(HEADER, authorization)
-                .retrieve().bodyToMono(OnceMatchByIdResponseDto.class)
-                .map(OnceMatchByIdResponseDto::getResult)
-                .map(it -> OnceConverters.convert(it.getMatch().getId(), it.getMatch().getUser(), it.getBase_url()));
-    }
-
-    @Override
     public Flux<ConversationDto> getConversations(String authorization) {
         return this.webClient.get()
                 .uri("/v1/connections")
@@ -101,6 +91,16 @@ public class OnceProviderService implements ProviderService {
                 .retrieve().bodyToMono(OnceSendMessageResponseDto.class)
                 .map(OnceSendMessageResponseDto::getResult)
                 .map(OnceConverters::convertSentMessage);
+    }
+
+    @Override
+    public Mono<ProfileDto> getProfile(String authorization, String matchId) {
+        return this.webClient.get()
+                .uri("/v1/match/{matchId}", matchId)
+                .header(HEADER, authorization)
+                .retrieve().bodyToMono(OnceMatchByIdResponseDto.class)
+                .map(OnceMatchByIdResponseDto::getResult)
+                .map(it -> OnceConverters.convert(it.getMatch().getId(), it.getMatch().getUser(), it.getBase_url()));
     }
 
 }

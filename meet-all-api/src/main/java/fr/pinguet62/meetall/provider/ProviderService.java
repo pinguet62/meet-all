@@ -19,12 +19,12 @@ public interface ProviderService {
 
     Flux<ProposalDto> getProposals(String credential);
 
-    Mono<ProfileDto> getProfile(String credential, String profileId);
-
     Flux<ConversationDto> getConversations(String credential);
 
     Flux<MessageDto> getMessages(String credential, String conversationId);
 
     Mono<MessageDto> sendMessage(String credential, String conversationId, String text);
+
+    Mono<ProfileDto> getProfile(String credential, String profileId);
 
 }

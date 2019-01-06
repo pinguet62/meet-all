@@ -12,7 +12,6 @@ import fr.pinguet62.meetall.provider.happn.dto.HappnMessageDto;
 import fr.pinguet62.meetall.provider.happn.dto.HappnMessagesResponseDto;
 import fr.pinguet62.meetall.provider.happn.dto.HappnNotificationDto;
 import fr.pinguet62.meetall.provider.happn.dto.HappnNotificationsResponseDto;
-import fr.pinguet62.meetall.provider.happn.dto.HappnRelation;
 import fr.pinguet62.meetall.provider.happn.dto.HappnSendMessageRequestDto;
 import fr.pinguet62.meetall.provider.happn.dto.HappnSendMessageResponseDto;
 import fr.pinguet62.meetall.provider.happn.dto.HappnUserDto;
@@ -71,19 +70,6 @@ public class HappnProviderService implements ProviderService {
     }
 
     @Override
-    public Mono<ProfileDto> getProfile(String authToken, String profileId) {
-        return this.webClient.get()
-                .uri(uriBuilder -> uriBuilder
-                        .pathSegment("users").pathSegment(profileId)
-                        .queryParam("fields", parseGraph(HappnUserDto.class))
-                        .build())
-                .header(HEADER, "OAuth=\"" + authToken + "\"")
-                .retrieve().bodyToMono(HappnUserResponseDto.class)
-                .map(HappnUserResponseDto::getData)
-                .map(HappnConverters::convert);
-    }
-
-    @Override
     public Flux<ConversationDto> getConversations(String authToken) {
         return this.webClient.get()
                 .uri(uriBuilder -> uriBuilder
@@ -124,6 +110,19 @@ public class HappnProviderService implements ProviderService {
                 .header(HEADER, "OAuth=\"" + authToken + "\"")
                 .retrieve().bodyToMono(HappnSendMessageResponseDto.class)
                 .map(HappnSendMessageResponseDto::getData)
+                .map(HappnConverters::convert);
+    }
+
+    @Override
+    public Mono<ProfileDto> getProfile(String authToken, String profileId) {
+        return this.webClient.get()
+                .uri(uriBuilder -> uriBuilder
+                        .pathSegment("users").pathSegment(profileId)
+                        .queryParam("fields", parseGraph(HappnUserDto.class))
+                        .build())
+                .header(HEADER, "OAuth=\"" + authToken + "\"")
+                .retrieve().bodyToMono(HappnUserResponseDto.class)
+                .map(HappnUserResponseDto::getData)
                 .map(HappnConverters::convert);
     }
 

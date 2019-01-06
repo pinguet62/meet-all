@@ -55,22 +55,6 @@ public class ProvidersService {
     }
 
     /**
-     * Update {@link ProfileDto#getId()}.
-     *
-     * @param userId       {@link Credential#getUserId()}
-     * @param credentialId {@link Credential#getId()}
-     * @param profileId    {@link ProfileDto#getId()}
-     */
-    public Mono<ProfileDto> getProfileForUser(String userId, int credentialId, String profileId) {
-        return Flux.fromIterable(credentialRepository.findByUserId(userId))
-                .filter(providerCredential -> providerCredential.getId().equals(credentialId))
-                .next()
-                .flatMap(providerCredential ->
-                        getProviderService(providerCredential.getProvider()).getProfile(providerCredential.getCredential(), profileId)
-                                .map(it -> it.withId(TransformedId.format(providerCredential.getId(), it.getId()))));
-    }
-
-    /**
      * Merge result of each {@link ProviderService#getConversations(String)}.<br>
      * Update {@link ConversationDto#getId()}, {@link ProfileDto#getId()}, {@link MessageDto#getId()}.<br>
      * Order by descending {@link ConversationDto#getDate()}.
@@ -127,6 +111,22 @@ public class ProvidersService {
                 .next()
                 .flatMap(providerCredential ->
                         getProviderService(providerCredential.getProvider()).sendMessage(providerCredential.getCredential(), conversationId, text)
+                                .map(it -> it.withId(TransformedId.format(providerCredential.getId(), it.getId()))));
+    }
+
+    /**
+     * Update {@link ProfileDto#getId()}.
+     *
+     * @param userId       {@link Credential#getUserId()}
+     * @param credentialId {@link Credential#getId()}
+     * @param profileId    {@link ProfileDto#getId()}
+     */
+    public Mono<ProfileDto> getProfileForUser(String userId, int credentialId, String profileId) {
+        return Flux.fromIterable(credentialRepository.findByUserId(userId))
+                .filter(providerCredential -> providerCredential.getId().equals(credentialId))
+                .next()
+                .flatMap(providerCredential ->
+                        getProviderService(providerCredential.getProvider()).getProfile(providerCredential.getCredential(), profileId)
                                 .map(it -> it.withId(TransformedId.format(providerCredential.getId(), it.getId()))));
     }
 

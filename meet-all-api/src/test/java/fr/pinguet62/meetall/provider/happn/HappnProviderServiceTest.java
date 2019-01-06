@@ -12,23 +12,17 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.time.OffsetDateTime;
 import java.util.List;
-import java.util.stream.Stream;
 
 import static fr.pinguet62.meetall.MatcherUtils.header;
 import static fr.pinguet62.meetall.MatcherUtils.takingRequest;
 import static fr.pinguet62.meetall.MatcherUtils.url;
 import static fr.pinguet62.meetall.MatcherUtils.with;
+import static fr.pinguet62.meetall.TestUtils.readResource;
 import static fr.pinguet62.meetall.provider.happn.HappnProviderService.HEADER;
-import static java.lang.System.lineSeparator;
 import static java.util.Arrays.asList;
-import static java.util.stream.Collectors.joining;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.containsString;
@@ -57,10 +51,10 @@ public class HappnProviderServiceTest {
     }
 
     @Test
-    public void getProposals() throws Exception {
+    public void getProposals() {
         server.enqueue(new MockResponse()
                 .setHeader(CONTENT_TYPE, APPLICATION_JSON_UTF8_VALUE)
-                .setBody(readFile("notifications.json")));
+                .setBody(readResource("/fr/pinguet62/meetall/provider/happn/notifications.json")));
 
         List<ProposalDto> proposals = happnProvider.getProposals(authToken).collectList().block();
 
@@ -88,31 +82,10 @@ public class HappnProviderServiceTest {
     }
 
     @Test
-    public void getProfile() throws Exception {
-        final String userId = "userId";
+    public void getConversations() {
         server.enqueue(new MockResponse()
                 .setHeader(CONTENT_TYPE, APPLICATION_JSON_UTF8_VALUE)
-                .setBody(readFile("user.json")));
-
-        ProfileDto profile = happnProvider.getProfile(authToken, userId).block();
-
-        assertThat(server, takingRequest(allOf(
-                url(with(HttpUrl::url, with(URL::toString, containsString("users/" + userId)))),
-                header(HEADER, "OAuth=\"" + authToken + "\""))));
-        assertThat(profile, is(new ProfileDto(
-                "48a3216c-a73f-4f7b-a5f9-aeeacdbabeb1",
-                "Sophie",
-                26,
-                asList(
-                        "https://1675564c27.optimicdn.com/cache/images/48a3216c-a73f-4f7b-a5f9-aeeacdbabeb1/320-320.0_559a0790-d18a-11e8-9e28-196ec4dfc48e.jpg",
-                        "https://1675564c27.optimicdn.com/cache/images/48a3216c-a73f-4f7b-a5f9-aeeacdbabeb1/320-320.0_3219f290-c117-11e8-b57d-0fc094ce31f9.jpg"))));
-    }
-
-    @Test
-    public void getConversations() throws Exception {
-        server.enqueue(new MockResponse()
-                .setHeader(CONTENT_TYPE, APPLICATION_JSON_UTF8_VALUE)
-                .setBody(readFile("matches.json")));
+                .setBody(readResource("/fr/pinguet62/meetall/provider/happn/conversations.json")));
 
         List<ConversationDto> conversations = happnProvider.getConversations(authToken).collectList().block();
 
@@ -137,11 +110,11 @@ public class HappnProviderServiceTest {
     }
 
     @Test
-    public void getMessages() throws Exception {
+    public void getMessages() {
         final String matchId = "matchId";
         server.enqueue(new MockResponse()
                 .setHeader(CONTENT_TYPE, APPLICATION_JSON_UTF8_VALUE)
-                .setBody(readFile("messages.json")));
+                .setBody(readResource("/fr/pinguet62/meetall/provider/happn/messages.json")));
 
         List<MessageDto> messages = happnProvider.getMessages(authToken, matchId).collectList().block();
 
@@ -162,11 +135,11 @@ public class HappnProviderServiceTest {
     }
 
     @Test
-    public void sendMessage() throws Exception {
+    public void sendMessage() {
         final String matchId = "matchId";
         server.enqueue(new MockResponse()
                 .setHeader(CONTENT_TYPE, APPLICATION_JSON_UTF8_VALUE)
-                .setBody(readFile("sendMessage.json")));
+                .setBody(readResource("/fr/pinguet62/meetall/provider/happn/sendMessage.json")));
 
         MessageDto message = happnProvider.sendMessage(authToken, matchId, "text").block();
 
@@ -180,11 +153,25 @@ public class HappnProviderServiceTest {
                 "test")));
     }
 
-    private String readFile(String resource) throws IOException, URISyntaxException {
-        Path path = Paths.get(getClass().getResource(resource).toURI());
-        try (Stream<String> lines = Files.lines(path)) {
-            return lines.collect(joining(lineSeparator()));
-        }
+    @Test
+    public void getProfile() {
+        final String userId = "48a3216c-a73f-4f7b-a5f9-aeeacdbabeb1";
+        server.enqueue(new MockResponse()
+                .setHeader(CONTENT_TYPE, APPLICATION_JSON_UTF8_VALUE)
+                .setBody(readResource("/fr/pinguet62/meetall/provider/happn/users.json")));
+
+        ProfileDto profile = happnProvider.getProfile(authToken, userId).block();
+
+        assertThat(server, takingRequest(allOf(
+                url(with(HttpUrl::url, with(URL::toString, containsString("users/" + userId)))),
+                header(HEADER, "OAuth=\"" + authToken + "\""))));
+        assertThat(profile, is(new ProfileDto(
+                "48a3216c-a73f-4f7b-a5f9-aeeacdbabeb1",
+                "Sophie",
+                26,
+                asList(
+                        "https://1675564c27.optimicdn.com/cache/images/48a3216c-a73f-4f7b-a5f9-aeeacdbabeb1/320-320.0_559a0790-d18a-11e8-9e28-196ec4dfc48e.jpg",
+                        "https://1675564c27.optimicdn.com/cache/images/48a3216c-a73f-4f7b-a5f9-aeeacdbabeb1/320-320.0_3219f290-c117-11e8-b57d-0fc094ce31f9.jpg"))));
     }
 
 }

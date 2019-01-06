@@ -12,25 +12,19 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.time.ZonedDateTime;
 import java.util.List;
-import java.util.stream.Stream;
 
 import static fr.pinguet62.meetall.MatcherUtils.header;
 import static fr.pinguet62.meetall.MatcherUtils.takingRequest;
 import static fr.pinguet62.meetall.MatcherUtils.url;
 import static fr.pinguet62.meetall.MatcherUtils.with;
+import static fr.pinguet62.meetall.TestUtils.readResource;
 import static fr.pinguet62.meetall.provider.once.OnceProviderService.HEADER;
-import static java.lang.System.lineSeparator;
 import static java.time.ZoneOffset.UTC;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
-import static java.util.stream.Collectors.joining;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.containsString;
@@ -59,10 +53,10 @@ public class OnceProviderServiceTest {
     }
 
     @Test
-    public void getProposals() throws Exception {
+    public void getProposals() {
         server.enqueue(new MockResponse()
                 .setHeader(CONTENT_TYPE, APPLICATION_JSON_UTF8_VALUE)
-                .setBody(readFile("match.json")));
+                .setBody(readResource("/fr/pinguet62/meetall/provider/once/match.json")));
 
         List<ProposalDto> proposal = onceProvider.getProposals(authToken).collectList().block();
 
@@ -81,31 +75,10 @@ public class OnceProviderServiceTest {
     }
 
     @Test
-    public void getProfile() throws Exception {
-        final String userId = "userId";
+    public void getConversations() {
         server.enqueue(new MockResponse()
                 .setHeader(CONTENT_TYPE, APPLICATION_JSON_UTF8_VALUE)
-                .setBody(readFile("match_id.json")));
-
-        ProfileDto profile = onceProvider.getProfile(authToken, userId).block();
-
-        assertThat(server, takingRequest(allOf(
-                url(with(HttpUrl::url, with(URL::toString, containsString("match/" + userId)))),
-                header(HEADER, authToken))));
-        assertThat(profile, is(new ProfileDto(
-                "MEA346007886",
-                "Louise",
-                27,
-                asList(
-                        "https://d110abryny6tab.cloudfront.net/pictures/EA7464845/33485378_original.jpg",
-                        "https://d110abryny6tab.cloudfront.net/pictures/EA7464845/33485380_original.jpg"))));
-    }
-
-    @Test
-    public void getConversations() throws Exception {
-        server.enqueue(new MockResponse()
-                .setHeader(CONTENT_TYPE, APPLICATION_JSON_UTF8_VALUE)
-                .setBody(readFile("connections.json")));
+                .setBody(readResource("/fr/pinguet62/meetall/provider/once/connections.json")));
 
         List<ConversationDto> conversations = onceProvider.getConversations(authToken).collectList().block();
 
@@ -129,11 +102,11 @@ public class OnceProviderServiceTest {
     }
 
     @Test
-    public void getMessages() throws Exception {
-        final String matchId = "matchId";
+    public void getMessages() {
+        final String matchId = "MEA346007886";
         server.enqueue(new MockResponse()
                 .setHeader(CONTENT_TYPE, APPLICATION_JSON_UTF8_VALUE)
-                .setBody(readFile("messages.json")));
+                .setBody(readResource("/fr/pinguet62/meetall/provider/once/messages.json")));
 
         List<MessageDto> messages = onceProvider.getMessages(authToken, matchId).collectList().block();
 
@@ -154,11 +127,11 @@ public class OnceProviderServiceTest {
     }
 
     @Test
-    public void sendMessages() throws Exception {
-        final String matchId = "matchId";
+    public void sendMessages() {
+        final String matchId = "MEA346007886";
         server.enqueue(new MockResponse()
                 .setHeader(CONTENT_TYPE, APPLICATION_JSON_UTF8_VALUE)
-                .setBody(readFile("sendMessage.json")));
+                .setBody(readResource("/fr/pinguet62/meetall/provider/once/message_send.json")));
 
         MessageDto message = onceProvider.sendMessage(authToken, matchId, "text").block();
 
@@ -172,11 +145,25 @@ public class OnceProviderServiceTest {
                 "text")));
     }
 
-    private String readFile(String resource) throws IOException, URISyntaxException {
-        Path path = Paths.get(getClass().getResource(resource).toURI());
-        try (Stream<String> lines = Files.lines(path)) {
-            return lines.collect(joining(lineSeparator()));
-        }
+    @Test
+    public void getProfile() {
+        final String matchId = "MEA346007886";
+        server.enqueue(new MockResponse()
+                .setHeader(CONTENT_TYPE, APPLICATION_JSON_UTF8_VALUE)
+                .setBody(readResource("/fr/pinguet62/meetall/provider/once/match_id.json")));
+
+        ProfileDto profile = onceProvider.getProfile(authToken, matchId).block();
+
+        assertThat(server, takingRequest(allOf(
+                url(with(HttpUrl::url, with(URL::toString, containsString("match/" + matchId)))),
+                header(HEADER, authToken))));
+        assertThat(profile, is(new ProfileDto(
+                "MEA346007886",
+                "Louise",
+                27,
+                asList(
+                        "https://d110abryny6tab.cloudfront.net/pictures/EA7464845/33485378_original.jpg",
+                        "https://d110abryny6tab.cloudfront.net/pictures/EA7464845/33485380_original.jpg"))));
     }
 
 }

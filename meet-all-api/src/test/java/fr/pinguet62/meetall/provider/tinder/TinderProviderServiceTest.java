@@ -12,31 +12,23 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.List;
-import java.util.stream.Stream;
 
 import static fr.pinguet62.meetall.MatcherUtils.header;
 import static fr.pinguet62.meetall.MatcherUtils.takingRequest;
 import static fr.pinguet62.meetall.MatcherUtils.url;
 import static fr.pinguet62.meetall.MatcherUtils.with;
+import static fr.pinguet62.meetall.TestUtils.readResource;
 import static fr.pinguet62.meetall.provider.tinder.TinderProviderService.HEADER;
-import static java.lang.System.lineSeparator;
 import static java.util.Arrays.asList;
-import static java.util.stream.Collectors.joining;
+import static java.util.Collections.singletonList;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
-import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
 import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
@@ -60,10 +52,10 @@ public class TinderProviderServiceTest {
     }
 
     @Test
-    public void getProposals() throws Exception {
+    public void getProposals() {
         server.enqueue(new MockResponse()
                 .setHeader(CONTENT_TYPE, APPLICATION_JSON_UTF8_VALUE)
-                .setBody(readFile("recs_core.json")));
+                .setBody(readResource("/fr/pinguet62/meetall/provider/tinder/recs_core.json")));
 
         List<ProposalDto> proposals = tinderProvider.getProposals(authToken).collectList().block();
 
@@ -91,28 +83,13 @@ public class TinderProviderServiceTest {
     }
 
     @Test
-    public void getProfile() throws Exception {
-        final String userId = "userId";
+    public void getConversations() {
         server.enqueue(new MockResponse()
                 .setHeader(CONTENT_TYPE, APPLICATION_JSON_UTF8_VALUE)
-                .setBody(readFile("user.json")));
-
-        ProfileDto profile = tinderProvider.getProfile(authToken, userId).block();
-
-        assertThat(server, takingRequest(allOf(
-                url(with(HttpUrl::url, with(URL::toString, containsString("user/" + userId)))),
-                header(HEADER, authToken))));
-        assertThat(profile, not(nullValue()));
-    }
-
-    @Test
-    public void getConversations() throws Exception {
+                .setBody(readResource("/fr/pinguet62/meetall/provider/tinder/meta.json")));
         server.enqueue(new MockResponse()
                 .setHeader(CONTENT_TYPE, APPLICATION_JSON_UTF8_VALUE)
-                .setBody(readFile("meta.json")));
-        server.enqueue(new MockResponse()
-                .setHeader(CONTENT_TYPE, APPLICATION_JSON_UTF8_VALUE)
-                .setBody(readFile("matches.json")));
+                .setBody(readResource("/fr/pinguet62/meetall/provider/tinder/matches.json")));
 
         List<ConversationDto> conversations = tinderProvider.getConversations(authToken).collectList().block();
 
@@ -122,18 +99,43 @@ public class TinderProviderServiceTest {
         assertThat(server, takingRequest(allOf(
                 url(with(HttpUrl::url, with(URL::toString, containsString("v2/matches")))),
                 header(HEADER, authToken))));
-        assertThat(conversations, not(nullValue()));
+        assertThat(conversations, contains(
+                new ConversationDto(
+                        "52b4d9ed6c5685412c0002a15bcc1a0cf51fe1f73b780558",
+                        new ProfileDto(
+                                "5bcc1a0cf51fe1f73b780558",
+                                "Marie",
+                                31,
+                                asList(
+                                        "https://images-ssl.gotinder.com/5bcc1a0cf51fe1f73b780558/1080x1080_3ea65ee2-33e1-4a8d-8860-73a7cf2a0a7c.jpg",
+                                        "https://images-ssl.gotinder.com/5bcc1a0cf51fe1f73b780558/1080x1080_d699cc0f-0f82-4add-8da9-8da8df4b39ca.jpg")),
+                        ZonedDateTime.of(2018, 10, 29, 14, 44, 50, 422 * 1000000, ZoneId.of("UTC")),
+                        null),
+                new ConversationDto(
+                        "52b4d9ed6c5685412c0002a15aafa40957398e766afe7ed4",
+                        new ProfileDto(
+                                "5aafa40957398e766afe7ed4",
+                                "Alexandra",
+                                30,
+                                singletonList(
+                                        "https://images-ssl.gotinder.com/5aafa40957398e766afe7ed4/1080x1080_e13be39b-a619-427b-8359-7337e04250f3.jpg")),
+                        ZonedDateTime.of(2018, 10, 26, 10, 10, 8, 500 * 1000000, ZoneId.of("UTC")),
+                        new MessageDto(
+                                "5bd2e800e46c4dd64d1a0866",
+                                ZonedDateTime.of(2018, 10, 26, 10, 10, 8, 500 * 1000000, ZoneId.of("UTC")),
+                                true,
+                                "Alors les entretiens RH sur Tinder, ça embuache ? 😋"))));
     }
 
     @Test
-    public void getMessages() throws Exception {
+    public void getMessages() {
         final String matchId = "matchId";
         server.enqueue(new MockResponse()
                 .setHeader(CONTENT_TYPE, APPLICATION_JSON_UTF8_VALUE)
-                .setBody(readFile("meta.json")));
+                .setBody(readResource("/fr/pinguet62/meetall/provider/tinder/meta.json")));
         server.enqueue(new MockResponse()
                 .setHeader(CONTENT_TYPE, APPLICATION_JSON_UTF8_VALUE)
-                .setBody(readFile("messages.json")));
+                .setBody(readResource("/fr/pinguet62/meetall/provider/tinder/matches_messages.json")));
 
         List<MessageDto> messages = tinderProvider.getMessages(authToken, matchId).collectList().block();
 
@@ -143,15 +145,25 @@ public class TinderProviderServiceTest {
         assertThat(server, takingRequest(allOf(
                 url(with(HttpUrl::url, with(URL::toString, containsString("v2/matches/" + matchId + "/messages")))),
                 header(HEADER, authToken))));
-        assertThat(messages, hasSize(2));
+        assertThat(messages, contains(
+                new MessageDto(
+                        "5bd2e800e46c4dd64d1a0866",
+                        ZonedDateTime.of(2018, 10, 26, 10, 10, 8, 500 * 1000000, ZoneId.of("UTC")),
+                        true,
+                        "Alors les entretiens RH sur Tinder, ça embuache ? 😋"),
+                new MessageDto(
+                        "5bd2e7e67cd91a673b1a9873",
+                        ZonedDateTime.of(2018, 10, 26, 10, 9, 42, 830 * 1000000, ZoneId.of("UTC")),
+                        false,
+                        "Bonjour Julien")));
     }
 
     @Test
-    public void sendMessage() throws Exception {
-        final String matchId = "matchId";
+    public void sendMessage() {
+        final String matchId = "5b6329d7f84145486ecaf51a5c1412e7f3902fed66dd3530";
         server.enqueue(new MockResponse()
                 .setHeader(CONTENT_TYPE, APPLICATION_JSON_UTF8_VALUE)
-                .setBody(readFile("sendMessage.json")));
+                .setBody(readResource("/fr/pinguet62/meetall/provider/tinder/matches_sendMessage.json")));
 
         MessageDto message = tinderProvider.sendMessage(authToken, matchId, "text").block();
 
@@ -165,11 +177,24 @@ public class TinderProviderServiceTest {
                 "Et perso je fonctionne beaucoup au feeling")));
     }
 
-    private String readFile(String resource) throws IOException, URISyntaxException {
-        Path path = Paths.get(getClass().getResource(resource).toURI());
-        try (Stream<String> lines = Files.lines(path)) {
-            return lines.collect(joining(lineSeparator()));
-        }
+    @Test
+    public void getProfile() {
+        final String userId = "userId";
+        server.enqueue(new MockResponse()
+                .setHeader(CONTENT_TYPE, APPLICATION_JSON_UTF8_VALUE)
+                .setBody(readResource("/fr/pinguet62/meetall/provider/tinder/user.json")));
+
+        ProfileDto profile = tinderProvider.getProfile(authToken, userId).block();
+
+        assertThat(server, takingRequest(allOf(
+                url(with(HttpUrl::url, with(URL::toString, containsString("user/" + userId)))),
+                header(HEADER, authToken))));
+        assertThat(profile, is(new ProfileDto(
+                "5b486956f408df634d26de3b",
+                "Al",
+                30,
+                singletonList(
+                        "https://images-ssl.gotinder.com/5b486956f408df634d26de3b/1080x1080_7cd50312-0063-4814-89b0-1568886056ba.jpg"))));
     }
 
 }

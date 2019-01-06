@@ -67,14 +67,6 @@ public class TinderProviderService implements ProviderService {
         return TINDER;
     }
 
-    public Mono<TinderUserDto> getMeta(String authToken) {
-        return webClient.get()
-                .uri("/meta")
-                .header(HEADER, authToken)
-                .retrieve().bodyToMono(TinderGetMetaResponseDto.class)
-                .map(TinderGetMetaResponseDto::getUser);
-    }
-
     @Override
     public Flux<ProposalDto> getProposals(String authToken) {
         return webClient.get()
@@ -83,16 +75,6 @@ public class TinderProviderService implements ProviderService {
                 .retrieve().bodyToFlux(TinderGetRecommendationsResponseDto.class)
                 .map(tinderGetRecommendationsResponseDto -> tinderGetRecommendationsResponseDto.getData())
                 .flatMapIterable(TinderGetRecommendationsDataResponseDto::getResults)
-                .map(TinderConverters::convert);
-    }
-
-    @Override
-    public Mono<ProfileDto> getProfile(String authToken, String userId) {
-        return webClient.get()
-                .uri("/user/{userId}", userId)
-                .header(HEADER, authToken)
-                .retrieve().bodyToMono(TinderGetUserResponseDto.class)
-                .map(TinderGetUserResponseDto::getResults)
                 .map(TinderConverters::convert);
     }
 
@@ -132,6 +114,24 @@ public class TinderProviderService implements ProviderService {
                 .header(HEADER, authToken)
                 .retrieve().bodyToMono(TinderSendMessageResponseDto.class)
                 .map(TinderConverters::convert);
+    }
+
+    @Override
+    public Mono<ProfileDto> getProfile(String authToken, String userId) {
+        return webClient.get()
+                .uri("/user/{userId}", userId)
+                .header(HEADER, authToken)
+                .retrieve().bodyToMono(TinderGetUserResponseDto.class)
+                .map(TinderGetUserResponseDto::getResults)
+                .map(TinderConverters::convert);
+    }
+
+    private Mono<TinderUserDto> getMeta(String authToken) {
+        return webClient.get()
+                .uri("/meta")
+                .header(HEADER, authToken)
+                .retrieve().bodyToMono(TinderGetMetaResponseDto.class)
+                .map(TinderGetMetaResponseDto::getUser);
     }
 
 }
