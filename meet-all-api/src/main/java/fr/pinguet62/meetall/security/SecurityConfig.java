@@ -25,7 +25,7 @@ public class SecurityConfig {
                 .and()
                 // public/private routes
                 .authorizeExchange()
-                        .pathMatchers("/login", "/user")
+                        .pathMatchers("/login", "/user", "/photo/*")
                                 .permitAll()
                         .anyExchange()
                                 .authenticated()

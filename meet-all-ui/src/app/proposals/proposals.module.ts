@@ -7,6 +7,7 @@ import {IonicModule} from '@ionic/angular';
 import {ProposalsPage} from './proposals.page';
 import {ProposalsService} from './proposals.service';
 import {SecurityModule} from '../security';
+import {ProxifiedSrcModule} from "../shared/proxifiedSrc";
 
 @NgModule({
     imports: [
@@ -16,6 +17,7 @@ import {SecurityModule} from '../security';
         HttpClientModule,
         FormsModule,
         // app
+        ProxifiedSrcModule,
         RouterModule.forChild([{path: '', component: ProposalsPage}]),
         SecurityModule,
     ],

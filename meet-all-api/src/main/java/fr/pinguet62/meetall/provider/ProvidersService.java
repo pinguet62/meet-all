@@ -9,6 +9,7 @@ import fr.pinguet62.meetall.dto.ConversationDto;
 import fr.pinguet62.meetall.dto.MessageDto;
 import fr.pinguet62.meetall.dto.ProfileDto;
 import fr.pinguet62.meetall.dto.ProposalDto;
+import fr.pinguet62.meetall.photoproxy.PhotoProxyEncoder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
@@ -20,6 +21,7 @@ import java.util.stream.Collectors;
 import static fr.pinguet62.meetall.PartialListUtils.concatPartialList;
 import static fr.pinguet62.meetall.PartialListUtils.partialEmpty;
 import static java.util.Comparator.comparing;
+import static java.util.stream.Collectors.toList;
 
 @RequiredArgsConstructor
 @Service
@@ -37,7 +39,7 @@ public class ProvidersService {
     }
 
     /**
-     * Update {@link ProposalDto#getId()}, {@link ProfileDto#getId()}.
+     * Update {@link ProposalDto#getId()}, {@link ProfileDto#getId()}, {@link ProfileDto#getAvatars()}.
      *
      * @param userId {@link Credential#getUserId()}
      */
@@ -47,7 +49,9 @@ public class ProvidersService {
                         .getProposals(providerCredential.getCredential())
                         .map(it -> it
                                 .withId(TransformedId.format(providerCredential.getId(), it.getId()))
-                                .withProfile(it.getProfile().withId(TransformedId.format(providerCredential.getId(), it.getProfile().getId()))))
+                                .withProfile(it.getProfile()
+                                        .withId(TransformedId.format(providerCredential.getId(), it.getProfile().getId()))
+                                        .withAvatars(it.getProfile().getAvatars().stream().map(PhotoProxyEncoder::encode).collect(toList()))))
                         // success or error(=partial)
                         .collect(Collectors.<ProposalDto, PartialList<ProposalDto>>toCollection(PartialArrayList::new))
                         .onErrorReturn(partialEmpty()))
@@ -63,7 +67,7 @@ public class ProvidersService {
 
     /**
      * Merge result of each {@link ProviderService#getConversations(String)}.<br>
-     * Update {@link ConversationDto#getId()}, {@link ProfileDto#getId()}, {@link MessageDto#getId()}.<br>
+     * Update {@link ConversationDto#getId()}, {@link ProfileDto#getId()}, {@link ProfileDto#getAvatars()}, {@link MessageDto#getId()}.<br>
      * Order by descending {@link ConversationDto#getDate()}.
      *
      * @param userId {@link Credential#getUserId()}
@@ -74,9 +78,12 @@ public class ProvidersService {
                         .getConversations(providerCredential.getCredential())
                         .map(it -> {
                             it = it.withId(TransformedId.format(providerCredential.getId(), it.getId()));
-                            it = it.withProfile(it.getProfile().withId(TransformedId.format(providerCredential.getId(), it.getProfile().getId())));
+                            it = it.withProfile(it.getProfile()
+                                    .withId(TransformedId.format(providerCredential.getId(), it.getProfile().getId()))
+                                    .withAvatars(it.getProfile().getAvatars().stream().map(PhotoProxyEncoder::encode).collect(toList())));
                             if (it.getLastMessage() != null)
-                                it = it.withLastMessage(it.getLastMessage().withId(TransformedId.format(providerCredential.getId(), it.getLastMessage().getId())));
+                                it = it.withLastMessage(it.getLastMessage()
+                                        .withId(TransformedId.format(providerCredential.getId(), it.getLastMessage().getId())));
                             return it;
                         })
                         // success or error(=partial)
@@ -122,7 +129,7 @@ public class ProvidersService {
     }
 
     /**
-     * Update {@link ProfileDto#getId()}.
+     * Update {@link ProfileDto#getId()}, {@link ProfileDto#getAvatars()}.
      *
      * @param userId       {@link Credential#getUserId()}
      * @param credentialId {@link Credential#getId()}
@@ -134,7 +141,9 @@ public class ProvidersService {
                 .next()
                 .flatMap(providerCredential ->
                         getProviderService(providerCredential.getProvider()).getProfile(providerCredential.getCredential(), profileId)
-                                .map(it -> it.withId(TransformedId.format(providerCredential.getId(), it.getId()))));
+                                .map(it -> it
+                                        .withId(TransformedId.format(providerCredential.getId(), it.getId()))
+                                        .withAvatars(it.getAvatars().stream().map(PhotoProxyEncoder::encode).collect(toList()))));
     }
 
 }

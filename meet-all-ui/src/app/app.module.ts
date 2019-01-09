@@ -28,7 +28,7 @@ import {SecurityModule} from './security';
         {provide: RouteReuseStrategy, useClass: IonicRouteStrategy},
         // app
     ],
-    bootstrap: [AppComponent]
+    bootstrap: [AppComponent],
 })
 export class AppModule {
 }

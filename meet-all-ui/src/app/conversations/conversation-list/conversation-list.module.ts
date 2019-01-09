@@ -7,6 +7,7 @@ import {IonicModule} from '@ionic/angular';
 import {SecurityModule} from '../../security';
 import {ConversationsService} from '../conversations.service';
 import {ConversationListPage} from './conversation-list.page';
+import {ProxifiedSrcModule} from "../../shared/proxifiedSrc";
 
 @NgModule({
     imports: [
@@ -16,8 +17,9 @@ import {ConversationListPage} from './conversation-list.page';
         HttpClientModule,
         FormsModule,
         // app
-        SecurityModule,
+        ProxifiedSrcModule,
         RouterModule.forChild([{path: '', component: ConversationListPage}]),
+        SecurityModule,
     ],
     declarations: [
         ConversationListPage,

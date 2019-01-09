@@ -18,6 +18,7 @@ import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import static fr.pinguet62.meetall.photoproxy.PhotoProxyEncoder.encode;
 import static fr.pinguet62.meetall.provider.Provider.HAPPN;
 import static fr.pinguet62.meetall.provider.Provider.TINDER;
 import static java.time.Duration.ofNanos;
@@ -58,7 +59,7 @@ public class ProvidersServiceTest {
         ProviderService tinderProviderService = mock(ProviderService.class);
         when(tinderProviderService.getId()).thenReturn(TINDER);
         when(tinderProviderService.getProposals("tinderCredential_91")).thenReturn(Flux.just(
-                new ProposalDto("propTinder11", new ProfileDto("profTinder11", "profile name 11", 11, emptyList())),
+                new ProposalDto("propTinder11", new ProfileDto("profTinder11", "profile name 11", 11, singletonList("https://google.fr/favicon.png"))),
                 new ProposalDto("propTinder12", new ProfileDto("profTinder12", "profile name 12", 12, emptyList()))));
         providerServices.add(tinderProviderService);
         // Provider: HAPPN
@@ -73,7 +74,7 @@ public class ProvidersServiceTest {
         PartialList<ProposalDto> proposals = result.block();
         assertThat(proposals.isPartial(), is(false));
         assertThat(proposals, containsInAnyOrder(
-                new ProposalDto("91#propTinder11", new ProfileDto("91#profTinder11", "profile name 11", 11, emptyList())),
+                new ProposalDto("91#propTinder11", new ProfileDto("91#profTinder11", "profile name 11", 11, singletonList(encode("https://google.fr/favicon.png")))),
                 new ProposalDto("91#propTinder12", new ProfileDto("91#profTinder12", "profile name 12", 12, emptyList())),
                 new ProposalDto("92#propHappn21", new ProfileDto("92#profHappn21", "profile name 21", 21, emptyList()))));
     }
@@ -118,7 +119,7 @@ public class ProvidersServiceTest {
         ProviderService tinderProviderService = mock(ProviderService.class);
         when(tinderProviderService.getId()).thenReturn(TINDER);
         when(tinderProviderService.getConversations("tinderCredential_91")).thenReturn(Flux.just(
-                new ConversationDto("convTinder11", new ProfileDto("profTinder11", "profile name 11", 11, emptyList()), ZonedDateTime.of(2001, 4, 7, 9, 13, 37, 27, UTC), new MessageDto("messTinder11", ZonedDateTime.of(2001, 4, 7, 9, 13, 37, 27, UTC), true, "message Tinder 11")),
+                new ConversationDto("convTinder11", new ProfileDto("profTinder11", "profile name 11", 11, singletonList("https://google.fr/favicon.png")), ZonedDateTime.of(2001, 4, 7, 9, 13, 37, 27, UTC), new MessageDto("messTinder11", ZonedDateTime.of(2001, 4, 7, 9, 13, 37, 27, UTC), true, "message Tinder 11")),
                 new ConversationDto("convTinder12", new ProfileDto("profTinder12", "profile name 12", 12, emptyList()), ZonedDateTime.of(2003, 8, 12, 5, 28, 56, 98, UTC), null)));
         providerServices.add(tinderProviderService);
         // Provider: HAPPN
@@ -135,7 +136,7 @@ public class ProvidersServiceTest {
         assertThat(conversations, contains(
                 new ConversationDto("91#convTinder12", new ProfileDto("91#profTinder12", "profile name 12", 12, emptyList()), ZonedDateTime.of(2003, 8, 12, 5, 28, 56, 98, UTC), null),
                 new ConversationDto("92#convHappn21", new ProfileDto("92#profHappn21", "profile name 21", 21, emptyList()), ZonedDateTime.of(2002, 7, 9, 19, 52, 59, 12, UTC), new MessageDto("92#messHappn21", ZonedDateTime.of(2002, 7, 9, 19, 52, 59, 12, UTC), false, "message Happn 21")),
-                new ConversationDto("91#convTinder11", new ProfileDto("91#profTinder11", "profile name 11", 11, emptyList()), ZonedDateTime.of(2001, 4, 7, 9, 13, 37, 27, UTC), new MessageDto("91#messTinder11", ZonedDateTime.of(2001, 4, 7, 9, 13, 37, 27, UTC), true, "message Tinder 11"))));
+                new ConversationDto("91#convTinder11", new ProfileDto("91#profTinder11", "profile name 11", 11, singletonList(encode("https://google.fr/favicon.png"))), ZonedDateTime.of(2001, 4, 7, 9, 13, 37, 27, UTC), new MessageDto("91#messTinder11", ZonedDateTime.of(2001, 4, 7, 9, 13, 37, 27, UTC), true, "message Tinder 11"))));
     }
 
     @Test
@@ -239,12 +240,12 @@ public class ProvidersServiceTest {
         // Provider
         ProviderService tinderProviderService = mock(ProviderService.class);
         when(tinderProviderService.getId()).thenReturn(TINDER);
-        when(tinderProviderService.getProfile("secret", profileId)).thenReturn(Mono.just(new ProfileDto("profTinder", "profile name", 1, emptyList())));
+        when(tinderProviderService.getProfile("secret", profileId)).thenReturn(Mono.just(new ProfileDto("profTinder", "profile name", 1, singletonList("https://google.fr/favicon.png"))));
         providerServices.add(tinderProviderService);
 
         Mono<ProfileDto> profile = service.getProfileForUser(userId, credentialId, profileId);
 
-        assertThat(profile.block(), is(new ProfileDto(credentialId + "#" + "profTinder", "profile name", 1, emptyList())));
+        assertThat(profile.block(), is(new ProfileDto(credentialId + "#" + "profTinder", "profile name", 1, singletonList(encode("https://google.fr/favicon.png")))));
     }
 
 }

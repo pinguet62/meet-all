@@ -18,7 +18,7 @@ import {processLoading} from '../loading-controller.utils';
 
         <ion-content *ngIf="proposals != null && proposals.length !== 0">
             <ion-card>
-                <ion-img [src]="currentProposal.profile.avatars[0]" style="height: 100%;"></ion-img>
+                <ion-img [proxifiedSrc]="currentProposal.profile.avatars[0]" style="height: 100%;"></ion-img>
                 <ion-card-header>
                     <ion-card-title>{{currentProposal.profile.name}}</ion-card-title>
                     <ion-card-subtitle>{{currentProposal.profile.age}} ans</ion-card-subtitle>

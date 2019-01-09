@@ -25,7 +25,7 @@ import {Conversation, ConversationsService} from '../conversations.service';
                 <ion-item *ngFor="let conversation of conversations"
                           [routerLink]="['/tabs/conversations/', conversation.id, conversation.profile.id]">
                     <ion-avatar>
-                        <img [src]="conversation.profile.avatars[0]">
+                        <img [proxifiedSrc]="conversation.profile.avatars[0]">
                     </ion-avatar>
                     <ion-label>
                         <h2>{{conversation.profile.name}}</h2>

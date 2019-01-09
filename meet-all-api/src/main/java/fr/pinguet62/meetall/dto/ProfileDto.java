@@ -41,4 +41,8 @@ public class ProfileDto {
         return new ProfileDto(value, this.name, this.age, this.avatars);
     }
 
+    public ProfileDto withAvatars(List<String> value) {
+        return new ProfileDto(this.id, this.name, this.age, value);
+    }
+
 }
