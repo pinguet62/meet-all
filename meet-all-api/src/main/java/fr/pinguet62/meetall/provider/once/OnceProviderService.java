@@ -89,6 +89,9 @@ public class OnceProviderService implements ProviderService {
                 .flatMapIterable(result -> result.getConnections().stream().map(x -> OnceConverters.convert(x, result.getBase_url())).collect(toList()));
     }
 
+    /**
+     * Ordered by {@link MessageDto#getDate()} descending.
+     */
     @Override
     public Flux<MessageDto> getMessages(String authorization, String matchId) {
         return this.webClient.get()
@@ -96,7 +99,8 @@ public class OnceProviderService implements ProviderService {
                 .header(HEADER, authorization)
                 .retrieve().bodyToMono(OnceMessagesResponseDto.class)
                 .map(OnceMessagesResponseDto::getResult)
-                .flatMapIterable(result -> result.getMessages().stream().map(x -> OnceConverters.convert(x, result.getUser())).collect(toList()));
+                .flatMapIterable(result -> result.getMessages().stream().map(x -> OnceConverters.convert(x, result.getUser())).collect(toList()))
+                .skipLast(1); // First received is "Vous avez été connectés"
     }
 
     @Override

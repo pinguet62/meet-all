@@ -26,6 +26,23 @@
     "chat_key": "MEA346007886",
     "messages": [
       {
+        "id": "MEA346007886::3",
+        "type": 3,
+        "number": 3,
+        "sender_id": "EA7464845",
+        "receiver_id": "EA601448",
+        "message": "test response",
+        "media_file": null,
+        "read": false,
+        "client_id": "WEB--83b08022-4af0-460f-87a5-dd4b71161fae",
+        "match_id": "MEA346007886",
+        "created_at": 1545049171,
+        "info": {
+          "screen_uri": "onceapp://chat/MEA346007886"
+        },
+        "extras": {}
+      },
+      {
         "id": "MEA346007886::2",
         "type": 3,
         "number": 2,

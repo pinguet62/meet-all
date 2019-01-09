@@ -165,16 +165,17 @@ public class OnceProviderServiceTest {
                 url(with(HttpUrl::url, with(URL::toString, containsString("messages?match_id=" + matchId)))),
                 header(HEADER, authToken))));
         assertThat(messages, hasSize(2));
-        assertThat(messages.get(0), is(new MessageDto(
-                "MEA346007886::2",
-                ZonedDateTime.of(2018, 11, 24, 18, 37, 48, 0, UTC),
-                true,
-                "Bonsoir la timide :p")));
-        assertThat(messages.get(1), is(new MessageDto(
-                "MEA346007886::1",
-                ZonedDateTime.of(2018, 11, 24, 13, 36, 50, 0, UTC),
-                true,
-                "Vous avez été connectés")));
+        assertThat(messages, contains(
+                new MessageDto(
+                        "MEA346007886::3",
+                        ZonedDateTime.of(2018, 12, 17, 12, 19, 31, 0, UTC),
+                        false,
+                        "test response"),
+                new MessageDto(
+                        "MEA346007886::2",
+                        ZonedDateTime.of(2018, 11, 24, 18, 37, 48, 0, UTC),
+                        true,
+                        "Bonsoir la timide :p")));
     }
 
     @Test
