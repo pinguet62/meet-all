@@ -81,6 +81,11 @@ public class HappnProviderService implements ProviderService {
                 .flatMap(it -> likeOrUnlike ? Mono.just(it.getHas_crushed()) : Mono.empty());
     }
 
+    /**
+     * Ordered by {@link ConversationDto#getDate()} descending.<br>
+     * Exclude first welcome conversation.<br>
+     * Exclude pubs like "happn pack".
+     */
     @Override
     public Flux<ConversationDto> getConversations(String authToken) {
         return this.webClient.get()
@@ -92,6 +97,8 @@ public class HappnProviderService implements ProviderService {
                 .header(HEADER, "OAuth=\"" + authToken + "\"")
                 .retrieve().bodyToMono(HappnConversationsResponseDto.class)
                 .flatMapIterable(HappnConversationsResponseDto::getData)
+                .filter(it -> it.getParticipants().stream().noneMatch(x -> x.getUser().getId().equals("11843")))
+                .filter(it -> it.getParticipants().stream().noneMatch(x -> x.getUser().getType().equals("sponsor")))
                 .map(HappnConverters::convert);
     }
 

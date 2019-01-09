@@ -10,6 +10,13 @@ import java.util.List;
 public class HappnUserDto {
 
     private String id;
+    /**
+     * <ol>
+     * <li>{@code "CLIENT"} for normal user.</li>
+     * <li>{@code "sponsor"} for pub.</li>
+     * </ol>
+     */
+    private String type;
     private String display_name;
     private HappnRelation my_relation;
     private Integer age;
