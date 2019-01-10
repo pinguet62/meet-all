@@ -1,8 +1,8 @@
-import {Component} from '@angular/core';
+import {Component, ViewChild} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
-import {LoadingController} from '@ionic/angular';
+import {IonContent, LoadingController} from '@ionic/angular';
 import {forkJoin} from 'rxjs';
-import {finalize, tap} from 'rxjs/operators';
+import {delay, finalize, tap} from 'rxjs/operators';
 import {processLoading} from '../../loading-controller.utils';
 import {ConversationsService, Message, Profile} from '../conversations.service';
 
@@ -66,6 +66,8 @@ export class ConversationMessagesPage {
 
     readonly conversationId: string;
 
+    @ViewChild(IonContent) content: IonContent;
+
     profile: Profile = null;
     messages: Message[] = null;
 
@@ -81,7 +83,9 @@ export class ConversationMessagesPage {
         const profileId = route.snapshot.paramMap.get('profileId');
         processLoading(loadingController, forkJoin(
             service.getMessagesByConversation(this.conversationId)
-                .pipe(tap(it => this.messages = it)),
+                .pipe(tap(it => this.messages = it))
+                .pipe(delay(10)) // wait for refresh
+                .pipe(tap(() => this.content.scrollToBottom())),
             service.getProfile(profileId)
                 .pipe(tap(it => this.profile = it)),
         )).subscribe();
@@ -92,6 +96,8 @@ export class ConversationMessagesPage {
         this.service.sendMessage(this.conversationId, this.text)
             .pipe(tap(() => this.text = ''))
             .pipe(tap(it => this.messages.push(it)))
+            .pipe(delay(10)) // wait for refresh
+            .pipe(tap(() => this.content.scrollToBottom()))
             .pipe(finalize(() => this.sendingMessage = false))
             .subscribe();
     }
