@@ -1,8 +1,9 @@
 import {Component} from '@angular/core';
 import {LoadingController} from '@ionic/angular';
+import {RefresherEventDetail} from '@ionic/core';
 import {tap} from 'rxjs/operators';
-import {Proposal, ProposalsService} from './proposals.service';
 import {processLoading} from '../loading-controller.utils';
+import {Proposal, ProposalsService} from './proposals.service';
 
 @Component({
     template: `
@@ -13,6 +14,9 @@ import {processLoading} from '../loading-controller.utils';
         </ion-header>
 
         <ion-content *ngIf="proposals != null && proposals.length === 0">
+            <ion-refresher slot="fixed" (ionRefresh)="onRefresh($event)" refreshingSpinner="circles" refreshingText="Refreshing...">
+                <ion-refresher-content></ion-refresher-content>
+            </ion-refresher>
             <h1>No proposal for this moment...</h1>
         </ion-content>
 
@@ -57,7 +61,7 @@ export class ProposalsPage {
 
     constructor(loadingController: LoadingController, private service: ProposalsService) {
         processLoading(loadingController,
-            service.getProposals()
+            this.service.getProposals()
                 .pipe(tap(it => this.proposals = it))
                 .pipe(tap(() => this.currentProposal = this.proposals[0])))
             .subscribe();
@@ -78,6 +82,14 @@ export class ProposalsPage {
     private popNextProfile() {
         this.proposals.splice(0, 1);
         this.currentProposal = this.proposals[0];
+    }
+
+    onRefresh(event: CustomEvent<RefresherEventDetail>) {
+        this.service.getProposals()
+            .pipe(tap(it => this.proposals = it))
+            .pipe(tap(() => this.currentProposal = this.proposals[0]))
+            .pipe(tap(event.detail.complete))
+            .subscribe();
     }
 
 }
