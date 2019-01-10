@@ -175,7 +175,8 @@ public class OnceProviderServiceTest {
                         "MEA346007886::2",
                         ZonedDateTime.of(2018, 11, 24, 18, 37, 48, 0, UTC),
                         true,
-                        "Bonsoir la timide :p")));
+                        "Bonsoir la timide :p"))
+                /* filtered: first message */);
     }
 
     @Test

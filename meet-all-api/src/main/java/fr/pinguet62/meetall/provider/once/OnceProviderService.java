@@ -90,7 +90,8 @@ public class OnceProviderService implements ProviderService {
     }
 
     /**
-     * Ordered by {@link MessageDto#getDate()} descending.
+     * Ordered by {@link MessageDto#getDate()} descending.<br>
+     * Exclude first message "Vous avez été connectés".
      */
     @Override
     public Flux<MessageDto> getMessages(String authorization, String matchId) {
@@ -100,7 +101,7 @@ public class OnceProviderService implements ProviderService {
                 .retrieve().bodyToMono(OnceMessagesResponseDto.class)
                 .map(OnceMessagesResponseDto::getResult)
                 .flatMapIterable(result -> result.getMessages().stream().map(x -> OnceConverters.convert(x, result.getUser())).collect(toList()))
-                .skipLast(1); // First received is "Vous avez été connectés"
+                .skipLast(1);
     }
 
     @Override
