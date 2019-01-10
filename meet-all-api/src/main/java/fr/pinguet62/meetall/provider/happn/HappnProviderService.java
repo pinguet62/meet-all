@@ -60,8 +60,9 @@ public class HappnProviderService implements ProviderService {
         return this.webClient.get()
                 .uri(uriBuilder -> uriBuilder
                         .path("/users/me/notifications")
-                        .queryParam("limit", 9999)
+                        .queryParam("types", 468)
                         .queryParam("fields", parseGraph(HappnNotificationDto.class))
+                        .queryParam("limit", 9999)
                         .build())
                 .header(HEADER, "OAuth=\"" + authToken + "\"")
                 .retrieve().bodyToMono(HappnNotificationsResponseDto.class)
@@ -72,7 +73,7 @@ public class HappnProviderService implements ProviderService {
 
     @Override
     public Mono<Boolean> likeOrUnlikeProposal(String authToken, String userId, boolean likeOrUnlike) {
-        return this.webClient.get()
+        return this.webClient.post()
                 .uri(uriBuilder -> uriBuilder.path("/users/me").pathSegment(likeOrUnlike ? "accepted" : "rejected").pathSegment(userId).build())
                 .header(HEADER, "OAuth=\"" + authToken + "\"")
                 .retrieve().bodyToMono(HappnUserAcceptedResponseDto.class)

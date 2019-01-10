@@ -62,6 +62,7 @@ public class HappnProviderServiceTest {
 
         assertThat(server, takingRequest(allOf(
                 url(with(HttpUrl::url, with(URL::toString, containsString("users/me/notifications")))),
+                url(with(HttpUrl::url, with(URL::toString, containsString("types=468")))),
                 header(HEADER, "OAuth=\"" + authToken + "\""))));
         assertThat(proposals, contains(
                 new ProposalDto(
