@@ -61,10 +61,11 @@ public class OnceProviderService implements ProviderService {
                 .header(HEADER, authorization)
                 .retrieve().bodyToMono(OnceMatchAllResponseDto.class)
                 .map(OnceMatchAllResponseDto::getResult)
-                .flatMapMany((OnceMatchAllResultDto res) -> fromIterable(res.getMatches())
-                        .map((OnceMatchResultMatchDto it) -> new ProposalDto(
-                                it.getId(),
-                                convert(it.getId(), it.getUser(), res.getBase_url()))));
+                .flatMapMany(result -> fromIterable(result.getMatches())
+                        .filter(match -> !match.getViewed())
+                        .map(match -> new ProposalDto(
+                                match.getId(),
+                                convert(match.getId(), match.getUser(), result.getBase_url()))));
     }
 
     @Override

@@ -185,7 +185,7 @@ public class HappnProviderServiceTest {
         assertThat(server, takingRequest(allOf(
                 url(with(HttpUrl::url, with(URL::toString, containsString("users/me/conversations")))),
                 header(HEADER, "OAuth=\"" + authToken + "\""))));
-        assertThat(conversations, empty());
+        assertThat(conversations, is(empty()));
     }
 
     @Test
@@ -199,7 +199,7 @@ public class HappnProviderServiceTest {
         assertThat(server, takingRequest(allOf(
                 url(with(HttpUrl::url, with(URL::toString, containsString("users/me/conversations")))),
                 header(HEADER, "OAuth=\"" + authToken + "\""))));
-        assertThat(conversations, empty());
+        assertThat(conversations, is(empty()));
     }
 
     @Test

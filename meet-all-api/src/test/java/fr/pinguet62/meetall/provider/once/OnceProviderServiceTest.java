@@ -28,7 +28,7 @@ import static java.util.Collections.singletonList;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
@@ -55,10 +55,10 @@ public class OnceProviderServiceTest {
     }
 
     @Test
-    public void getProposals() {
+    public void getProposals_notYetViewed() {
         server.enqueue(new MockResponse()
                 .setHeader(CONTENT_TYPE, APPLICATION_JSON_UTF8_VALUE)
-                .setBody(readResource("/fr/pinguet62/meetall/provider/once/match.json")));
+                .setBody(readResource("/fr/pinguet62/meetall/provider/once/match-notYetViewed.json")));
 
         List<ProposalDto> proposal = onceProvider.getProposals(authToken).collectList().block();
 
@@ -74,6 +74,34 @@ public class OnceProviderServiceTest {
                         asList(
                                 "https://d110abryny6tab.cloudfront.net/pictures/EA6728641/33787916_original.jpg",
                                 "https://d110abryny6tab.cloudfront.net/pictures/EA6728641/33803466_original.jpg")))));
+    }
+
+    @Test
+    public void getProposals_alreadyLiked() {
+        server.enqueue(new MockResponse()
+                .setHeader(CONTENT_TYPE, APPLICATION_JSON_UTF8_VALUE)
+                .setBody(readResource("/fr/pinguet62/meetall/provider/once/match-alreadyLiked.json")));
+
+        List<ProposalDto> proposal = onceProvider.getProposals(authToken).collectList().block();
+
+        assertThat(server, takingRequest(allOf(
+                url(with(HttpUrl::url, with(URL::toString, containsString("match")))),
+                header(HEADER, authToken))));
+        assertThat(proposal, is(empty()));
+    }
+
+    @Test
+    public void getProposals_alreadyPassed() {
+        server.enqueue(new MockResponse()
+                .setHeader(CONTENT_TYPE, APPLICATION_JSON_UTF8_VALUE)
+                .setBody(readResource("/fr/pinguet62/meetall/provider/once/match-alreadyPassed.json")));
+
+        List<ProposalDto> proposal = onceProvider.getProposals(authToken).collectList().block();
+
+        assertThat(server, takingRequest(allOf(
+                url(with(HttpUrl::url, with(URL::toString, containsString("match")))),
+                header(HEADER, authToken))));
+        assertThat(proposal, is(empty()));
     }
 
     @Test

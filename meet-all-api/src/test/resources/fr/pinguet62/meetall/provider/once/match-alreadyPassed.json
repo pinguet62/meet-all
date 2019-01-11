@@ -81,7 +81,7 @@
         "blocked_me": false,
         "viewed": true,
         "liked": false,
-        "passed": false,
+        "passed": true,
         "dismissed": false,
         "blocked": false,
         "connected": false,

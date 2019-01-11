@@ -7,5 +7,6 @@ public class OnceMatchResultMatchDto {
 
     private String id;
     private OnceUserDto user;
+    private Boolean viewed;
 
 }
