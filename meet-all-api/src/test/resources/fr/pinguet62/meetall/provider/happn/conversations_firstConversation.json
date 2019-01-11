@@ -1,0 +1,89 @@
+{
+  "success": true,
+  "status": 200,
+  "error": null,
+  "data": [
+    {
+      "id": "11843_6758b9e9-7691-4acb-8096-9a8c596098dc",
+      "participants": [
+        {
+          "id": "11843_6758b9e9-7691-4acb-8096-9a8c596098dc_6758b9e9-7691-4acb-8096-9a8c596098dc",
+          "user": {
+            "id": "6758b9e9-7691-4acb-8096-9a8c596098dc",
+            "role": "CLIENT",
+            "type": "client",
+            "clickable_message_link": false,
+            "birth_date": "1989-06-14",
+            "display_name": "Julien",
+            "my_relation": 0,
+            "age": 29,
+            "profiles": [
+              {
+                "id": "69f1eca0-db4c-11e8-ba9e-65e7cf8878f0",
+                "url": "https://1675564c27.optimicdn.com/cache/images/6758b9e9-7691-4acb-8096-9a8c596098dc/320-320.0_69f1eca0-db4c-11e8-ba9e-65e7cf8878f0.jpg",
+                "width": 320,
+                "height": 320
+              }
+            ],
+            "nb_photos": 1
+          }
+        },
+        {
+          "id": "11843_6758b9e9-7691-4acb-8096-9a8c596098dc_11843",
+          "user": {
+            "id": "11843",
+            "role": "CLIENT",
+            "type": "client",
+            "clickable_message_link": true,
+            "display_name": "happn",
+            "my_relation": 0,
+            "age": 30,
+            "profiles": [
+              {
+                "id": "19435080634",
+                "url": "https://1675564c27.optimicdn.com/cache/images/66787310/320-320.0_573ad0f24eacd-573ad0f24eb0b.jpg",
+                "width": 320,
+                "height": 320
+              }
+            ],
+            "nb_photos": 1,
+            "birth_date": null,
+            "clickable_profile_link": true
+          }
+        }
+      ],
+      "messages": [
+        {
+          "id": "1540798237_87d46040-db4c-11e8-87a0-193248b4683d",
+          "message": "Hello Julien, bienvenue sur happn !\n\nVous avez maintenant la possibilité de retrouver toutes les personnes que vous avez croisées dans la vraie vie... et qui sait, peut-être votre futur Crush ! \n\nQuelques conseils pour bien démarrer :\n\n1. Likez les profils qui vous plaisent (en appuyant sur ❤️).\n\n2. Envoyez leur un Hello (en appuyant sur ⭐️), pour être sûr de vous faire remarquer: ils recevront instantanément une notification, hehe 😏\n\n3. Activez vos options Premium pour une expérience améliorée 🚀 : accédez à la liste des personnes qui vous ont Liké, devenez invisible dès que vous le souhaitez et bien d’autres avantages à découvrir hppn://open/shop?type=subscriptions. \n\nMaintenant, saisissez votre chance: à vous de jouer ! 🤗\n\nL’équipe happn",
+          "creation_date": "2018-10-29T07:30:37+00:00",
+          "sender": {
+            "id": "11843",
+            "role": "CLIENT",
+            "type": "CLIENT",
+            "clickable_message_link": true,
+            "display_name": "happn",
+            "my_relation": 0,
+            "age": 30,
+            "profiles": [
+              {
+                "id": "19435080634",
+                "url": "https://1675564c27.optimicdn.com/cache/images/66787310/320-320.0_573ad0f24eacd-573ad0f24eb0b.jpg",
+                "width": 320,
+                "height": 320
+              }
+            ],
+            "nb_photos": 1,
+            "birth_date": null,
+            "clickable_profile_link": true
+          }
+        }
+      ],
+      "modification_date": "2018-10-29T07:30:37+00:00"
+    }
+  ],
+  "error_code": 0,
+  "pagination": {
+    "count": 100
+  }
+}

@@ -27,7 +27,7 @@ import static java.util.Collections.singletonList;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
@@ -175,6 +175,34 @@ public class HappnProviderServiceTest {
     }
 
     @Test
+    public void getConversations_ignoreFirstWelcomeConversation() {
+        server.enqueue(new MockResponse()
+                .setHeader(CONTENT_TYPE, APPLICATION_JSON_UTF8_VALUE)
+                .setBody(readResource("/fr/pinguet62/meetall/provider/happn/conversations_firstConversation.json")));
+
+        List<ConversationDto> conversations = happnProvider.getConversations(authToken).collectList().block();
+
+        assertThat(server, takingRequest(allOf(
+                url(with(HttpUrl::url, with(URL::toString, containsString("users/me/conversations")))),
+                header(HEADER, "OAuth=\"" + authToken + "\""))));
+        assertThat(conversations, empty());
+    }
+
+    @Test
+    public void getConversations_ignorePub() {
+        server.enqueue(new MockResponse()
+                .setHeader(CONTENT_TYPE, APPLICATION_JSON_UTF8_VALUE)
+                .setBody(readResource("/fr/pinguet62/meetall/provider/happn/conversations_pub.json")));
+
+        List<ConversationDto> conversations = happnProvider.getConversations(authToken).collectList().block();
+
+        assertThat(server, takingRequest(allOf(
+                url(with(HttpUrl::url, with(URL::toString, containsString("users/me/conversations")))),
+                header(HEADER, "OAuth=\"" + authToken + "\""))));
+        assertThat(conversations, empty());
+    }
+
+    @Test
     public void getMessages() {
         final String matchId = "matchId";
         server.enqueue(new MockResponse()
@@ -186,17 +214,17 @@ public class HappnProviderServiceTest {
         assertThat(server, takingRequest(allOf(
                 url(with(HttpUrl::url, with(URL::toString, containsString("conversations/" + matchId + "/messages")))),
                 header(HEADER, "OAuth=\"" + authToken + "\""))));
-        assertThat(messages, hasSize(20));
-        assertThat(messages.get(0), is(new MessageDto(
-                "1542396170_021ed100-e9d5-11e8-97b3-21468353071b",
-                OffsetDateTime.parse("2018-11-16T19:22:50+00:00").toZonedDateTime(),
-                false,
-                "Salut, ça va et toi ? Pour être sincère avec toi, j’ai passé une bonne soirée, on a bien papoté mais je n’ai pas eu le petit truc...")));
-        assertThat(messages.get(1), is(new MessageDto(
-                "1542395520_7e855a40-e9d3-11e8-97b3-21468353071b",
-                OffsetDateTime.parse("2018-11-16T19:12:00+00:00").toZonedDateTime(),
-                true,
-                "Ah compris : fameux tiers des personnes pas très sincères qui n'envoient plus de message.")));
+        assertThat(messages, contains(
+                new MessageDto(
+                        "1542396170_021ed100-e9d5-11e8-97b3-21468353071b",
+                        OffsetDateTime.parse("2018-11-16T19:22:50+00:00").toZonedDateTime(),
+                        false,
+                        "Salut, ça va et toi ? Pour être sincère avec toi, j’ai passé une bonne soirée, on a bien papoté mais je n’ai pas eu le petit truc..."),
+                new MessageDto(
+                        "1542395520_7e855a40-e9d3-11e8-97b3-21468353071b",
+                        OffsetDateTime.parse("2018-11-16T19:12:00+00:00").toZonedDateTime(),
+                        true,
+                        "Ah compris : fameux tiers des personnes pas très sincères qui n'envoient plus de message.")));
     }
 
     @Test

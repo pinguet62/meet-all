@@ -6,6 +6,7 @@ import lombok.Data;
 public class OnceMessagesDto {
 
     private String id;
+    private Integer number;
     /**
      * @see OnceUserDto#getId()
      */

@@ -164,7 +164,6 @@ public class OnceProviderServiceTest {
         assertThat(server, takingRequest(allOf(
                 url(with(HttpUrl::url, with(URL::toString, containsString("messages?match_id=" + matchId)))),
                 header(HEADER, authToken))));
-        assertThat(messages, hasSize(2));
         assertThat(messages, contains(
                 new MessageDto(
                         "MEA346007886::3",

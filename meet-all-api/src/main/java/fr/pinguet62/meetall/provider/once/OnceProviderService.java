@@ -23,9 +23,11 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import static fr.pinguet62.meetall.provider.Provider.ONCE;
+import static fr.pinguet62.meetall.provider.once.OnceConverters.convert;
 import static java.util.stream.Collectors.toList;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.web.reactive.function.BodyInserters.fromObject;
+import static reactor.core.publisher.Flux.fromIterable;
 
 /**
  * Target user is identified by {@link ConversationDto#getId()},
@@ -59,10 +61,10 @@ public class OnceProviderService implements ProviderService {
                 .header(HEADER, authorization)
                 .retrieve().bodyToMono(OnceMatchAllResponseDto.class)
                 .map(OnceMatchAllResponseDto::getResult)
-                .flatMapMany((OnceMatchAllResultDto res) -> Flux.fromIterable(res.getMatches())
+                .flatMapMany((OnceMatchAllResultDto res) -> fromIterable(res.getMatches())
                         .map((OnceMatchResultMatchDto it) -> new ProposalDto(
                                 it.getId(),
-                                OnceConverters.convert(it.getId(), it.getUser(), res.getBase_url()))));
+                                convert(it.getId(), it.getUser(), res.getBase_url()))));
     }
 
     @Override
@@ -86,7 +88,7 @@ public class OnceProviderService implements ProviderService {
                 .header(HEADER, authorization)
                 .retrieve().bodyToMono(OnceConversationsResponseDto.class)
                 .map(OnceConversationsResponseDto::getResult)
-                .flatMapIterable(result -> result.getConnections().stream().map(x -> OnceConverters.convert(x, result.getBase_url())).collect(toList()));
+                .flatMapIterable(result -> result.getConnections().stream().map(x -> convert(x, result.getBase_url())).collect(toList()));
     }
 
     /**
@@ -100,8 +102,9 @@ public class OnceProviderService implements ProviderService {
                 .header(HEADER, authorization)
                 .retrieve().bodyToMono(OnceMessagesResponseDto.class)
                 .map(OnceMessagesResponseDto::getResult)
-                .flatMapIterable(result -> result.getMessages().stream().map(x -> OnceConverters.convert(x, result.getUser())).collect(toList()))
-                .skipLast(1);
+                .flatMapMany(result -> fromIterable(result.getMessages())
+                        .filter(it -> it.getNumber() != 1)
+                        .map(message -> convert(message, result.getUser())));
     }
 
     @Override
@@ -122,7 +125,7 @@ public class OnceProviderService implements ProviderService {
                 .header(HEADER, authorization)
                 .retrieve().bodyToMono(OnceMatchByIdResponseDto.class)
                 .map(OnceMatchByIdResponseDto::getResult)
-                .map(it -> OnceConverters.convert(it.getMatch().getId(), it.getMatch().getUser(), it.getBase_url()));
+                .map(it -> convert(it.getMatch().getId(), it.getMatch().getUser(), it.getBase_url()));
     }
 
 }
