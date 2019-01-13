@@ -16,6 +16,6 @@ public class TinderLikeResponseDto {
     /***
      * When limit reached.
      */
-    private Integer rate_limited_until;
+    private Long rate_limited_until;
 
 }
