@@ -6,9 +6,9 @@ import {RouterModule} from '@angular/router';
 import {IonicModule} from '@ionic/angular';
 import {SecurityModule} from '../../security';
 import {ConversationsService} from '../conversations.service';
-import {ConversationListPage} from './conversation-list.page';
+import {ConversationListComponent} from './conversation-list.component';
 import {BadgeIconModule} from '../../shared/badge-icon';
-import {ProxifiedSrcModule} from "../../shared/proxifiedSrc";
+import {ProxifiedSrcModule} from '../../shared/proxifiedSrc';
 
 @NgModule({
     imports: [
@@ -20,11 +20,11 @@ import {ProxifiedSrcModule} from "../../shared/proxifiedSrc";
         // app
         BadgeIconModule,
         ProxifiedSrcModule,
-        RouterModule.forChild([{path: '', component: ConversationListPage}]),
+        RouterModule.forChild([{path: '', component: ConversationListComponent}]),
         SecurityModule,
     ],
     declarations: [
-        ConversationListPage,
+        ConversationListComponent,
     ],
     providers: [
         ConversationsService,

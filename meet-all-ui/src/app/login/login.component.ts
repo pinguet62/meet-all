@@ -11,7 +11,7 @@ import {LoginService} from './login.service';
         </ion-content>
     `,
 })
-export class LoginPage {
+export class LoginComponent {
 
     login() {
         window.location.href = LoginService.buildFacebookOAuthLoginUrl(window.location);

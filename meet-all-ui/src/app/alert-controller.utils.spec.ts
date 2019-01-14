@@ -2,8 +2,8 @@ import {AlertController} from '@ionic/angular';
 import {of, throwError} from 'rxjs';
 import {catchErrorAndPresentAlert} from './alert-controller.utils';
 
-describe("alert-controller.utils", () => {
-    describe("createAndPresentAlert", () => {
+describe('alert-controller.utils', () => {
+    describe('createAndPresentAlert', () => {
         let alerterPresentPromise: Promise<void>;
         let alerter: { present: () => Promise<void> }; // HTMLIonAlertElement
         let alertController: jasmine.SpyObj<AlertController>;
@@ -15,27 +15,27 @@ describe("alert-controller.utils", () => {
             alertController.create.and.returnValue(Promise.resolve(alerter));
         });
 
-        it("success: doesn't call AlertController", done => {
+        it('success: doesn\'t call AlertController', done => {
             const operator = catchErrorAndPresentAlert(alertController);
 
-            of("expected")
+            of('expected')
                 .pipe(operator)
                 .subscribe(value => {
-                    expect(value).toEqual("expected");
+                    expect(value).toEqual('expected');
                     expect(alerterPresentPromise.then).not.toHaveBeenCalled();
                     done();
                 });
         });
 
-        it("error: call AlertController", done => {
+        it('error: call AlertController', done => {
             const operator = catchErrorAndPresentAlert(alertController);
 
-            throwError(new Error("expected"))
+            throwError(new Error('expected'))
                 .pipe(operator)
                 .subscribe(
                     () => done.fail(),
                     error => {
-                        expect(error).toEqual(new Error("expected"));
+                        expect(error).toEqual(new Error('expected'));
                         expect(alerterPresentPromise.then).toHaveBeenCalled();
                         done();
                     });

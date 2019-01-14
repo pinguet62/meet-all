@@ -6,7 +6,7 @@ import {RouterModule} from '@angular/router';
 import {IonicModule} from '@ionic/angular';
 import {SecurityModule} from '../../security';
 import {CredentialService} from '../credential.service';
-import {CredentialCreatePage} from './credential-create.page';
+import {CredentialCreateComponent} from './credential-create.component';
 
 @NgModule({
     imports: [
@@ -17,10 +17,10 @@ import {CredentialCreatePage} from './credential-create.page';
         FormsModule,
         // app
         SecurityModule,
-        RouterModule.forChild([{path: '', component: CredentialCreatePage}]),
+        RouterModule.forChild([{path: '', component: CredentialCreateComponent}]),
     ],
     declarations: [
-        CredentialCreatePage,
+        CredentialCreateComponent,
     ],
     providers: [
         CredentialService,

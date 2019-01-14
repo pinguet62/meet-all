@@ -1,7 +1,7 @@
-import {LoadingController} from "@ionic/angular";
-import {defer, from, Observable} from "rxjs";
-import {mergeMap} from "rxjs/operators";
-import {finalize} from "./utils";
+import {LoadingController} from '@ionic/angular';
+import {defer, from, Observable} from 'rxjs';
+import {mergeMap} from 'rxjs/operators';
+import {finalize} from './utils';
 
 export function processLoading<T>(loadingController: LoadingController, action: Observable<T>): Observable<T> {
     return from(loadingController.create())

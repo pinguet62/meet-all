@@ -6,8 +6,8 @@ import {RouterModule} from '@angular/router';
 import {IonicModule} from '@ionic/angular';
 import {SecurityModule} from '../../security';
 import {ConversationsService} from '../conversations.service';
-import {ConversationMessagesPage} from './conversation-messages.page';
-import {ProxifiedSrcModule} from "../../shared/proxifiedSrc";
+import {ConversationMessagesComponent} from './conversation-messages.component';
+import {ProxifiedSrcModule} from '../../shared/proxifiedSrc';
 
 @NgModule({
     imports: [
@@ -18,11 +18,11 @@ import {ProxifiedSrcModule} from "../../shared/proxifiedSrc";
         FormsModule,
         // app
         ProxifiedSrcModule,
-        RouterModule.forChild([{path: '', component: ConversationMessagesPage}]),
+        RouterModule.forChild([{path: '', component: ConversationMessagesComponent}]),
         SecurityModule,
     ],
     declarations: [
-        ConversationMessagesPage,
+        ConversationMessagesComponent,
     ],
     providers: [
         ConversationsService,

@@ -9,6 +9,7 @@ export function buildLocation(url: string): Location {
 }
 
 interface HTMLIonLoadingElement extends Components.IonLoading, HTMLStencilElement {}
+// tslint:disable-next-line
 var HTMLIonLoadingElement: {
     prototype: HTMLIonLoadingElement;
     new (): HTMLIonLoadingElement;

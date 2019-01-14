@@ -1,5 +1,5 @@
-import {Observable, OperatorFunction, throwError} from "rxjs";
-import {catchError, mapTo, mergeMap} from "rxjs/operators";
+import {Observable, OperatorFunction, throwError} from 'rxjs';
+import {catchError, mapTo, mergeMap} from 'rxjs/operators';
 
 /**
  * Like {@link rxjs/finalize} but with support for {@link Observable} parameter.

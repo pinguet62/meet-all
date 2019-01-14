@@ -16,7 +16,7 @@ import {LoginService} from './login.service';
         </ion-content>
     `,
 })
-export class OAuthInterceptorPage {
+export class OauthInterceptorComponent {
 
     constructor(
         router: Router,

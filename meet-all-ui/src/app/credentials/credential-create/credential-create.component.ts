@@ -44,7 +44,7 @@ import {CredentialService, Provider} from '../credential.service';
         </ion-content>
     `,
 })
-export class CredentialCreatePage {
+export class CredentialCreateComponent {
 
     readonly providers = Object.keys(Provider);
 

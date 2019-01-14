@@ -22,7 +22,7 @@ import {Proposal, ProposalsService} from './proposals.service';
 
         <ion-content *ngIf="proposals != null && proposals.length !== 0">
             <ion-card>
-                <ion-img [proxifiedSrc]="currentProposal.profile.avatars[0]" style="height: 100%;"></ion-img>
+                <ion-img [appProxifiedSrc]="currentProposal.profile.avatars[0]" style="height: 100%;"></ion-img>
                 <ion-card-header>
                     <ion-card-title>{{currentProposal.profile.name}}</ion-card-title>
                     <ion-card-subtitle>{{currentProposal.profile.age}} ans</ion-card-subtitle>
@@ -54,7 +54,7 @@ import {Proposal, ProposalsService} from './proposals.service';
         }
     `],
 })
-export class ProposalsPage {
+export class ProposalsComponent {
 
     proposals: Proposal[];
     currentProposal: Proposal = undefined;

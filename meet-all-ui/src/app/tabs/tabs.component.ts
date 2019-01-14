@@ -27,5 +27,5 @@ import {Component} from '@angular/core';
         </ion-tabs>
     `,
 })
-export class TabsPage {
+export class TabsComponent {
 }

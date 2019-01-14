@@ -4,10 +4,10 @@ import {NgModule} from '@angular/core';
 import {FormsModule} from '@angular/forms';
 import {RouterModule} from '@angular/router';
 import {IonicModule} from '@ionic/angular';
-import {ProposalsPage} from './proposals.page';
+import {ProposalsComponent} from './proposals.component';
 import {ProposalsService} from './proposals.service';
 import {SecurityModule} from '../security';
-import {ProxifiedSrcModule} from "../shared/proxifiedSrc";
+import {ProxifiedSrcModule} from '../shared/proxifiedSrc';
 
 @NgModule({
     imports: [
@@ -18,11 +18,11 @@ import {ProxifiedSrcModule} from "../shared/proxifiedSrc";
         FormsModule,
         // app
         ProxifiedSrcModule,
-        RouterModule.forChild([{path: '', component: ProposalsPage}]),
+        RouterModule.forChild([{path: '', component: ProposalsComponent}]),
         SecurityModule,
     ],
     declarations: [
-        ProposalsPage,
+        ProposalsComponent,
     ],
     providers: [
         ProposalsService,

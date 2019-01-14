@@ -6,7 +6,7 @@ import {environment} from '../../environments/environment';
 /** The icon name. */
 export enum Provider {
     HAPPN = 'HAPPN',
-    ONCE = "ONCE",
+    ONCE = 'ONCE',
     TINDER = 'TINDER',
 }
 

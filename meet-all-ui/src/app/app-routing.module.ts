@@ -1,6 +1,6 @@
 import {NgModule} from '@angular/core';
 import {RouterModule} from '@angular/router';
-import {SecurityGuard} from "./security";
+import {SecurityGuard} from './security';
 
 @NgModule({
     imports: [

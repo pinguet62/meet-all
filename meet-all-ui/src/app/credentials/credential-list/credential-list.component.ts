@@ -41,7 +41,7 @@ import {CredentialService, RegisteredCredential} from '../credential.service';
         </ion-content>
     `,
 })
-export class CredentialListPage {
+export class CredentialListComponent {
 
     credentials: RegisteredCredential[];
 

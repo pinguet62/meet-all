@@ -1,6 +1,6 @@
 import {NgModule} from '@angular/core';
 import {RouterModule} from '@angular/router';
-import {TabsPage} from './tabs.page';
+import {TabsComponent} from './tabs.component';
 
 @NgModule({
     imports: [RouterModule.forChild([
@@ -11,7 +11,7 @@ import {TabsPage} from './tabs.page';
         },
         {
             path: 'tabs',
-            component: TabsPage,
+            component: TabsComponent,
             children: [
                 {
                     path: 'proposals',

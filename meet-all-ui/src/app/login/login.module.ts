@@ -4,10 +4,10 @@ import {FormsModule} from '@angular/forms';
 import {HttpClientModule} from '@angular/common/http';
 import {RouterModule} from '@angular/router';
 import {IonicModule} from '@ionic/angular';
-import {LoginPage} from './login.page';
+import {LoginComponent} from './login.component';
 import {LoginService} from './login.service';
 import {SecurityModule} from '../security';
-import {OAuthInterceptorPage} from './oauth-interceptor.page';
+import {OauthInterceptorComponent} from './oauth-interceptor.component';
 
 @NgModule({
     imports: [
@@ -18,14 +18,14 @@ import {OAuthInterceptorPage} from './oauth-interceptor.page';
         FormsModule,
         // app
         RouterModule.forChild([
-            {path: '', component: LoginPage},
-            {path: 'oauth', component: OAuthInterceptorPage}
+            {path: '', component: LoginComponent},
+            {path: 'oauth', component: OauthInterceptorComponent}
         ]),
         SecurityModule,
     ],
     declarations: [
-        LoginPage,
-        OAuthInterceptorPage,
+        LoginComponent,
+        OauthInterceptorComponent,
     ],
     providers: [
         LoginService,

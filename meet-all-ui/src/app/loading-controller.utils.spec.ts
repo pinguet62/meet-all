@@ -12,8 +12,8 @@ function createSpyPromise<T>(callback: (...args: any[]) => T): Promise<T> {
     return promise;
 }
 
-describe("loading-controller.utils", () => {
-    describe("processLoading", () => {
+describe('loading-controller.utils', () => {
+    describe('processLoading', () => {
         let callOrder: string[];
         let loaderPresentPresent: Promise<any>;
         let loaderPresentDismiss: Promise<any>;
@@ -21,35 +21,35 @@ describe("loading-controller.utils", () => {
         let loadingController: jasmine.SpyObj<LoadingController>;
         beforeEach(() => {
             callOrder = [];
-            loaderPresentPresent = createSpyPromise(() => callOrder.push("loaderPresentPresent"));
-            loaderPresentDismiss = createSpyPromise(() => callOrder.push("loaderPresentDismiss"));
+            loaderPresentPresent = createSpyPromise(() => callOrder.push('loaderPresentPresent'));
+            loaderPresentDismiss = createSpyPromise(() => callOrder.push('loaderPresentDismiss'));
             loader = {present: () => loaderPresentPresent, dismiss: () => loaderPresentDismiss};
             loadingController = jasmine.createSpyObj<LoadingController>(LoadingController.name, ['create']);
             loadingController.create.and.returnValue(Promise.resolve(loader));
         });
 
-        it("success", done => {
-            let sourceNext = jasmine.createSpy("source").and.callFake((observer: Subscriber<string>) => {
-                callOrder.push("source");
-                observer.next("source");
+        it('success', done => {
+            const sourceNext = jasmine.createSpy('source').and.callFake((observer: Subscriber<string>) => {
+                callOrder.push('source');
+                observer.next('source');
             });
             const observable = Observable.create(sourceNext);
 
             const result = processLoading(loadingController, observable);
 
             result.subscribe(value => {
-                expect(value).toEqual("source");
+                expect(value).toEqual('source');
                 expect(loaderPresentPresent.then).toHaveBeenCalled();
                 expect(loaderPresentDismiss.then).toHaveBeenCalled();
-                expect(callOrder).toEqual(["loaderPresentPresent", "source", "loaderPresentDismiss"]);
+                expect(callOrder).toEqual(['loaderPresentPresent', 'source', 'loaderPresentDismiss']);
                 done();
             });
         });
 
-        it("error", done => {
-            let sourceError = jasmine.createSpy("source").and.callFake((observer: Subscriber<string>) => {
-                callOrder.push("source");
-                observer.error(new Error("source"));
+        it('error', done => {
+            const sourceError = jasmine.createSpy('source').and.callFake((observer: Subscriber<string>) => {
+                callOrder.push('source');
+                observer.error(new Error('source'));
             });
             const observable = Observable.create(sourceError);
 
@@ -58,10 +58,10 @@ describe("loading-controller.utils", () => {
             result.subscribe(
                 () => done.fail(),
                 error => {
-                    expect(error.message).toEqual("source");
+                    expect(error.message).toEqual('source');
                     expect(loaderPresentPresent.then).toHaveBeenCalled();
                     expect(loaderPresentDismiss.then).toHaveBeenCalled();
-                    expect(callOrder).toEqual(["loaderPresentPresent", "source", "loaderPresentDismiss"]);
+                    expect(callOrder).toEqual(['loaderPresentPresent', 'source', 'loaderPresentDismiss']);
                     done();
                 });
         });

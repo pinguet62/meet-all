@@ -5,7 +5,7 @@ import {ActivatedRoute, convertToParamMap, RouterModule} from '@angular/router';
 import {IonicModule, LoadingController} from '@ionic/angular';
 import {of} from 'rxjs';
 import {allMethodNames, LoadingControllerFake} from '../../test-utils';
-import {ConversationMessagesPage} from './conversation-messages.component';
+import {ConversationMessagesComponent} from './conversation-messages.component';
 import {ConversationsService, Message, Profile} from '../conversations.service';
 
 xdescribe('conversation-messages.page', () => {
@@ -27,7 +27,7 @@ xdescribe('conversation-messages.page', () => {
     // build component
     beforeEach(async(() => {
         TestBed.configureTestingModule({
-            declarations: [ConversationMessagesPage],
+            declarations: [ConversationMessagesComponent],
             providers: [
                 {provide: ActivatedRoute, useValue: activatedRoute},
                 {provide: LoadingController, useClass: LoadingControllerFake},
@@ -47,7 +47,7 @@ xdescribe('conversation-messages.page', () => {
         const sentMessage: Message = {id: 'id', date: new Date(), sent: true, text: 'text'};
         conversationsService.sendMessage.and.returnValue(of(sentMessage));
 
-        const fixture = TestBed.createComponent(ConversationMessagesPage);
+        const fixture = TestBed.createComponent(ConversationMessagesComponent);
         fixture.autoDetectChanges(true);
         fixture.detectChanges();
 

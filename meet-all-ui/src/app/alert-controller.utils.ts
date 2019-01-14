@@ -1,7 +1,7 @@
-import {AlertController} from "@ionic/angular";
-import {AlertOptions} from "@ionic/core";
-import {from, MonoTypeOperatorFunction, throwError} from "rxjs";
-import {catchError, mergeMap} from "rxjs/operators";
+import {AlertController} from '@ionic/angular';
+import {AlertOptions} from '@ionic/core';
+import {from, MonoTypeOperatorFunction, throwError} from 'rxjs';
+import {catchError, mergeMap} from 'rxjs/operators';
 
 export function catchErrorAndPresentAlert<T>(alertController: AlertController, opts?: AlertOptions): MonoTypeOperatorFunction<T> {
     return catchError((err: any) =>

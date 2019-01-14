@@ -25,7 +25,7 @@ import {Conversation, ConversationsService} from '../conversations.service';
                 <ion-item *ngFor="let conversation of conversations"
                           [routerLink]="['/tabs/conversations/', conversation.id, conversation.profile.id]">
                     <ion-avatar>
-                        <img [proxifiedSrc]="conversation.profile.avatars[0]">
+                        <img [appProxifiedSrc]="conversation.profile.avatars[0]">
                         <app-badge-icon *ngIf="conversation.lastMessage != null"
                                         [name]="conversation.lastMessage.sent ? 'undo' : 'redo'"
                                         [color]="conversation.lastMessage.sent ? 'success' : 'danger'"></app-badge-icon>
@@ -40,7 +40,7 @@ import {Conversation, ConversationsService} from '../conversations.service';
         </ion-content>
     `,
 })
-export class ConversationListPage {
+export class ConversationListComponent {
 
     conversations: Conversation[];
 

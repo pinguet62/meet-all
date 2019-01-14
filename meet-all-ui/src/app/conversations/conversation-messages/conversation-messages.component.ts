@@ -16,7 +16,7 @@ import {ConversationsService, Message, Profile} from '../conversations.service';
                 </ion-buttons>
                 <div style="display: flex;">
                     <ion-avatar>
-                        <img *ngIf="profile != null" [proxifiedSrc]="profile.avatars[0]">
+                        <img *ngIf="profile != null" [appProxifiedSrc]="profile.avatars[0]">
                     </ion-avatar>
                     <ion-title *ngIf="profile != null">{{profile.name}}</ion-title>
                 </div>
@@ -27,7 +27,7 @@ import {ConversationsService, Message, Profile} from '../conversations.service';
             <ion-list lines="none">
                 <ion-item *ngFor="let message of messages">
                     <ion-avatar *ngIf="!message.sent">
-                        <img *ngIf="profile != null" [proxifiedSrc]="profile.avatars[0]">
+                        <img *ngIf="profile != null" [appProxifiedSrc]="profile.avatars[0]">
                     </ion-avatar>
                     <ion-text [slot]="message.sent ? 'end' : ''"
                               [ngClass]="['message', message.sent ? 'sent' : 'received']">{{message.text}}</ion-text>
@@ -62,7 +62,7 @@ import {ConversationsService, Message, Profile} from '../conversations.service';
         `
     ]
 })
-export class ConversationMessagesPage {
+export class ConversationMessagesComponent {
 
     readonly conversationId: string;
 
