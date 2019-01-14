@@ -4,8 +4,8 @@ import {By} from '@angular/platform-browser';
 import {ActivatedRoute, convertToParamMap, RouterModule} from '@angular/router';
 import {IonicModule, LoadingController} from '@ionic/angular';
 import {of} from 'rxjs';
-import {LoadingControllerFake} from '../../test-utils';
-import {ConversationMessagesPage} from './conversation-messages.page';
+import {allMethodNames, LoadingControllerFake} from '../../test-utils';
+import {ConversationMessagesPage} from './conversation-messages.component';
 import {ConversationsService, Message, Profile} from '../conversations.service';
 
 xdescribe('conversation-messages.page', () => {
@@ -21,7 +21,7 @@ xdescribe('conversation-messages.page', () => {
                 })
             }
         } as ActivatedRoute;
-        conversationsService = jasmine.createSpyObj<ConversationsService>(ConversationsService.name, Object.keys(ConversationsService.prototype));
+        conversationsService = jasmine.createSpyObj<ConversationsService>(ConversationsService.name, allMethodNames(ConversationsService));
     });
 
     // build component

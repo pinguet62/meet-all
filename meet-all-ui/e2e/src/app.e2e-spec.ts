@@ -9,6 +9,6 @@ describe('new App', () => {
 
   it('should have page title', () => {
     page.navigateTo();
-    expect(page.getPageTitle()).toContain('Ionic App');
+    expect(page.getPageTitle()).toContain('Meet-all');
   });
 });

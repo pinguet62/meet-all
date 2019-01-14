@@ -1,7 +1,6 @@
-import {LoadingController} from "@ionic/angular";
-import {OverlayBaseController} from "@ionic/angular/dist/util/overlay";
-import {Observable, Subscriber} from "rxjs";
-import {processLoading} from "./loading-controller.utils";
+import {LoadingController} from '@ionic/angular';
+import {Observable, Subscriber} from 'rxjs';
+import {processLoading} from './loading-controller.utils';
 
 function createSpyPromise<T>(callback: (...args: any[]) => T): Promise<T> {
     const promise = new Promise<T>(resolve => {
@@ -25,7 +24,7 @@ describe("loading-controller.utils", () => {
             loaderPresentPresent = createSpyPromise(() => callOrder.push("loaderPresentPresent"));
             loaderPresentDismiss = createSpyPromise(() => callOrder.push("loaderPresentDismiss"));
             loader = {present: () => loaderPresentPresent, dismiss: () => loaderPresentDismiss};
-            loadingController = jasmine.createSpyObj<LoadingController>(LoadingController.name, Object.keys(OverlayBaseController.prototype));
+            loadingController = jasmine.createSpyObj<LoadingController>(LoadingController.name, ['create']);
             loadingController.create.and.returnValue(Promise.resolve(loader));
         });
 

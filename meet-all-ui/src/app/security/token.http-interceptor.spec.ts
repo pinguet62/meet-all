@@ -2,6 +2,7 @@ import {Router} from '@angular/router';
 import {of, throwError} from 'rxjs';
 import {TokenHttpInterceptor} from './token.http-interceptor';
 import {HttpErrorResponse, HttpEvent, HttpHandler, HttpRequest} from '@angular/common/http';
+import {allMethodNames} from '../test-utils';
 import {SecurityService} from './security.service';
 
 describe('token.http-interceptor', () => {
@@ -11,11 +12,11 @@ describe('token.http-interceptor', () => {
     let req: jasmine.SpyObj<HttpRequest<any>>;
     let next: jasmine.SpyObj<HttpHandler>;
     beforeEach(() => {
-        router = jasmine.createSpyObj<Router>(Router.name, Object.keys(Router.prototype));
+        router = jasmine.createSpyObj<Router>(Router.name, allMethodNames(Router));
         securityService = new SecurityService();
         securityService.token = 'token';
         httpInterceptor = new TokenHttpInterceptor(router, securityService);
-        req = jasmine.createSpyObj<HttpRequest<any>>(HttpRequest.name, Object.keys(HttpRequest.prototype));
+        req = jasmine.createSpyObj<HttpRequest<any>>(HttpRequest.name, allMethodNames(HttpRequest));
         next = jasmine.createSpyObj<HttpHandler>(HttpHandler.name, ['handle']);
     });
 

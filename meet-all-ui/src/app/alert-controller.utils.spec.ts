@@ -1,7 +1,6 @@
-import {AlertController} from "@ionic/angular";
-import {OverlayBaseController} from "@ionic/angular/dist/util/overlay";
-import {of, throwError} from "rxjs";
-import {catchErrorAndPresentAlert} from "./alert-controller.utils";
+import {AlertController} from '@ionic/angular';
+import {of, throwError} from 'rxjs';
+import {catchErrorAndPresentAlert} from './alert-controller.utils';
 
 describe("alert-controller.utils", () => {
     describe("createAndPresentAlert", () => {
@@ -12,7 +11,7 @@ describe("alert-controller.utils", () => {
             alerterPresentPromise = Promise.resolve();
             spyOn(alerterPresentPromise, 'then').and.callThrough();
             alerter = {present: () => alerterPresentPromise};
-            alertController = jasmine.createSpyObj<AlertController>(AlertController.name, Object.keys(OverlayBaseController.prototype));
+            alertController = jasmine.createSpyObj<AlertController>(AlertController.name, ['create']);
             alertController.create.and.returnValue(Promise.resolve(alerter));
         });
 

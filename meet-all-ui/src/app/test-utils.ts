@@ -1,3 +1,4 @@
+import {Type} from '@angular/core';
 import {LoadingController} from '@ionic/angular';
 import {Components, LoadingOptions} from '@ionic/core';
 
@@ -34,4 +35,8 @@ export class LoadingControllerFake extends LoadingController {
         return Promise.resolve(createHTMLIonLoadingElement());
     }
 
+}
+
+export function allMethodNames<T>(type: Type<T>): ReadonlyArray<keyof T> {
+    return Object.keys(type.prototype) as any as ReadonlyArray<keyof T>;
 }
