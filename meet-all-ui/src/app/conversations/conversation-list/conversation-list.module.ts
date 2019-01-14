@@ -7,6 +7,7 @@ import {IonicModule} from '@ionic/angular';
 import {SecurityModule} from '../../security';
 import {ConversationsService} from '../conversations.service';
 import {ConversationListPage} from './conversation-list.page';
+import {BadgeIconModule} from '../../shared/badge-icon';
 import {ProxifiedSrcModule} from "../../shared/proxifiedSrc";
 
 @NgModule({
@@ -17,6 +18,7 @@ import {ProxifiedSrcModule} from "../../shared/proxifiedSrc";
         HttpClientModule,
         FormsModule,
         // app
+        BadgeIconModule,
         ProxifiedSrcModule,
         RouterModule.forChild([{path: '', component: ConversationListPage}]),
         SecurityModule,

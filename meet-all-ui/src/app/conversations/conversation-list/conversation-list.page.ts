@@ -1,7 +1,7 @@
 import {Component} from '@angular/core';
 import {LoadingController} from '@ionic/angular';
 import {RefresherEventDetail} from '@ionic/core';
-import {tap} from "rxjs/operators";
+import {tap} from 'rxjs/operators';
 import {processLoading} from '../../loading-controller.utils';
 import {Conversation, ConversationsService} from '../conversations.service';
 
@@ -26,6 +26,9 @@ import {Conversation, ConversationsService} from '../conversations.service';
                           [routerLink]="['/tabs/conversations/', conversation.id, conversation.profile.id]">
                     <ion-avatar>
                         <img [proxifiedSrc]="conversation.profile.avatars[0]">
+                        <app-badge-icon *ngIf="conversation.lastMessage != null"
+                                        [name]="conversation.lastMessage.sent ? 'undo' : 'redo'"
+                                        [color]="conversation.lastMessage.sent ? 'success' : 'danger'"></app-badge-icon>
                     </ion-avatar>
                     <ion-label>
                         <h2>{{conversation.profile.name}}</h2>
@@ -35,7 +38,7 @@ import {Conversation, ConversationsService} from '../conversations.service';
                 </ion-item>
             </ion-list>
         </ion-content>
-    `
+    `,
 })
 export class ConversationListPage {
 
