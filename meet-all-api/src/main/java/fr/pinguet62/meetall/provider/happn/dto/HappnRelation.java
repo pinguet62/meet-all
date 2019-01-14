@@ -7,12 +7,10 @@ import static java.util.Arrays.stream;
 
 public enum HappnRelation {
 
-    // new relation
     NEW_RELATION(0),
-    // accepted by me but not (yet) by target
-    ACCEPTED(1),
-    // matched
-    MATCHED(4);
+    ACCEPTED_BY_ME(1), // but not (yet) by target
+    MATCHED(2),
+    DISCUSSING(4);
 
     private final int value;
 
