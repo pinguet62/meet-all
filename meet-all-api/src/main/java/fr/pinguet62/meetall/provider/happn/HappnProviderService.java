@@ -4,6 +4,7 @@ import fr.pinguet62.meetall.dto.ConversationDto;
 import fr.pinguet62.meetall.dto.MessageDto;
 import fr.pinguet62.meetall.dto.ProfileDto;
 import fr.pinguet62.meetall.dto.ProposalDto;
+import fr.pinguet62.meetall.exception.ExpiredTokenException;
 import fr.pinguet62.meetall.provider.Provider;
 import fr.pinguet62.meetall.provider.ProviderService;
 import fr.pinguet62.meetall.provider.happn.dto.HappnConversationDto;
@@ -19,6 +20,7 @@ import fr.pinguet62.meetall.provider.happn.dto.HappnUserDto;
 import fr.pinguet62.meetall.provider.happn.dto.HappnUserResponseDto;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -66,6 +68,7 @@ public class HappnProviderService implements ProviderService {
                         .build())
                 .header(HEADER, "OAuth=\"" + authToken + "\"")
                 .retrieve().bodyToMono(HappnNotificationsResponseDto.class)
+                .onErrorMap(WebClientResponseException.Gone.class, ExpiredTokenException::new)
                 .flatMapIterable(HappnNotificationsResponseDto::getData)
                 .filter(it -> it.getNotifier().getMy_relation().equals(NEW_RELATION))
                 .map(HappnConverters::convert);
@@ -77,6 +80,7 @@ public class HappnProviderService implements ProviderService {
                 .uri(uriBuilder -> uriBuilder.path("/users/me").pathSegment(likeOrUnlike ? "accepted" : "rejected").pathSegment(userId).build())
                 .header(HEADER, "OAuth=\"" + authToken + "\"")
                 .retrieve().bodyToMono(HappnUserAcceptedResponseDto.class)
+                .onErrorMap(WebClientResponseException.Gone.class, ExpiredTokenException::new)
                 .map(HappnUserAcceptedResponseDto::getData)
                 .flatMap(it -> likeOrUnlike ? Mono.just(it.getHas_crushed()) : Mono.empty());
     }
@@ -96,6 +100,7 @@ public class HappnProviderService implements ProviderService {
                         .build())
                 .header(HEADER, "OAuth=\"" + authToken + "\"")
                 .retrieve().bodyToMono(HappnConversationsResponseDto.class)
+                .onErrorMap(WebClientResponseException.Gone.class, ExpiredTokenException::new)
                 .flatMapIterable(HappnConversationsResponseDto::getData)
                 .filter(it -> it.getParticipants().stream().noneMatch(x -> x.getUser().getId().equals("11843")))
                 .filter(it -> it.getParticipants().stream().noneMatch(x -> x.getUser().getType().equals("sponsor")))
@@ -114,6 +119,7 @@ public class HappnProviderService implements ProviderService {
                         .build())
                 .header(HEADER, "OAuth=\"" + authToken + "\"")
                 .retrieve().bodyToMono(HappnMessagesResponseDto.class)
+                .onErrorMap(WebClientResponseException.Gone.class, ExpiredTokenException::new)
                 .flatMapIterable(HappnMessagesResponseDto::getData)
                 .map(HappnConverters::convert);
     }
@@ -128,6 +134,7 @@ public class HappnProviderService implements ProviderService {
                 .body(fromObject(new HappnSendMessageRequestDto(text)))
                 .header(HEADER, "OAuth=\"" + authToken + "\"")
                 .retrieve().bodyToMono(HappnSendMessageResponseDto.class)
+                .onErrorMap(WebClientResponseException.Gone.class, ExpiredTokenException::new)
                 .map(HappnSendMessageResponseDto::getData)
                 .map(HappnConverters::convert);
     }
@@ -141,6 +148,7 @@ public class HappnProviderService implements ProviderService {
                         .build())
                 .header(HEADER, "OAuth=\"" + authToken + "\"")
                 .retrieve().bodyToMono(HappnUserResponseDto.class)
+                .onErrorMap(WebClientResponseException.Gone.class, ExpiredTokenException::new)
                 .map(HappnUserResponseDto::getData)
                 .map(HappnConverters::convert);
     }

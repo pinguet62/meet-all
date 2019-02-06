@@ -4,6 +4,7 @@ import fr.pinguet62.meetall.dto.ConversationDto;
 import fr.pinguet62.meetall.dto.MessageDto;
 import fr.pinguet62.meetall.dto.ProfileDto;
 import fr.pinguet62.meetall.dto.ProposalDto;
+import fr.pinguet62.meetall.exception.ExpiredTokenException;
 import fr.pinguet62.meetall.provider.Provider;
 import fr.pinguet62.meetall.provider.ProviderService;
 import fr.pinguet62.meetall.provider.tinder.dto.TinderGetConversationResponseDto;
@@ -25,6 +26,7 @@ import fr.pinguet62.meetall.provider.tinder.dto.TinderSendMessageResponseDto;
 import fr.pinguet62.meetall.provider.tinder.dto.TinderUserDto;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientResponseException.Unauthorized;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -77,6 +79,7 @@ public class TinderProviderService implements ProviderService {
     @Override
     public Flux<ProposalDto> getProposals(String authToken) {
         return getProfile(authToken)
+                .onErrorMap(Unauthorized.class, ExpiredTokenException::new)
                 .map(TinderProfileDto::getLikes)
                 .map(TinderProfileLikesDto::getLikes_remaining)
                 .flatMapMany(limit ->
@@ -99,6 +102,7 @@ public class TinderProviderService implements ProviderService {
                 .uri(uriBuilder -> uriBuilder.path(likeOrUnlike ? "like" : "pass").pathSegment(userId).build())
                 .header(HEADER, authToken)
                 .retrieve().bodyToMono(TinderLikeResponseDto.class)
+                .onErrorMap(Unauthorized.class, ExpiredTokenException::new)
                 .flatMap(it -> it.getRate_limited_until() != null ? Mono.error(new RuntimeException()) : Mono.just(it)) // "likes remaining" support
                 .flatMap(it -> likeOrUnlike ? Mono.just(TinderConverters.convert(it)) : Mono.empty());
     }
@@ -138,6 +142,7 @@ public class TinderProviderService implements ProviderService {
                 .body(fromObject(new TinderSendMessageRequestDto(text)))
                 .header(HEADER, authToken)
                 .retrieve().bodyToMono(TinderSendMessageResponseDto.class)
+                .onErrorMap(Unauthorized.class, ExpiredTokenException::new)
                 .map(TinderConverters::convert);
     }
 
@@ -147,6 +152,7 @@ public class TinderProviderService implements ProviderService {
                 .uri("/user/{userId}", userId)
                 .header(HEADER, authToken)
                 .retrieve().bodyToMono(TinderGetUserResponseDto.class)
+                .onErrorMap(Unauthorized.class, ExpiredTokenException::new)
                 .map(TinderGetUserResponseDto::getResults)
                 .map(TinderConverters::convert);
     }
@@ -156,6 +162,7 @@ public class TinderProviderService implements ProviderService {
                 .uri("/meta")
                 .header(HEADER, authToken)
                 .retrieve().bodyToMono(TinderGetMetaResponseDto.class)
+                .onErrorMap(Unauthorized.class, ExpiredTokenException::new)
                 .map(TinderGetMetaResponseDto::getUser);
     }
 

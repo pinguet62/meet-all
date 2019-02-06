@@ -4,6 +4,7 @@ import fr.pinguet62.meetall.dto.ConversationDto;
 import fr.pinguet62.meetall.dto.MessageDto;
 import fr.pinguet62.meetall.dto.ProfileDto;
 import fr.pinguet62.meetall.dto.ProposalDto;
+import fr.pinguet62.meetall.exception.ExpiredTokenException;
 import okhttp3.HttpUrl;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
@@ -92,6 +93,16 @@ public class TinderProviderServiceTest {
     }
 
     @Test
+    public void getProposals_tokenExpired() {
+        server.enqueue(new MockResponse()
+                .setResponseCode(401)
+                .setHeader(CONTENT_TYPE, APPLICATION_JSON_UTF8_VALUE)
+                .setBody(readResource("/fr/pinguet62/meetall/provider/tinder/profile_tokenExpired401.json")));
+
+        assertThat(() -> tinderProvider.getProposals(authToken).collectList().block(), throwing(ExpiredTokenException.class));
+    }
+
+    @Test
     public void likeOrUnlikeProposal_unlike() {
         final String userId = "userId";
         server.enqueue(new MockResponse()
@@ -104,6 +115,17 @@ public class TinderProviderServiceTest {
                 url(with(HttpUrl::url, with(URL::toString, containsString("pass/" + userId)))),
                 header(HEADER, authToken))));
         assertThat(matched, nullValue());
+    }
+
+    @Test
+    public void likeOrUnlikeProposal_unlike_tokenExpired() {
+        final String userId = "userId";
+        server.enqueue(new MockResponse()
+                .setResponseCode(401)
+                .setHeader(CONTENT_TYPE, APPLICATION_JSON_UTF8_VALUE)
+                .setBody(readResource("/fr/pinguet62/meetall/provider/tinder/pass_tokenExpired401.json")));
+
+        assertThat(() -> tinderProvider.likeOrUnlikeProposal(authToken, userId, false).block(), throwing(ExpiredTokenException.class));
     }
 
     @Test
@@ -138,6 +160,17 @@ public class TinderProviderServiceTest {
         assertThat(matched, allOf(
                 notNullValue(),
                 is(true)));
+    }
+
+    @Test
+    public void likeOrUnlikeProposal_like_tokenExpired() {
+        final String userId = "userId";
+        server.enqueue(new MockResponse()
+                .setResponseCode(401)
+                .setHeader(CONTENT_TYPE, APPLICATION_JSON_UTF8_VALUE)
+                .setBody(readResource("/fr/pinguet62/meetall/provider/tinder/like_tokenExpired401.json")));
+
+        assertThat(() -> tinderProvider.likeOrUnlikeProposal(authToken, userId, true).block(), throwing(ExpiredTokenException.class));
     }
 
     @Test
@@ -199,6 +232,16 @@ public class TinderProviderServiceTest {
     }
 
     @Test
+    public void getConversations_tokenExpired() {
+        server.enqueue(new MockResponse()
+                .setResponseCode(401)
+                .setHeader(CONTENT_TYPE, APPLICATION_JSON_UTF8_VALUE)
+                .setBody(readResource("/fr/pinguet62/meetall/provider/tinder/meta_tokenExpired401.json")));
+
+        assertThat(() -> tinderProvider.getConversations(authToken).collectList().block(), throwing(ExpiredTokenException.class));
+    }
+
+    @Test
     public void getMessages() {
         final String matchId = "matchId";
         server.enqueue(new MockResponse()
@@ -230,6 +273,17 @@ public class TinderProviderServiceTest {
     }
 
     @Test
+    public void getMessages_tokenExpired() {
+        final String matchId = "matchId";
+        server.enqueue(new MockResponse()
+                .setResponseCode(401)
+                .setHeader(CONTENT_TYPE, APPLICATION_JSON_UTF8_VALUE)
+                .setBody(readResource("/fr/pinguet62/meetall/provider/tinder/meta_tokenExpired401.json")));
+
+        assertThat(() -> tinderProvider.getMessages(authToken, matchId).collectList().block(), throwing(ExpiredTokenException.class));
+    }
+
+    @Test
     public void sendMessage() {
         final String matchId = "5b6329d7f84145486ecaf51a5c1412e7f3902fed66dd3530";
         server.enqueue(new MockResponse()
@@ -246,6 +300,17 @@ public class TinderProviderServiceTest {
                 ZonedDateTime.of(2018, 12, 15, 21, 56, 21, 322 * 1000000, ZoneId.of("UTC")),
                 true,
                 "Et perso je fonctionne beaucoup au feeling")));
+    }
+
+    @Test
+    public void sendMessage_tokenExpired() {
+        final String matchId = "5b6329d7f84145486ecaf51a5c1412e7f3902fed66dd3530";
+        server.enqueue(new MockResponse()
+                .setResponseCode(401)
+                .setHeader(CONTENT_TYPE, APPLICATION_JSON_UTF8_VALUE)
+                .setBody(readResource("/fr/pinguet62/meetall/provider/tinder/matches_sendMessage_tokenExpired401.json")));
+
+        assertThat(() -> tinderProvider.sendMessage(authToken, matchId, "text").block(), throwing(ExpiredTokenException.class));
     }
 
     @Test
@@ -266,6 +331,17 @@ public class TinderProviderServiceTest {
                 30,
                 singletonList(
                         "https://images-ssl.gotinder.com/5b486956f408df634d26de3b/1080x1080_7cd50312-0063-4814-89b0-1568886056ba.jpg"))));
+    }
+
+    @Test
+    public void getProfile_tokenExpired() {
+        final String userId = "userId";
+        server.enqueue(new MockResponse()
+                .setResponseCode(401)
+                .setHeader(CONTENT_TYPE, APPLICATION_JSON_UTF8_VALUE)
+                .setBody(readResource("/fr/pinguet62/meetall/provider/tinder/user_tokenExpired401.json")));
+
+        assertThat(() -> tinderProvider.getProfile(authToken, userId).block(), throwing(ExpiredTokenException.class));
     }
 
 }

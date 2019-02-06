@@ -9,6 +9,7 @@ import fr.pinguet62.meetall.dto.ConversationDto;
 import fr.pinguet62.meetall.dto.MessageDto;
 import fr.pinguet62.meetall.dto.ProfileDto;
 import fr.pinguet62.meetall.dto.ProposalDto;
+import fr.pinguet62.meetall.exception.ExpiredTokenException;
 import fr.pinguet62.meetall.photoproxy.PhotoProxyEncoder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -54,7 +55,7 @@ public class ProvidersService {
                                         .withAvatars(it.getProfile().getAvatars().stream().map(PhotoProxyEncoder::encode).collect(toList()))))
                         // success or error(=partial)
                         .collect(Collectors.<ProposalDto, PartialList<ProposalDto>>toCollection(PartialArrayList::new))
-                        .onErrorReturn(partialEmpty()))
+                        .onErrorReturn(ExpiredTokenException.class, partialEmpty()))
                 .reduce(concatPartialList());
     }
 
@@ -88,7 +89,7 @@ public class ProvidersService {
                         })
                         // success or error(=partial)
                         .collect(Collectors.<ConversationDto, PartialList<ConversationDto>>toCollection(PartialArrayList::new))
-                        .onErrorResume(err -> Mono.just(partialEmpty())))
+                        .onErrorReturn(ExpiredTokenException.class, partialEmpty()))
                 .reduce(concatPartialList())
                 .doOnNext(it -> it.sort(comparing(ConversationDto::getDate).reversed()));
     }

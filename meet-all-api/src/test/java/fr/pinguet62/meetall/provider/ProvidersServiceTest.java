@@ -7,6 +7,7 @@ import fr.pinguet62.meetall.dto.ConversationDto;
 import fr.pinguet62.meetall.dto.MessageDto;
 import fr.pinguet62.meetall.dto.ProfileDto;
 import fr.pinguet62.meetall.dto.ProposalDto;
+import fr.pinguet62.meetall.exception.ExpiredTokenException;
 import org.junit.Before;
 import org.junit.Test;
 import reactor.core.publisher.Flux;
@@ -96,7 +97,7 @@ public class ProvidersServiceTest {
         // Provider: HAPPN
         ProviderService happnProviderService = mock(ProviderService.class);
         when(happnProviderService.getId()).thenReturn(HAPPN);
-        when(happnProviderService.getProposals("happnCredential_92")).thenReturn(Flux.error(new RuntimeException()));
+        when(happnProviderService.getProposals("happnCredential_92")).thenReturn(Flux.error(new ExpiredTokenException()));
         providerServices.add(happnProviderService);
 
         Mono<PartialList<ProposalDto>> result = service.getProposalsForUser(userId);
@@ -156,7 +157,7 @@ public class ProvidersServiceTest {
         // Provider: HAPPN
         ProviderService happnProviderService = mock(ProviderService.class);
         when(happnProviderService.getId()).thenReturn(HAPPN);
-        when(happnProviderService.getConversations("happnCredential_92")).thenReturn(Flux.error(new RuntimeException()));
+        when(happnProviderService.getConversations("happnCredential_92")).thenReturn(Flux.error(new ExpiredTokenException()));
         providerServices.add(happnProviderService);
 
         Mono<PartialList<ConversationDto>> result = service.getConversationsForUser(userId);

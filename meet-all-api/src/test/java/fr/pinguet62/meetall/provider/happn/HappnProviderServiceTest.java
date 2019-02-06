@@ -4,6 +4,7 @@ import fr.pinguet62.meetall.dto.ConversationDto;
 import fr.pinguet62.meetall.dto.MessageDto;
 import fr.pinguet62.meetall.dto.ProfileDto;
 import fr.pinguet62.meetall.dto.ProposalDto;
+import fr.pinguet62.meetall.exception.ExpiredTokenException;
 import okhttp3.HttpUrl;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
@@ -18,6 +19,7 @@ import java.util.List;
 
 import static fr.pinguet62.meetall.MatcherUtils.header;
 import static fr.pinguet62.meetall.MatcherUtils.takingRequest;
+import static fr.pinguet62.meetall.MatcherUtils.throwing;
 import static fr.pinguet62.meetall.MatcherUtils.url;
 import static fr.pinguet62.meetall.MatcherUtils.with;
 import static fr.pinguet62.meetall.TestUtils.readResource;
@@ -86,6 +88,16 @@ public class HappnProviderServiceTest {
     }
 
     @Test
+    public void getProposals_tokenExpired() {
+        server.enqueue(new MockResponse()
+                .setResponseCode(410)
+                .setHeader(CONTENT_TYPE, APPLICATION_JSON_UTF8_VALUE)
+                .setBody(readResource("/fr/pinguet62/meetall/provider/happn/tokenExpired410.json")));
+
+        assertThat(() -> happnProvider.getProposals(authToken).collectList().block(), throwing(ExpiredTokenException.class));
+    }
+
+    @Test
     public void likeOrUnlikeProposal_unlike() {
         final String userId = "userId";
         server.enqueue(new MockResponse()
@@ -98,6 +110,17 @@ public class HappnProviderServiceTest {
                 url(with(HttpUrl::url, with(URL::toString, containsString("users/me/rejected/" + userId)))),
                 header(HEADER, "OAuth=\"" + authToken + "\""))));
         assertThat(matched, nullValue());
+    }
+
+    @Test
+    public void likeOrUnlikeProposal_tokenExpired() {
+        final String userId = "userId";
+        server.enqueue(new MockResponse()
+                .setResponseCode(410)
+                .setHeader(CONTENT_TYPE, APPLICATION_JSON_UTF8_VALUE)
+                .setBody(readResource("/fr/pinguet62/meetall/provider/happn/tokenExpired410.json")));
+
+        assertThat(() -> happnProvider.likeOrUnlikeProposal(authToken, userId, false).block(), throwing(ExpiredTokenException.class));
     }
 
     @Test
@@ -132,6 +155,17 @@ public class HappnProviderServiceTest {
         assertThat(matched, allOf(
                 notNullValue(),
                 is(true)));
+    }
+
+    @Test
+    public void likeOrUnlikeProposal_like_tokenExpired() {
+        final String userId = "userId";
+        server.enqueue(new MockResponse()
+                .setResponseCode(410)
+                .setHeader(CONTENT_TYPE, APPLICATION_JSON_UTF8_VALUE)
+                .setBody(readResource("/fr/pinguet62/meetall/provider/happn/tokenExpired410.json")));
+
+        assertThat(() -> happnProvider.likeOrUnlikeProposal(authToken, userId, true).block(), throwing(ExpiredTokenException.class));
     }
 
     @Test
@@ -203,6 +237,16 @@ public class HappnProviderServiceTest {
     }
 
     @Test
+    public void getConversations_tokenExpired() {
+        server.enqueue(new MockResponse()
+                .setResponseCode(410)
+                .setHeader(CONTENT_TYPE, APPLICATION_JSON_UTF8_VALUE)
+                .setBody(readResource("/fr/pinguet62/meetall/provider/happn/tokenExpired410.json")));
+
+        assertThat(() -> happnProvider.getConversations(authToken).collectList().block(), throwing(ExpiredTokenException.class));
+    }
+
+    @Test
     public void getMessages() {
         final String matchId = "matchId";
         server.enqueue(new MockResponse()
@@ -228,6 +272,17 @@ public class HappnProviderServiceTest {
     }
 
     @Test
+    public void getMessages_tokenExpired() {
+        final String matchId = "matchId";
+        server.enqueue(new MockResponse()
+                .setResponseCode(410)
+                .setHeader(CONTENT_TYPE, APPLICATION_JSON_UTF8_VALUE)
+                .setBody(readResource("/fr/pinguet62/meetall/provider/happn/tokenExpired410.json")));
+
+        assertThat(() -> happnProvider.getMessages(authToken, matchId).collectList().block(), throwing(ExpiredTokenException.class));
+    }
+
+    @Test
     public void sendMessage() {
         final String matchId = "matchId";
         server.enqueue(new MockResponse()
@@ -244,6 +299,17 @@ public class HappnProviderServiceTest {
                 OffsetDateTime.parse("2018-12-17T13:23:41+00:00").toZonedDateTime(),
                 true,
                 "test")));
+    }
+
+    @Test
+    public void sendMessage_tokenExpired() {
+        final String matchId = "matchId";
+        server.enqueue(new MockResponse()
+                .setResponseCode(410)
+                .setHeader(CONTENT_TYPE, APPLICATION_JSON_UTF8_VALUE)
+                .setBody(readResource("/fr/pinguet62/meetall/provider/happn/tokenExpired410.json")));
+
+        assertThat(() -> happnProvider.sendMessage(authToken, matchId, "text").block(), throwing(ExpiredTokenException.class));
     }
 
     @Test
@@ -265,6 +331,17 @@ public class HappnProviderServiceTest {
                 asList(
                         "https://1675564c27.optimicdn.com/cache/images/48a3216c-a73f-4f7b-a5f9-aeeacdbabeb1/320-320.0_559a0790-d18a-11e8-9e28-196ec4dfc48e.jpg",
                         "https://1675564c27.optimicdn.com/cache/images/48a3216c-a73f-4f7b-a5f9-aeeacdbabeb1/320-320.0_3219f290-c117-11e8-b57d-0fc094ce31f9.jpg"))));
+    }
+
+    @Test
+    public void getProfile_tokenExpired() {
+        final String userId = "48a3216c-a73f-4f7b-a5f9-aeeacdbabeb1";
+        server.enqueue(new MockResponse()
+                .setResponseCode(410)
+                .setHeader(CONTENT_TYPE, APPLICATION_JSON_UTF8_VALUE)
+                .setBody(readResource("/fr/pinguet62/meetall/provider/happn/tokenExpired410.json")));
+
+        assertThat(() -> happnProvider.getProfile(authToken, userId).block(), throwing(ExpiredTokenException.class));
     }
 
 }

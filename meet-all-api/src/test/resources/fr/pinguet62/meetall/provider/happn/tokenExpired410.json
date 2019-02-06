@@ -1,0 +1,9 @@
+{
+  "success": false,
+  "status": 410,
+  "error": "expired_token",
+  "data": {
+    "message": "The access token provided has expired."
+  },
+  "error_code": 1011
+}

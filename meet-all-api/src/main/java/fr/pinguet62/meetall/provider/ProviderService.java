@@ -4,6 +4,7 @@ import fr.pinguet62.meetall.dto.ConversationDto;
 import fr.pinguet62.meetall.dto.MessageDto;
 import fr.pinguet62.meetall.dto.ProfileDto;
 import fr.pinguet62.meetall.dto.ProposalDto;
+import fr.pinguet62.meetall.exception.ExpiredTokenException;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -14,7 +15,7 @@ public interface ProviderService {
     default Mono<Boolean> checkCredential(String credential) {
         return getConversations(credential)
                 .collectList().map(it -> true)
-                .onErrorReturn(false);
+                .onErrorReturn(ExpiredTokenException.class, false);
     }
 
     Flux<ProposalDto> getProposals(String credential);
