@@ -24,7 +24,7 @@ import static fr.pinguet62.meetall.MatcherUtils.throwing;
 import static fr.pinguet62.meetall.MatcherUtils.url;
 import static fr.pinguet62.meetall.MatcherUtils.with;
 import static fr.pinguet62.meetall.TestUtils.readResource;
-import static fr.pinguet62.meetall.provider.tinder.TinderProviderService.HEADER;
+import static fr.pinguet62.meetall.provider.tinder.TinderClient.HEADER;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static org.hamcrest.Matchers.allOf;
@@ -47,7 +47,7 @@ public class TinderProviderServiceTest {
     @Before
     public void startServer() {
         server = new MockWebServer();
-        tinderProvider = new TinderProviderService(server.url("/").toString());
+        tinderProvider = new TinderProviderService(new TinderClient(server.url("/").toString()));
     }
 
     @After

@@ -16,22 +16,18 @@ import fr.pinguet62.meetall.provider.tinder.dto.TinderGetRecommendationsResponse
 import fr.pinguet62.meetall.provider.tinder.dto.TinderGetRecommendationsResponseDto.TinderGetRecommendationsDataResponseDto;
 import fr.pinguet62.meetall.provider.tinder.dto.TinderGetUserResponseDto;
 import fr.pinguet62.meetall.provider.tinder.dto.TinderLikeResponseDto;
-import fr.pinguet62.meetall.provider.tinder.dto.TinderMatchDto;
-import fr.pinguet62.meetall.provider.tinder.dto.TinderMessageDto;
 import fr.pinguet62.meetall.provider.tinder.dto.TinderProfileDto;
 import fr.pinguet62.meetall.provider.tinder.dto.TinderProfileLikesDto;
 import fr.pinguet62.meetall.provider.tinder.dto.TinderProfileResponseDto;
-import fr.pinguet62.meetall.provider.tinder.dto.TinderSendMessageRequestDto;
-import fr.pinguet62.meetall.provider.tinder.dto.TinderSendMessageResponseDto;
 import fr.pinguet62.meetall.provider.tinder.dto.TinderUserDto;
 import org.springframework.stereotype.Component;
-import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException.Unauthorized;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import static fr.pinguet62.meetall.provider.Provider.TINDER;
-import static org.springframework.web.reactive.function.BodyInserters.fromObject;
+import static fr.pinguet62.meetall.provider.tinder.TinderConverters.convert;
+import static java.util.Objects.requireNonNull;
 
 /**
  * <ol>
@@ -55,17 +51,10 @@ import static org.springframework.web.reactive.function.BodyInserters.fromObject
 @Component
 public class TinderProviderService implements ProviderService {
 
-    static final String HEADER = "x-auth-token";
+    private final TinderClient client;
 
-    private final WebClient webClient;
-
-    public TinderProviderService() {
-        this("https://api.gotinder.com");
-    }
-
-    // testing
-    TinderProviderService(String baseUrl) {
-        webClient = WebClient.builder().baseUrl(baseUrl).build();
+    TinderProviderService(TinderClient client) {
+        this.client = requireNonNull(client);
     }
 
     @Override
@@ -78,15 +67,13 @@ public class TinderProviderService implements ProviderService {
      */
     @Override
     public Flux<ProposalDto> getProposals(String authToken) {
-        return getProfile(authToken)
+        return client.getProfile(authToken)
                 .onErrorMap(Unauthorized.class, ExpiredTokenException::new)
+                .map(TinderProfileResponseDto::getData)
                 .map(TinderProfileDto::getLikes)
                 .map(TinderProfileLikesDto::getLikes_remaining)
                 .flatMapMany(limit ->
-                        webClient.get()
-                                .uri("/v2/recs/core")
-                                .header(HEADER, authToken)
-                                .retrieve().bodyToMono(TinderGetRecommendationsResponseDto.class)
+                        client.getRecommendations(authToken)
                                 .map(TinderGetRecommendationsResponseDto::getData)
                                 .flatMapIterable(TinderGetRecommendationsDataResponseDto::getResults)
                                 .map(TinderConverters::convert)
@@ -98,83 +85,52 @@ public class TinderProviderService implements ProviderService {
      */
     @Override
     public Mono<Boolean> likeOrUnlikeProposal(String authToken, String userId, boolean likeOrUnlike) {
-        return webClient.get()
-                .uri(uriBuilder -> uriBuilder.path(likeOrUnlike ? "like" : "pass").pathSegment(userId).build())
-                .header(HEADER, authToken)
-                .retrieve().bodyToMono(TinderLikeResponseDto.class)
+        Mono<TinderLikeResponseDto> likeOrPass = likeOrUnlike ? client.likeUser(authToken, userId) : client.passUser(authToken, userId);
+        return likeOrPass
                 .onErrorMap(Unauthorized.class, ExpiredTokenException::new)
                 .flatMap(it -> it.getRate_limited_until() != null ? Mono.error(new RuntimeException()) : Mono.just(it)) // "likes remaining" support
-                .flatMap(it -> likeOrUnlike ? Mono.just(TinderConverters.convert(it)) : Mono.empty());
+                .flatMap(it -> likeOrUnlike ? Mono.just(convert(it)) : Mono.empty());
     }
 
     @Override
     public Flux<ConversationDto> getConversations(String authToken) {
-        Flux<TinderMatchDto> tinderMatchDtoFlux = webClient.get()
-                .uri("/v2/matches?count=60")
-                .header(HEADER, authToken)
-                .retrieve().bodyToMono(TinderGetConversationResponseDto.class)
-                .map(TinderGetConversationResponseDto::getData)
-                .flatMapIterable(TinderGetConversationDataResponseDto::getMatches);
-        Mono<TinderUserDto> metaMono = getMeta(authToken);
-        return metaMono.flatMapMany(me ->
-                tinderMatchDtoFlux.map(tinderMessageDto ->
-                        TinderConverters.convert(tinderMessageDto, me.get_id())));
+        return getMetaUser(authToken)
+                .flatMapMany(me ->
+                        client.getMatches(authToken)
+                                .map(TinderGetConversationResponseDto::getData)
+                                .flatMapIterable(TinderGetConversationDataResponseDto::getMatches)
+                                .map(tinderMessageDto -> convert(tinderMessageDto, me.get_id())));
     }
 
     @Override
     public Flux<MessageDto> getMessages(String authToken, String matchId) {
-        Flux<TinderMessageDto> tinderMessageDtoFlux = webClient.get()
-                .uri("/v2/matches/{matchId}/messages?count=100", matchId)
-                .header(HEADER, authToken)
-                .retrieve().bodyToMono(TinderGetMessagesResponseDto.class)
-                .map(TinderGetMessagesResponseDto::getData)
-                .flatMapIterable(TinderGetMessagesDataResponseDto::getMessages);
-        Mono<TinderUserDto> metaMono = getMeta(authToken);
-        return metaMono.flatMapMany(me ->
-                tinderMessageDtoFlux.map(tinderMessageDto ->
-                        TinderConverters.convert(tinderMessageDto, me.get_id())));
+        return getMetaUser(authToken)
+                .flatMapMany(me ->
+                        client.getMessagesForMatch(authToken, matchId)
+                                .map(TinderGetMessagesResponseDto::getData)
+                                .flatMapIterable(TinderGetMessagesDataResponseDto::getMessages)
+                                .map(tinderMessageDto -> convert(tinderMessageDto, me.get_id())));
     }
 
     @Override
     public Mono<MessageDto> sendMessage(String authToken, String matchId, String text) {
-        return webClient.post()
-                .uri("/user/matches/{matchId}", matchId)
-                .body(fromObject(new TinderSendMessageRequestDto(text)))
-                .header(HEADER, authToken)
-                .retrieve().bodyToMono(TinderSendMessageResponseDto.class)
+        return client.sendMessageToMatch(authToken, matchId, text)
                 .onErrorMap(Unauthorized.class, ExpiredTokenException::new)
                 .map(TinderConverters::convert);
     }
 
     @Override
     public Mono<ProfileDto> getProfile(String authToken, String userId) {
-        return webClient.get()
-                .uri("/user/{userId}", userId)
-                .header(HEADER, authToken)
-                .retrieve().bodyToMono(TinderGetUserResponseDto.class)
+        return client.getUser(authToken, userId)
                 .onErrorMap(Unauthorized.class, ExpiredTokenException::new)
                 .map(TinderGetUserResponseDto::getResults)
                 .map(TinderConverters::convert);
     }
 
-    private Mono<TinderUserDto> getMeta(String authToken) {
-        return webClient.get()
-                .uri("/meta")
-                .header(HEADER, authToken)
-                .retrieve().bodyToMono(TinderGetMetaResponseDto.class)
+    private Mono<TinderUserDto> getMetaUser(String authToken) {
+        return client.getMeta(authToken)
                 .onErrorMap(Unauthorized.class, ExpiredTokenException::new)
                 .map(TinderGetMetaResponseDto::getUser);
-    }
-
-    private Mono<TinderProfileDto> getProfile(String authToken) {
-        return webClient.get()
-                .uri(uriBuilder -> uriBuilder
-                        .path("/v2/profile")
-                        .queryParam("include", "likes")
-                        .build())
-                .header(HEADER, authToken)
-                .retrieve().bodyToMono(TinderProfileResponseDto.class)
-                .map(TinderProfileResponseDto::getData);
     }
 
 }

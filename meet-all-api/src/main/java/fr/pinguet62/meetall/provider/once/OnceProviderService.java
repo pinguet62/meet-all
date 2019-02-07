@@ -8,25 +8,19 @@ import fr.pinguet62.meetall.provider.Provider;
 import fr.pinguet62.meetall.provider.ProviderService;
 import fr.pinguet62.meetall.provider.once.dto.OnceConversationsResponseDto;
 import fr.pinguet62.meetall.provider.once.dto.OnceMatchAllResponseDto;
-import fr.pinguet62.meetall.provider.once.dto.OnceMatchAllResultDto;
 import fr.pinguet62.meetall.provider.once.dto.OnceMatchByIdResponseDto;
 import fr.pinguet62.meetall.provider.once.dto.OnceMatchLikeResponseDto;
 import fr.pinguet62.meetall.provider.once.dto.OnceMatchLikeResultDto;
-import fr.pinguet62.meetall.provider.once.dto.OnceMatchResultMatchDto;
 import fr.pinguet62.meetall.provider.once.dto.OnceMessagesResponseDto;
-import fr.pinguet62.meetall.provider.once.dto.OnceSendMessageRequestDto;
 import fr.pinguet62.meetall.provider.once.dto.OnceSendMessageResponseDto;
 import org.springframework.stereotype.Component;
-import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.reactive.function.client.WebClient.ResponseSpec;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import static fr.pinguet62.meetall.provider.Provider.ONCE;
 import static fr.pinguet62.meetall.provider.once.OnceConverters.convert;
+import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
-import static org.springframework.http.HttpHeaders.AUTHORIZATION;
-import static org.springframework.web.reactive.function.BodyInserters.fromObject;
 import static reactor.core.publisher.Flux.fromIterable;
 
 /**
@@ -36,17 +30,10 @@ import static reactor.core.publisher.Flux.fromIterable;
 @Component
 public class OnceProviderService implements ProviderService {
 
-    static final String HEADER = AUTHORIZATION;
+    private final OnceClient client;
 
-    private final WebClient webClient;
-
-    public OnceProviderService() {
-        this("https://onceapi.com");
-    }
-
-    // testing
-    OnceProviderService(String baseUrl) {
-        webClient = WebClient.builder().baseUrl(baseUrl).build();
+    OnceProviderService(OnceClient client) {
+        this.client = requireNonNull(client);
     }
 
     @Override
@@ -56,10 +43,7 @@ public class OnceProviderService implements ProviderService {
 
     @Override
     public Flux<ProposalDto> getProposals(String authorization) {
-        return this.webClient.get()
-                .uri("/v1/match")
-                .header(HEADER, authorization)
-                .retrieve().bodyToMono(OnceMatchAllResponseDto.class)
+        return client.getMatchs(authorization)
                 .map(OnceMatchAllResponseDto::getResult)
                 .flatMapMany(result -> fromIterable(result.getMatches())
                         .filter(match -> !match.getViewed())
@@ -70,24 +54,17 @@ public class OnceProviderService implements ProviderService {
 
     @Override
     public Mono<Boolean> likeOrUnlikeProposal(String authorization, String matchId, boolean likeOrUnlike) {
-        ResponseSpec response = this.webClient.post()
-                .uri(uriBuilder -> uriBuilder.path("/v1/match").pathSegment(matchId).pathSegment(likeOrUnlike ? "like" : "pass").build())
-                .header(HEADER, authorization)
-                .retrieve();
         return likeOrUnlike ?
-                response.bodyToMono(OnceMatchLikeResponseDto.class)
+                client.likeMatch(authorization, matchId)
                         .map(OnceMatchLikeResponseDto::getResult)
                         .map(OnceMatchLikeResultDto::getConnected) :
-                response.bodyToMono(Void.class)
+                client.passMatch(authorization, matchId)
                         .map(it -> null);
     }
 
     @Override
     public Flux<ConversationDto> getConversations(String authorization) {
-        return this.webClient.get()
-                .uri("/v1/connections")
-                .header(HEADER, authorization)
-                .retrieve().bodyToMono(OnceConversationsResponseDto.class)
+        return client.getConnections(authorization)
                 .map(OnceConversationsResponseDto::getResult)
                 .flatMapIterable(result -> result.getConnections().stream().map(x -> convert(x, result.getBase_url())).collect(toList()));
     }
@@ -98,10 +75,7 @@ public class OnceProviderService implements ProviderService {
      */
     @Override
     public Flux<MessageDto> getMessages(String authorization, String matchId) {
-        return this.webClient.get()
-                .uri(uri -> uri.path("/v1/messages").queryParam("match_id", matchId).build())
-                .header(HEADER, authorization)
-                .retrieve().bodyToMono(OnceMessagesResponseDto.class)
+        return client.getMessagesForMatch(authorization, matchId)
                 .map(OnceMessagesResponseDto::getResult)
                 .flatMapMany(result -> fromIterable(result.getMessages())
                         .filter(it -> it.getNumber() != 1)
@@ -110,21 +84,14 @@ public class OnceProviderService implements ProviderService {
 
     @Override
     public Mono<MessageDto> sendMessage(String authorization, String matchId, String text) {
-        return this.webClient.post()
-                .uri("/v1/message")
-                .body(fromObject(new OnceSendMessageRequestDto(matchId, text)))
-                .header(HEADER, authorization)
-                .retrieve().bodyToMono(OnceSendMessageResponseDto.class)
+        return client.sendMessageToMatch(authorization, matchId, text)
                 .map(OnceSendMessageResponseDto::getResult)
                 .map(OnceConverters::convertSentMessage);
     }
 
     @Override
     public Mono<ProfileDto> getProfile(String authorization, String matchId) {
-        return this.webClient.get()
-                .uri("/v1/match/{matchId}", matchId)
-                .header(HEADER, authorization)
-                .retrieve().bodyToMono(OnceMatchByIdResponseDto.class)
+        return client.getMatch(authorization, matchId)
                 .map(OnceMatchByIdResponseDto::getResult)
                 .map(it -> convert(it.getMatch().getId(), it.getMatch().getUser(), it.getBase_url()));
     }

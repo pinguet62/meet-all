@@ -23,7 +23,7 @@ import static fr.pinguet62.meetall.MatcherUtils.throwing;
 import static fr.pinguet62.meetall.MatcherUtils.url;
 import static fr.pinguet62.meetall.MatcherUtils.with;
 import static fr.pinguet62.meetall.TestUtils.readResource;
-import static fr.pinguet62.meetall.provider.happn.HappnProviderService.HEADER;
+import static fr.pinguet62.meetall.provider.happn.HappnClient.HEADER;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static org.hamcrest.Matchers.allOf;
@@ -47,7 +47,7 @@ public class HappnProviderServiceTest {
     @Before
     public void startServer() {
         server = new MockWebServer();
-        happnProvider = new HappnProviderService(server.url("/").toString());
+        happnProvider = new HappnProviderService(new HappnClient(server.url("/").toString()));
     }
 
     @After

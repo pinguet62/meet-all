@@ -21,7 +21,7 @@ import static fr.pinguet62.meetall.MatcherUtils.takingRequest;
 import static fr.pinguet62.meetall.MatcherUtils.url;
 import static fr.pinguet62.meetall.MatcherUtils.with;
 import static fr.pinguet62.meetall.TestUtils.readResource;
-import static fr.pinguet62.meetall.provider.once.OnceProviderService.HEADER;
+import static fr.pinguet62.meetall.provider.once.OnceClient.HEADER;
 import static java.time.ZoneOffset.UTC;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
@@ -46,7 +46,7 @@ public class OnceProviderServiceTest {
     @Before
     public void startServer() {
         server = new MockWebServer();
-        onceProvider = new OnceProviderService(server.url("/").toString());
+        onceProvider = new OnceProviderService(new OnceClient(server.url("/").toString()));
     }
 
     @After

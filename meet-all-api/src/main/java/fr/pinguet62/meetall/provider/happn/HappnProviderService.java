@@ -7,28 +7,20 @@ import fr.pinguet62.meetall.dto.ProposalDto;
 import fr.pinguet62.meetall.exception.ExpiredTokenException;
 import fr.pinguet62.meetall.provider.Provider;
 import fr.pinguet62.meetall.provider.ProviderService;
-import fr.pinguet62.meetall.provider.happn.dto.HappnConversationDto;
 import fr.pinguet62.meetall.provider.happn.dto.HappnConversationsResponseDto;
-import fr.pinguet62.meetall.provider.happn.dto.HappnMessageDto;
 import fr.pinguet62.meetall.provider.happn.dto.HappnMessagesResponseDto;
-import fr.pinguet62.meetall.provider.happn.dto.HappnNotificationDto;
 import fr.pinguet62.meetall.provider.happn.dto.HappnNotificationsResponseDto;
-import fr.pinguet62.meetall.provider.happn.dto.HappnSendMessageRequestDto;
 import fr.pinguet62.meetall.provider.happn.dto.HappnSendMessageResponseDto;
 import fr.pinguet62.meetall.provider.happn.dto.HappnUserAcceptedResponseDto;
-import fr.pinguet62.meetall.provider.happn.dto.HappnUserDto;
 import fr.pinguet62.meetall.provider.happn.dto.HappnUserResponseDto;
 import org.springframework.stereotype.Component;
-import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import static fr.pinguet62.meetall.provider.Provider.HAPPN;
-import static fr.pinguet62.meetall.provider.happn.GraphQLUtils.parseGraph;
 import static fr.pinguet62.meetall.provider.happn.dto.HappnRelation.NEW_RELATION;
-import static org.springframework.http.HttpHeaders.AUTHORIZATION;
-import static org.springframework.web.reactive.function.BodyInserters.fromObject;
+import static java.util.Objects.requireNonNull;
 
 /**
  * <ol>
@@ -39,17 +31,10 @@ import static org.springframework.web.reactive.function.BodyInserters.fromObject
 @Component
 public class HappnProviderService implements ProviderService {
 
-    static final String HEADER = AUTHORIZATION;
+    private final HappnClient client;
 
-    private final WebClient webClient;
-
-    public HappnProviderService() {
-        this("https://api.happn.fr/api");
-    }
-
-    // testing
-    HappnProviderService(String baseUrl) {
-        webClient = WebClient.builder().baseUrl(baseUrl).build();
+    public HappnProviderService(HappnClient client) {
+        this.client = requireNonNull(client);
     }
 
     @Override
@@ -59,15 +44,7 @@ public class HappnProviderService implements ProviderService {
 
     @Override
     public Flux<ProposalDto> getProposals(String authToken) {
-        return this.webClient.get()
-                .uri(uriBuilder -> uriBuilder
-                        .path("/users/me/notifications")
-                        .queryParam("types", 468)
-                        .queryParam("fields", parseGraph(HappnNotificationDto.class))
-                        .queryParam("limit", 9999)
-                        .build())
-                .header(HEADER, "OAuth=\"" + authToken + "\"")
-                .retrieve().bodyToMono(HappnNotificationsResponseDto.class)
+        return client.getNotifications(authToken)
                 .onErrorMap(WebClientResponseException.Gone.class, ExpiredTokenException::new)
                 .flatMapIterable(HappnNotificationsResponseDto::getData)
                 .filter(it -> it.getNotifier().getMy_relation().equals(NEW_RELATION))
@@ -76,10 +53,8 @@ public class HappnProviderService implements ProviderService {
 
     @Override
     public Mono<Boolean> likeOrUnlikeProposal(String authToken, String userId, boolean likeOrUnlike) {
-        return this.webClient.post()
-                .uri(uriBuilder -> uriBuilder.path("/users/me").pathSegment(likeOrUnlike ? "accepted" : "rejected").pathSegment(userId).build())
-                .header(HEADER, "OAuth=\"" + authToken + "\"")
-                .retrieve().bodyToMono(HappnUserAcceptedResponseDto.class)
+        Mono<HappnUserAcceptedResponseDto> acceptOrReject = likeOrUnlike ? client.acceptUser(authToken, userId) : client.rejectUser(authToken, userId);
+        return acceptOrReject
                 .onErrorMap(WebClientResponseException.Gone.class, ExpiredTokenException::new)
                 .map(HappnUserAcceptedResponseDto::getData)
                 .flatMap(it -> likeOrUnlike ? Mono.just(it.getHas_crushed()) : Mono.empty());
@@ -92,14 +67,7 @@ public class HappnProviderService implements ProviderService {
      */
     @Override
     public Flux<ConversationDto> getConversations(String authToken) {
-        return this.webClient.get()
-                .uri(uriBuilder -> uriBuilder
-                        .path("/users/me/conversations")
-                        .queryParam("limit", 99999999)
-                        .queryParam("fields", parseGraph(HappnConversationDto.class))
-                        .build())
-                .header(HEADER, "OAuth=\"" + authToken + "\"")
-                .retrieve().bodyToMono(HappnConversationsResponseDto.class)
+        return client.getConversations(authToken)
                 .onErrorMap(WebClientResponseException.Gone.class, ExpiredTokenException::new)
                 .flatMapIterable(HappnConversationsResponseDto::getData)
                 .filter(it -> it.getParticipants().stream().noneMatch(x -> x.getUser().getId().equals("11843")))
@@ -112,13 +80,7 @@ public class HappnProviderService implements ProviderService {
      */
     @Override
     public Flux<MessageDto> getMessages(String authToken, String conversationId) {
-        return this.webClient.get()
-                .uri(uriBuilder -> uriBuilder
-                        .pathSegment("conversations").pathSegment(conversationId).pathSegment("messages")
-                        .queryParam("fields", parseGraph(HappnMessageDto.class))
-                        .build())
-                .header(HEADER, "OAuth=\"" + authToken + "\"")
-                .retrieve().bodyToMono(HappnMessagesResponseDto.class)
+        return client.getMessagesForConversation(authToken, conversationId)
                 .onErrorMap(WebClientResponseException.Gone.class, ExpiredTokenException::new)
                 .flatMapIterable(HappnMessagesResponseDto::getData)
                 .map(HappnConverters::convert);
@@ -126,28 +88,15 @@ public class HappnProviderService implements ProviderService {
 
     @Override
     public Mono<MessageDto> sendMessage(String authToken, String conversationId, String text) {
-        return this.webClient.post()
-                .uri(uriBuilder -> uriBuilder
-                        .pathSegment("conversations").pathSegment(conversationId).pathSegment("messages")
-                        .queryParam("fields", parseGraph(HappnMessageDto.class))
-                        .build())
-                .body(fromObject(new HappnSendMessageRequestDto(text)))
-                .header(HEADER, "OAuth=\"" + authToken + "\"")
-                .retrieve().bodyToMono(HappnSendMessageResponseDto.class)
+        return client.sendMessagesToConversation(authToken, conversationId, text)
                 .onErrorMap(WebClientResponseException.Gone.class, ExpiredTokenException::new)
                 .map(HappnSendMessageResponseDto::getData)
                 .map(HappnConverters::convert);
     }
 
     @Override
-    public Mono<ProfileDto> getProfile(String authToken, String profileId) {
-        return this.webClient.get()
-                .uri(uriBuilder -> uriBuilder
-                        .pathSegment("users").pathSegment(profileId)
-                        .queryParam("fields", parseGraph(HappnUserDto.class))
-                        .build())
-                .header(HEADER, "OAuth=\"" + authToken + "\"")
-                .retrieve().bodyToMono(HappnUserResponseDto.class)
+    public Mono<ProfileDto> getProfile(String authToken, String userId) {
+        return client.getUser(authToken, userId)
                 .onErrorMap(WebClientResponseException.Gone.class, ExpiredTokenException::new)
                 .map(HappnUserResponseDto::getData)
                 .map(HappnConverters::convert);
