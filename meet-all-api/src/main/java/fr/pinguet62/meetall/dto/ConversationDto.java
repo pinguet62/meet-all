@@ -14,7 +14,7 @@ import static com.fasterxml.jackson.annotation.JsonFormat.Shape.STRING;
 import static java.util.Objects.requireNonNull;
 
 @EqualsAndHashCode // testing
-@ToString(callSuper = true) // testing
+@ToString // testing
 @Getter
 public class ConversationDto {
 
