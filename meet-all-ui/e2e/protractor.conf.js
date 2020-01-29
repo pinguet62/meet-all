@@ -26,3 +26,9 @@ exports.config = {
     jasmine.getEnv().addReporter(new SpecReporter({ spec: { displayStacktrace: true } }));
   }
 };
+
+if (process.env.CI) {
+  exports.config.capabilities.chromeOptions = {
+    args: ['--no-sandbox', '--headless']
+  };
+}

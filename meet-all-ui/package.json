@@ -4,7 +4,7 @@
   "scripts": {
     "ng": "ng",
     "lint": "ng lint",
-    "test": "ng test",
+    "test": "ng test --code-coverage=true",
     "e2e": "ng e2e",
     "start": "ng serve --ssl true",
     "start:lab": "ionic lab",

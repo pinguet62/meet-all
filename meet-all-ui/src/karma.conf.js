@@ -29,8 +29,7 @@ module.exports = function (config) {
     singleRun: false
   };
 
-  // Travis CI config
-  if (process.env.TRAVIS) {
+  if (process.env.CI) {
     cfg.browsers = ['ChromeHeadlessNoSandbox']
     cfg.customLaunchers = {
       ChromeHeadlessNoSandbox: {
@@ -38,7 +37,6 @@ module.exports = function (config) {
         flags: ['--no-sandbox']
       }
     };
-    cfg.autoWatch = false
     cfg.singleRun = true
   }
 
