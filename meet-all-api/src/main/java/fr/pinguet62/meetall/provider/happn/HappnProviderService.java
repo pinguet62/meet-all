@@ -123,6 +123,7 @@ public class HappnProviderService implements ProviderService {
     @Override
     public Mono<Void> setPosition(String authToken, double latitude, double longitude, double altitude) {
         return client.getUserMe(authToken)
+                .onErrorMap(Gone.class, ExpiredTokenException::new)
                 .map(it -> it.getData().getId())
                 .flatMapMany(meId -> client.getUserDevices(authToken, meId)
                         .flatMapIterable(it -> it.getData().orElseGet(List::of))

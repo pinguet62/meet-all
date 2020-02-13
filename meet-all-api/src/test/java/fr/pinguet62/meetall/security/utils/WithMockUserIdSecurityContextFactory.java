@@ -6,7 +6,7 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.test.context.support.WithSecurityContextFactory;
 
-public class WithMockUserIdSecurityContextFactory implements WithSecurityContextFactory<WithMockUserId> {
+class WithMockUserIdSecurityContextFactory implements WithSecurityContextFactory<WithMockUserId> {
 
     @Override
     public SecurityContext createSecurityContext(WithMockUserId withJwtToken) {

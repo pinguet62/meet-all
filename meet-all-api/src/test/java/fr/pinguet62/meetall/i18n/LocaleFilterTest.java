@@ -1,7 +1,8 @@
 package fr.pinguet62.meetall.i18n;
 
 import fr.pinguet62.meetall.security.utils.DisableWebFluxSecurity;
-import org.junit.Test;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
 import org.springframework.test.context.ContextConfiguration;
@@ -35,10 +36,10 @@ class LocaleFilterTest {
     }
 
     @Autowired
-    private WebTestClient webTestClient;
+    WebTestClient webTestClient;
 
     @Test
-    public void supportedLocale_useIt() {
+    void supportedLocale_useIt() {
         webTestClient.get()
                 .uri("/i18n")
                 .header(ACCEPT_LANGUAGE, "fr")
@@ -47,28 +48,31 @@ class LocaleFilterTest {
                 .expectBody(String.class).isEqualTo("fr");
     }
 
-    @Test
-    public void listWithQualityValues_useMoreSpecific() {
-        webTestClient.get()
-                .uri("/i18n")
-                .header(ACCEPT_LANGUAGE, "zh, fr;q=0.9, en;q=0.8, de;q=0.7, *;q=0.5")
-                .exchange()
-                .expectStatus().isOk()
-                .expectBody(String.class).isEqualTo("fr");
+    @Nested
+    class listWithQualityValues {
+        @Test
+        void useMoreSpecific() {
+            webTestClient.get()
+                    .uri("/i18n")
+                    .header(ACCEPT_LANGUAGE, "zh, fr;q=0.9, en;q=0.8, de;q=0.7, *;q=0.5")
+                    .exchange()
+                    .expectStatus().isOk()
+                    .expectBody(String.class).isEqualTo("fr");
+        }
+
+        @Test
+        void useDefaultWhenNoSupported() {
+            webTestClient.get()
+                    .uri("/i18n")
+                    .header(ACCEPT_LANGUAGE, "zh, it;q=0.9, es;q=0.8, *;q=0.5")
+                    .exchange()
+                    .expectStatus().isOk()
+                    .expectBody(String.class).isEqualTo("en");
+        }
     }
 
     @Test
-    public void listWithQualityValues_useDefaultWhenNoSupported() {
-        webTestClient.get()
-                .uri("/i18n")
-                .header(ACCEPT_LANGUAGE, "zh, it;q=0.9, es;q=0.8, *;q=0.5")
-                .exchange()
-                .expectStatus().isOk()
-                .expectBody(String.class).isEqualTo("en");
-    }
-
-    @Test
-    public void unsupportedLocale_useDefault() {
+    void unsupportedLocale_useDefault() {
         final Locale locale = new Locale("es");
         assertThat(locale, is(not(in(getSupportedLocales()))));
 
@@ -81,7 +85,7 @@ class LocaleFilterTest {
     }
 
     @Test
-    public void noHeader_useDefault() {
+    void noHeader_useDefault() {
         webTestClient.get()
                 .uri("/i18n")
                 /* .header(ACCEPT_LANGUAGE , null) */
@@ -89,5 +93,4 @@ class LocaleFilterTest {
                 .expectStatus().isOk()
                 .expectBody(String.class).isEqualTo(DEFAULT_LOCALE.toString());
     }
-
 }

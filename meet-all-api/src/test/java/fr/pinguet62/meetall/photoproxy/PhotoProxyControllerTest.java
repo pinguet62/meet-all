@@ -4,15 +4,13 @@ import fr.pinguet62.meetall.security.utils.DisableWebFluxSecurity;
 import okhttp3.HttpUrl;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.client.AutoConfigureWebClient;
 import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
 import org.springframework.http.HttpStatus;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
 import java.io.IOException;
@@ -25,29 +23,28 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.springframework.http.HttpStatus.ACCEPTED;
 
-@RunWith(SpringRunner.class)
 @WebFluxTest(PhotoProxyController.class)
 @AutoConfigureWebClient
 @DisableWebFluxSecurity
-public class PhotoProxyControllerTest {
+class PhotoProxyControllerTest {
 
     @Autowired
-    private WebTestClient webTestClient;
+    WebTestClient webTestClient;
 
-    private MockWebServer server;
+    MockWebServer server;
 
-    @Before
-    public void startServer() {
+    @BeforeEach
+    void startServer() {
         server = new MockWebServer();
     }
 
-    @After
-    public void stopServer() throws IOException {
+    @AfterEach
+    void stopServer() throws IOException {
         server.shutdown();
     }
 
     @Test
-    public void proxifyPhoto_returnsResponseHeaders() {
+    void returnsResponseHeaders() {
         final String originalUrl = server.url("/").toString() + "static/images/logo.svg";
         final HttpStatus status = ACCEPTED;
         final String body = "anything";

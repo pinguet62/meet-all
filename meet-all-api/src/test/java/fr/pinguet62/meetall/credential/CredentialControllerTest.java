@@ -2,12 +2,10 @@ package fr.pinguet62.meetall.credential;
 
 import fr.pinguet62.meetall.provider.Provider;
 import fr.pinguet62.meetall.security.utils.WithMockUserId;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.util.LinkedMultiValueMap;
 import reactor.core.publisher.Flux;
@@ -26,10 +24,9 @@ import static org.springframework.http.MediaType.MULTIPART_FORM_DATA;
 import static org.springframework.security.test.web.reactive.server.SecurityMockServerConfigurers.csrf;
 import static org.springframework.web.reactive.function.BodyInserters.fromMultipartData;
 
-@RunWith(SpringRunner.class)
 @WebFluxTest(CredentialController.class)
 @WithMockUserId(currentUserId)
-public class CredentialControllerTest {
+class CredentialControllerTest {
 
     /**
      * @see WithMockUserId
@@ -37,16 +34,16 @@ public class CredentialControllerTest {
     static final String currentUserId = "userId";
 
     @Autowired
-    private WebTestClient webTestClient;
+    WebTestClient webTestClient;
 
     @MockBean
-    private CredentialService credentialService;
+    CredentialService credentialService;
 
     /**
      * @see CredentialController#getRegisteredCredentials()
      */
     @Test
-    public void getRegisteredCredentials() {
+    void getRegisteredCredentials() {
         when(credentialService.getRegisteredCredentials(currentUserId)).thenReturn(Flux.just(
                 new RegisteredCredentialDto("11", "first", TINDER, true),
                 new RegisteredCredentialDto("22", "second", HAPPN, false)));
@@ -70,7 +67,7 @@ public class CredentialControllerTest {
      * @see CredentialController#registerCredential(Provider, String, String)
      */
     @Test
-    public void registerCredential() {
+    void registerCredential() {
         final String id = "99";
         final Provider provider = TINDER;
         final String credential = "credential";
@@ -99,7 +96,7 @@ public class CredentialControllerTest {
      * @see CredentialController#updateCredential(String, String, String)
      */
     @Test
-    public void updateCredential() {
+    void updateCredential() {
         final String id = "99";
         final Provider provider = TINDER;
         final String credential = "credential";
@@ -128,7 +125,7 @@ public class CredentialControllerTest {
      * @see CredentialController#deleteCredential(String)
      */
     @Test
-    public void deleteCredential() {
+    void deleteCredential() {
         final String id = "99";
         final Provider provider = TINDER;
         final String label = "label";

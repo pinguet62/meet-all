@@ -5,9 +5,10 @@ import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import com.github.tomakehurst.wiremock.matching.ContainsPattern;
 import com.github.tomakehurst.wiremock.matching.UrlPattern;
 import org.apache.commons.io.IOUtils;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
@@ -21,29 +22,29 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class RobotCredentialExtractorTest {
+class RobotCredentialExtractorTest {
 
     RobotCredentialExtractor robotCredentialExtractor;
 
     WireMockServer facebookWireMockServer;
 
-    @Before
-    public void serverStartAndInit() {
+    @BeforeEach
+    void serverStartAndInit() {
         facebookWireMockServer = new WireMockRule(options().dynamicPort());
         facebookWireMockServer.start();
 
         robotCredentialExtractor = new RobotCredentialExtractor("http://localhost:" + facebookWireMockServer.port());
     }
 
-    @After
-    public void serverStop() {
+    @AfterEach
+    void serverStop() {
         facebookWireMockServer.stop();
     }
 
     @Test
-    public void test_returnsToken() {
+    void ok() {
         facebookWireMockServer
                 .stubFor(get(new UrlPattern(new ContainsPattern("/dialog/oauth"), false))
                         .willReturn(aResponse()
@@ -63,62 +64,65 @@ public class RobotCredentialExtractorTest {
         assertThat(robotCredentialExtractor.getTinderFacebookToken("test@pinguet62.fr", "AzErTy"), is("EAAGm0PX4ZCpsBAA3znvFZAkhp5ar1CMcdE1FfinDcrJZC6uflaHSqMwv8TCIoXis3ihh5sFjVda9HF9rGZAqtORf0X6p1TUhLfddmmyOjKSjKaqBQHmqyZAe6sgHdxhyTZBLPs2xZAjaYpgnwaSU0rR3XlOLRTn6YV9Nstnlhi7NaET3x8UXsz5E0dTYPZBhZBlwZD"));
     }
 
-    @Test
-    public void test_verifyCredentials_unknownEmail() {
-        facebookWireMockServer
-                .stubFor(get(new UrlPattern(new ContainsPattern("/dialog/oauth"), false))
-                        .willReturn(aResponse()
-                                .withStatus(200)
-                                .withBody(getHtml("/fr/pinguet62/meetall/facebookcredential/step0 - dialog_oauth.html"))));
-        facebookWireMockServer
-                .stubFor(post(new UrlPattern(new ContainsPattern("/login/device-based/regular/login"), false))
-                        .willReturn(aResponse()
-                                .withStatus(200)
-                                .withBody(getHtml("/fr/pinguet62/meetall/facebookcredential/verifyCredentials/step1.1 - unknown email.html"))));
+    @Nested
+    class verifyCredentials {
+        @Test
+        void unknownEmail() {
+            facebookWireMockServer
+                    .stubFor(get(new UrlPattern(new ContainsPattern("/dialog/oauth"), false))
+                            .willReturn(aResponse()
+                                    .withStatus(200)
+                                    .withBody(getHtml("/fr/pinguet62/meetall/facebookcredential/step0 - dialog_oauth.html"))));
+            facebookWireMockServer
+                    .stubFor(post(new UrlPattern(new ContainsPattern("/login/device-based/regular/login"), false))
+                            .willReturn(aResponse()
+                                    .withStatus(200)
+                                    .withBody(getHtml("/fr/pinguet62/meetall/facebookcredential/verifyCredentials/step1.1 - unknown email.html"))));
 
-        InvalidCredentialsException exception = assertThrows(InvalidCredentialsException.class, () -> robotCredentialExtractor.getTinderFacebookToken("unknown@pinguet62.fr", "anything"));
-        assertThat(exception.getMessage(), is("L’e-mail entré ne correspond à aucun compte. Veuillez créer un compte."));
-    }
+            InvalidCredentialsException exception = assertThrows(InvalidCredentialsException.class, () -> robotCredentialExtractor.getTinderFacebookToken("unknown@pinguet62.fr", "anything"));
+            assertThat(exception.getMessage(), is("L’e-mail entré ne correspond à aucun compte. Veuillez créer un compte."));
+        }
 
-    @Test
-    public void test_verifyCredentials_badPassword() {
-        facebookWireMockServer
-                .stubFor(get(new UrlPattern(new ContainsPattern("/dialog/oauth"), false))
-                        .willReturn(aResponse()
-                                .withStatus(200)
-                                .withBody(getHtml("/fr/pinguet62/meetall/facebookcredential/step0 - dialog_oauth.html"))));
-        facebookWireMockServer
-                .stubFor(post(new UrlPattern(new ContainsPattern("/login/device-based/regular/login"), false))
-                        .willReturn(aResponse()
-                                .withStatus(200)
-                                .withBody(getHtml("/fr/pinguet62/meetall/facebookcredential/verifyCredentials/step1.2 - bad password.html"))));
+        @Test
+        void badPassword() {
+            facebookWireMockServer
+                    .stubFor(get(new UrlPattern(new ContainsPattern("/dialog/oauth"), false))
+                            .willReturn(aResponse()
+                                    .withStatus(200)
+                                    .withBody(getHtml("/fr/pinguet62/meetall/facebookcredential/step0 - dialog_oauth.html"))));
+            facebookWireMockServer
+                    .stubFor(post(new UrlPattern(new ContainsPattern("/login/device-based/regular/login"), false))
+                            .willReturn(aResponse()
+                                    .withStatus(200)
+                                    .withBody(getHtml("/fr/pinguet62/meetall/facebookcredential/verifyCredentials/step1.2 - bad password.html"))));
 
-        InvalidCredentialsException exception = assertThrows(InvalidCredentialsException.class, () -> robotCredentialExtractor.getTinderFacebookToken("test@pinguet62.fr", "bad"));
-        assertThat(exception.getMessage(), is("Le mot de passe entré est incorrect. Vous l’avez oublié ?"));
-    }
+            InvalidCredentialsException exception = assertThrows(InvalidCredentialsException.class, () -> robotCredentialExtractor.getTinderFacebookToken("test@pinguet62.fr", "bad"));
+            assertThat(exception.getMessage(), is("Le mot de passe entré est incorrect. Vous l’avez oublié ?"));
+        }
 
-    @Test
-    public void test_verifyCredentials_oldPassword() {
-        facebookWireMockServer
-                .stubFor(get(new UrlPattern(new ContainsPattern("/dialog/oauth"), false))
-                        .willReturn(aResponse()
-                                .withStatus(200)
-                                .withBody(getHtml("/fr/pinguet62/meetall/facebookcredential/step0 - dialog_oauth.html"))));
-        facebookWireMockServer
-                .stubFor(post(new UrlPattern(new ContainsPattern("/login/device-based/regular/login"), false))
-                        .willReturn(aResponse()
-                                .withStatus(200)
-                                .withBody(getHtml("/fr/pinguet62/meetall/facebookcredential/verifyCredentials/step1.3 - old password.html"))));
+        @Test
+        void oldPassword() {
+            facebookWireMockServer
+                    .stubFor(get(new UrlPattern(new ContainsPattern("/dialog/oauth"), false))
+                            .willReturn(aResponse()
+                                    .withStatus(200)
+                                    .withBody(getHtml("/fr/pinguet62/meetall/facebookcredential/step0 - dialog_oauth.html"))));
+            facebookWireMockServer
+                    .stubFor(post(new UrlPattern(new ContainsPattern("/login/device-based/regular/login"), false))
+                            .willReturn(aResponse()
+                                    .withStatus(200)
+                                    .withBody(getHtml("/fr/pinguet62/meetall/facebookcredential/verifyCredentials/step1.3 - old password.html"))));
 
-        InvalidCredentialsException exception = assertThrows(InvalidCredentialsException.class, () -> robotCredentialExtractor.getTinderFacebookToken("test@pinguet62.fr", "bad"));
-        assertThat(exception.getMessage(), containsString("Vous avez saisi un ancien mot de passe"));
+            InvalidCredentialsException exception = assertThrows(InvalidCredentialsException.class, () -> robotCredentialExtractor.getTinderFacebookToken("test@pinguet62.fr", "bad"));
+            assertThat(exception.getMessage(), containsString("Vous avez saisi un ancien mot de passe"));
+        }
     }
 
     /**
      * Conflict with {@code div[role='alert']}
      */
     @Test
-    public void test_hasNotification() {
+    void hasNotification() {
         facebookWireMockServer
                 .stubFor(get(new UrlPattern(new ContainsPattern("/dialog/oauth"), false))
                         .willReturn(aResponse()
@@ -139,7 +143,7 @@ public class RobotCredentialExtractorTest {
     }
 
     @Test
-    public void test_verifyAbsentOrProcessAndThrowError() {
+    void verifyAbsentOrProcessAndThrowError() {
         facebookWireMockServer
                 .stubFor(get(new UrlPattern(new ContainsPattern("/dialog/oauth"), false))
                         .willReturn(aResponse()

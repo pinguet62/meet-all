@@ -7,9 +7,10 @@ import fr.pinguet62.meetall.provider.model.ProposalDto;
 import okhttp3.HttpUrl;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.io.IOException;
@@ -35,126 +36,138 @@ import static org.hamcrest.Matchers.nullValue;
 import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
-public class OnceProviderServiceTest {
+class OnceProviderServiceTest {
 
-    private final String authToken = "authToken";
+    final String authToken = "authToken";
 
-    private MockWebServer server;
-    private OnceProviderService onceProvider;
+    MockWebServer server;
+    OnceProviderService onceProvider;
 
-    @Before
-    public void startServer() {
+    @BeforeEach
+    void startServer() {
         server = new MockWebServer();
         onceProvider = new OnceProviderService(new OnceClient(WebClient.builder(), server.url("/").toString()));
     }
 
-    @After
-    public void stopServer() throws IOException {
+    @AfterEach
+    void stopServer() throws IOException {
         server.shutdown();
     }
 
-    @Test
-    public void getProposals_notYetViewed() {
-        server.enqueue(new MockResponse()
-                .setHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
-                .setBody(readResource("/fr/pinguet62/meetall/provider/once/match-notYetViewed.json")));
+    @Nested
+    class getProposals {
+        @Test
+        void notYetViewed() {
+            server.enqueue(new MockResponse()
+                    .setHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
+                    .setBody(readResource("/fr/pinguet62/meetall/provider/once/match-notYetViewed.json")));
 
-        List<ProposalDto> proposal = onceProvider.getProposals(authToken).collectList().block();
+            List<ProposalDto> proposal = onceProvider.getProposals(authToken).collectList().block();
 
-        assertThat(server, takingRequest(allOf(
-                url(with(HttpUrl::url, with(URL::toString, containsString("match")))),
-                header(HEADER, authToken))));
-        assertThat(proposal, contains(new ProposalDto(
-                "MEA353970154",
-                new ProfileDto(
-                        "MEA353970154",
-                        "Anne-marie",
-                        27,
-                        "Je cherche du sérieux...",
-                        List.of(
-                                "https://d110abryny6tab.cloudfront.net/pictures/EA6728641/33787916_original.jpg",
-                                "https://d110abryny6tab.cloudfront.net/pictures/EA6728641/33803466_original.jpg")))));
+            assertThat(server, takingRequest(allOf(
+                    url(with(HttpUrl::url, with(URL::toString, containsString("match")))),
+                    header(HEADER, authToken))));
+            assertThat(proposal, contains(new ProposalDto(
+                    "MEA353970154",
+                    new ProfileDto(
+                            "MEA353970154",
+                            "Anne-marie",
+                            27,
+                            "Je cherche du sérieux...",
+                            List.of(
+                                    "https://d110abryny6tab.cloudfront.net/pictures/EA6728641/33787916_original.jpg",
+                                    "https://d110abryny6tab.cloudfront.net/pictures/EA6728641/33803466_original.jpg")))));
+        }
+
+        @Test
+        void alreadyLiked() {
+            server.enqueue(new MockResponse()
+                    .setHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
+                    .setBody(readResource("/fr/pinguet62/meetall/provider/once/match-alreadyLiked.json")));
+
+            List<ProposalDto> proposal = onceProvider.getProposals(authToken).collectList().block();
+
+            assertThat(server, takingRequest(allOf(
+                    url(with(HttpUrl::url, with(URL::toString, containsString("match")))),
+                    header(HEADER, authToken))));
+            assertThat(proposal, is(empty()));
+        }
+
+        @Test
+        void alreadyPassed() {
+            server.enqueue(new MockResponse()
+                    .setHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
+                    .setBody(readResource("/fr/pinguet62/meetall/provider/once/match-alreadyPassed.json")));
+
+            List<ProposalDto> proposal = onceProvider.getProposals(authToken).collectList().block();
+
+            assertThat(server, takingRequest(allOf(
+                    url(with(HttpUrl::url, with(URL::toString, containsString("match")))),
+                    header(HEADER, authToken))));
+            assertThat(proposal, is(empty()));
+        }
+    }
+
+    @Nested
+    class likeOrUnlikeProposal {
+        @Nested
+        class pass {
+            @Test
+            void pass() {
+                final String matchId = "MEA356800065";
+                server.enqueue(new MockResponse()
+                        .setHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
+                        .setBody(readResource("/fr/pinguet62/meetall/provider/once/match_pass.json")));
+
+                Boolean matched = onceProvider.likeOrUnlikeProposal(authToken, matchId, false).block();
+
+                assertThat(server, takingRequest(allOf(
+                        url(with(HttpUrl::url, with(URL::toString, containsString("match/" + matchId + "/pass")))),
+                        header(HEADER, authToken))));
+                assertThat(matched, nullValue());
+            }
+        }
+
+        @Nested
+        class like {
+            @Test
+            void notMatched() {
+                final String matchId = "MEA356800065";
+                server.enqueue(new MockResponse()
+                        .setHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
+                        .setBody(readResource("/fr/pinguet62/meetall/provider/once/match_like_not-matched.json")));
+
+                Boolean matched = onceProvider.likeOrUnlikeProposal(authToken, matchId, true).block();
+
+                assertThat(server, takingRequest(allOf(
+                        url(with(HttpUrl::url, with(URL::toString, containsString("match/" + matchId + "/like")))),
+                        header(HEADER, authToken))));
+                assertThat(matched, allOf(
+                        notNullValue(),
+                        is(false)));
+            }
+
+            @Test
+            void matched() {
+                final String matchId = "MEA356800065";
+                server.enqueue(new MockResponse()
+                        .setHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
+                        .setBody(readResource("/fr/pinguet62/meetall/provider/once/match_like_matched.json")));
+
+                Boolean matched = onceProvider.likeOrUnlikeProposal(authToken, matchId, true).block();
+
+                assertThat(server, takingRequest(allOf(
+                        url(with(HttpUrl::url, with(URL::toString, containsString("match/" + matchId + "/like")))),
+                        header(HEADER, authToken))));
+                assertThat(matched, allOf(
+                        notNullValue(),
+                        is(true)));
+            }
+        }
     }
 
     @Test
-    public void getProposals_alreadyLiked() {
-        server.enqueue(new MockResponse()
-                .setHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
-                .setBody(readResource("/fr/pinguet62/meetall/provider/once/match-alreadyLiked.json")));
-
-        List<ProposalDto> proposal = onceProvider.getProposals(authToken).collectList().block();
-
-        assertThat(server, takingRequest(allOf(
-                url(with(HttpUrl::url, with(URL::toString, containsString("match")))),
-                header(HEADER, authToken))));
-        assertThat(proposal, is(empty()));
-    }
-
-    @Test
-    public void getProposals_alreadyPassed() {
-        server.enqueue(new MockResponse()
-                .setHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
-                .setBody(readResource("/fr/pinguet62/meetall/provider/once/match-alreadyPassed.json")));
-
-        List<ProposalDto> proposal = onceProvider.getProposals(authToken).collectList().block();
-
-        assertThat(server, takingRequest(allOf(
-                url(with(HttpUrl::url, with(URL::toString, containsString("match")))),
-                header(HEADER, authToken))));
-        assertThat(proposal, is(empty()));
-    }
-
-    @Test
-    public void likeOrUnlikeProposal_unlike() {
-        final String matchId = "MEA356800065";
-        server.enqueue(new MockResponse()
-                .setHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
-                .setBody(readResource("/fr/pinguet62/meetall/provider/once/match_pass.json")));
-
-        Boolean matched = onceProvider.likeOrUnlikeProposal(authToken, matchId, false).block();
-
-        assertThat(server, takingRequest(allOf(
-                url(with(HttpUrl::url, with(URL::toString, containsString("match/" + matchId + "/pass")))),
-                header(HEADER, authToken))));
-        assertThat(matched, nullValue());
-    }
-
-    @Test
-    public void likeOrUnlikeProposal_like_notMatched() {
-        final String matchId = "MEA356800065";
-        server.enqueue(new MockResponse()
-                .setHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
-                .setBody(readResource("/fr/pinguet62/meetall/provider/once/match_like_not-matched.json")));
-
-        Boolean matched = onceProvider.likeOrUnlikeProposal(authToken, matchId, true).block();
-
-        assertThat(server, takingRequest(allOf(
-                url(with(HttpUrl::url, with(URL::toString, containsString("match/" + matchId + "/like")))),
-                header(HEADER, authToken))));
-        assertThat(matched, allOf(
-                notNullValue(),
-                is(false)));
-    }
-
-    @Test
-    public void likeOrUnlikeProposal_like_matched() {
-        final String matchId = "MEA356800065";
-        server.enqueue(new MockResponse()
-                .setHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
-                .setBody(readResource("/fr/pinguet62/meetall/provider/once/match_like_matched.json")));
-
-        Boolean matched = onceProvider.likeOrUnlikeProposal(authToken, matchId, true).block();
-
-        assertThat(server, takingRequest(allOf(
-                url(with(HttpUrl::url, with(URL::toString, containsString("match/" + matchId + "/like")))),
-                header(HEADER, authToken))));
-        assertThat(matched, allOf(
-                notNullValue(),
-                is(true)));
-    }
-
-    @Test
-    public void getConversations() {
+    void getConversations() {
         server.enqueue(new MockResponse()
                 .setHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
                 .setBody(readResource("/fr/pinguet62/meetall/provider/once/connections.json")));
@@ -192,7 +205,7 @@ public class OnceProviderServiceTest {
     }
 
     @Test
-    public void getMessages() {
+    void getMessages() {
         final String matchId = "MEA346007886";
         server.enqueue(new MockResponse()
                 .setHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
@@ -218,7 +231,7 @@ public class OnceProviderServiceTest {
     }
 
     @Test
-    public void sendMessages() {
+    void sendMessages() {
         final String matchId = "MEA346007886";
         server.enqueue(new MockResponse()
                 .setHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
@@ -237,7 +250,7 @@ public class OnceProviderServiceTest {
     }
 
     @Test
-    public void getProfile() {
+    void getProfile() {
         final String matchId = "MEA346007886";
         server.enqueue(new MockResponse()
                 .setHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
@@ -257,5 +270,4 @@ public class OnceProviderServiceTest {
                         "https://d110abryny6tab.cloudfront.net/pictures/EA7464845/33485378_original.jpg",
                         "https://d110abryny6tab.cloudfront.net/pictures/EA7464845/33485380_original.jpg"))));
     }
-
 }

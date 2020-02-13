@@ -8,9 +8,10 @@ import fr.pinguet62.meetall.provider.model.ProposalDto;
 import okhttp3.HttpUrl;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.io.IOException;
@@ -39,29 +40,29 @@ import static org.hamcrest.Matchers.nullValue;
 import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
-public class TinderProviderServiceTest {
+class TinderProviderServiceTest {
 
-    private final String authToken = "authToken";
+    final String authToken = "authToken";
 
-    private MockWebServer server;
-    private final Clock clock = Clock.fixed(
+    MockWebServer server;
+    final Clock clock = Clock.fixed(
             OffsetDateTime.of(2020, 7, 10, 21, 52, 43, 0, ofHoursMinutes(1, 30)).toInstant(),
             ofHoursMinutes(1, 30));
-    private TinderProviderService tinderProvider;
+    TinderProviderService tinderProvider;
 
-    @Before
-    public void startServer() {
+    @BeforeEach
+    void startServer() {
         server = new MockWebServer();
         tinderProvider = new TinderProviderService(clock, new TinderClient(WebClient.builder(), server.url("/").toString()));
     }
 
-    @After
-    public void stopServer() throws IOException {
+    @AfterEach
+    void stopServer() throws IOException {
         server.shutdown();
     }
 
     @Test
-    public void login() {
+    void login() {
         server.enqueue(new MockResponse()
                 .setHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
                 .setBody(readResource("/fr/pinguet62/meetall/provider/tinder/auth_login_facebook.json")));
@@ -71,298 +72,321 @@ public class TinderProviderServiceTest {
         assertThat(authToken, is("7689631f-c20b-406d-925c-ff0c89fdca3d"));
     }
 
-    @Test
-    public void getProposals() {
-        server.enqueue(new MockResponse()
-                .setHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
-                .setBody(readResource("/fr/pinguet62/meetall/provider/tinder/profile.json")));
-        server.enqueue(new MockResponse()
-                .setHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
-                .setBody(readResource("/fr/pinguet62/meetall/provider/tinder/recs_core.json")));
+    @Nested
+    class getProposals {
+        @Test
+        void ok() {
+            server.enqueue(new MockResponse()
+                    .setHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
+                    .setBody(readResource("/fr/pinguet62/meetall/provider/tinder/profile.json")));
+            server.enqueue(new MockResponse()
+                    .setHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
+                    .setBody(readResource("/fr/pinguet62/meetall/provider/tinder/recs_core.json")));
 
-        List<ProposalDto> proposals = tinderProvider.getProposals(authToken).collectList().block();
+            List<ProposalDto> proposals = tinderProvider.getProposals(authToken).collectList().block();
 
-        assertThat(server, takingRequest(allOf(
-                url(with(HttpUrl::url, with(URL::toString, containsString("profile")))),
-                header(HEADER, authToken))));
-        assertThat(server, takingRequest(allOf(
-                url(with(HttpUrl::url, with(URL::toString, containsString("recs/core")))),
-                header(HEADER, authToken))));
-        assertThat(proposals, contains(
-                new ProposalDto(
-                        "5c309d64cbb73e636034dc15",
-                        new ProfileDto(
-                                "5c309d64cbb73e636034dc15",
-                                "Laetitia",
-                                29,
-                                null,
-                                List.of(
-                                        "https://images-ssl.gotinder.com/5c309d64cbb73e636034dc15/1080x1080_3cfd9990-392c-42c4-8c70-dae8fa620930.jpg",
-                                        "https://images-ssl.gotinder.com/5c309d64cbb73e636034dc15/1080x1080_496f518b-a369-4740-8d95-f19bdb2a3572.jpg"))),
-                new ProposalDto(
-                        "5c30dbfb7f49061862de6256",
-                        new ProfileDto(
-                                "5c30dbfb7f49061862de6256",
-                                "Florine",
-                                29,
-                                "Steuplé, Fais moi rire !",
-                                List.of(
-                                        "https://images-ssl.gotinder.com/5c30dbfb7f49061862de6256/1080x1080_8b718deb-9c11-4835-86e7-100c613f865e.jpg")))));
+            assertThat(server, takingRequest(allOf(
+                    url(with(HttpUrl::url, with(URL::toString, containsString("profile")))),
+                    header(HEADER, authToken))));
+            assertThat(server, takingRequest(allOf(
+                    url(with(HttpUrl::url, with(URL::toString, containsString("recs/core")))),
+                    header(HEADER, authToken))));
+            assertThat(proposals, contains(
+                    new ProposalDto(
+                            "5c309d64cbb73e636034dc15",
+                            new ProfileDto(
+                                    "5c309d64cbb73e636034dc15",
+                                    "Laetitia",
+                                    29,
+                                    null,
+                                    List.of(
+                                            "https://images-ssl.gotinder.com/5c309d64cbb73e636034dc15/1080x1080_3cfd9990-392c-42c4-8c70-dae8fa620930.jpg",
+                                            "https://images-ssl.gotinder.com/5c309d64cbb73e636034dc15/1080x1080_496f518b-a369-4740-8d95-f19bdb2a3572.jpg"))),
+                    new ProposalDto(
+                            "5c30dbfb7f49061862de6256",
+                            new ProfileDto(
+                                    "5c30dbfb7f49061862de6256",
+                                    "Florine",
+                                    29,
+                                    "Steuplé, Fais moi rire !",
+                                    List.of(
+                                            "https://images-ssl.gotinder.com/5c30dbfb7f49061862de6256/1080x1080_8b718deb-9c11-4835-86e7-100c613f865e.jpg")))));
+        }
+
+        @Test
+        void tokenExpired() {
+            server.enqueue(new MockResponse()
+                    .setResponseCode(401)
+                    .setHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
+                    .setBody(readResource("/fr/pinguet62/meetall/provider/tinder/profile_tokenExpired401.json")));
+
+            assertThat(() -> tinderProvider.getProposals(authToken).collectList().block(), throwing(ExpiredTokenException.class));
+        }
     }
 
-    @Test
-    public void getProposals_tokenExpired() {
-        server.enqueue(new MockResponse()
-                .setResponseCode(401)
-                .setHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
-                .setBody(readResource("/fr/pinguet62/meetall/provider/tinder/profile_tokenExpired401.json")));
+    @Nested
+    class likeOrUnlikeProposal {
+        @Nested
+        class pass {
+            @Test
+            void ok() {
+                final String userId = "userId";
+                server.enqueue(new MockResponse()
+                        .setHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
+                        .setBody(readResource("/fr/pinguet62/meetall/provider/tinder/pass.json")));
 
-        assertThat(() -> tinderProvider.getProposals(authToken).collectList().block(), throwing(ExpiredTokenException.class));
+                Boolean matched = tinderProvider.likeOrUnlikeProposal(authToken, userId, false).block();
+
+                assertThat(server, takingRequest(allOf(
+                        url(with(HttpUrl::url, with(URL::toString, containsString("pass/" + userId)))),
+                        header(HEADER, authToken))));
+                assertThat(matched, nullValue());
+            }
+
+            @Test
+            void tokenExpired() {
+                final String userId = "userId";
+                server.enqueue(new MockResponse()
+                        .setResponseCode(401)
+                        .setHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
+                        .setBody(readResource("/fr/pinguet62/meetall/provider/tinder/pass_tokenExpired401.json")));
+
+                assertThat(() -> tinderProvider.likeOrUnlikeProposal(authToken, userId, false).block(), throwing(ExpiredTokenException.class));
+            }
+        }
+
+        @Nested
+        class like {
+            @Test
+            void notMatched() {
+                final String userId = "userId";
+                server.enqueue(new MockResponse()
+                        .setHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
+                        .setBody(readResource("/fr/pinguet62/meetall/provider/tinder/like_not-matched.json")));
+
+                Boolean matched = tinderProvider.likeOrUnlikeProposal(authToken, userId, true).block();
+
+                assertThat(server, takingRequest(allOf(
+                        url(with(HttpUrl::url, with(URL::toString, containsString("like/" + userId)))),
+                        header(HEADER, authToken))));
+                assertThat(matched, allOf(
+                        notNullValue(),
+                        is(false)));
+            }
+
+            @Test
+            void matched() {
+                final String userId = "userId";
+                server.enqueue(new MockResponse()
+                        .setHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
+                        .setBody(readResource("/fr/pinguet62/meetall/provider/tinder/like_matched.json")));
+
+                Boolean matched = tinderProvider.likeOrUnlikeProposal(authToken, userId, true).block();
+
+                assertThat(server, takingRequest(allOf(
+                        url(with(HttpUrl::url, with(URL::toString, containsString("like/" + userId)))),
+                        header(HEADER, authToken))));
+                assertThat(matched, allOf(
+                        notNullValue(),
+                        is(true)));
+            }
+
+            @Test
+            void tokenExpired() {
+                final String userId = "userId";
+                server.enqueue(new MockResponse()
+                        .setResponseCode(401)
+                        .setHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
+                        .setBody(readResource("/fr/pinguet62/meetall/provider/tinder/like_tokenExpired401.json")));
+
+                assertThat(() -> tinderProvider.likeOrUnlikeProposal(authToken, userId, true).block(), throwing(ExpiredTokenException.class));
+            }
+
+            @Test
+            void likeRemaining() {
+                final String userId = "userId";
+                server.enqueue(new MockResponse()
+                        .setHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
+                        .setBody(readResource("/fr/pinguet62/meetall/provider/tinder/like_like-remaining.json")));
+
+                assertThat(() -> tinderProvider.likeOrUnlikeProposal(authToken, userId, true).block(), throwing(RuntimeException.class));
+                assertThat(server, takingRequest(allOf(
+                        url(with(HttpUrl::url, with(URL::toString, containsString("like/" + userId)))),
+                        header(HEADER, authToken))));
+            }
+        }
     }
 
-    @Test
-    public void likeOrUnlikeProposal_unlike() {
-        final String userId = "userId";
-        server.enqueue(new MockResponse()
-                .setHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
-                .setBody(readResource("/fr/pinguet62/meetall/provider/tinder/pass.json")));
+    @Nested
+    class getConversations {
+        @Test
+        void ok() {
+            server.enqueue(new MockResponse()
+                    .setHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
+                    .setBody(readResource("/fr/pinguet62/meetall/provider/tinder/meta.json")));
+            server.enqueue(new MockResponse()
+                    .setHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
+                    .setBody(readResource("/fr/pinguet62/meetall/provider/tinder/matches.json")));
 
-        Boolean matched = tinderProvider.likeOrUnlikeProposal(authToken, userId, false).block();
+            List<ConversationDto> conversations = tinderProvider.getConversations(authToken).collectList().block();
 
-        assertThat(server, takingRequest(allOf(
-                url(with(HttpUrl::url, with(URL::toString, containsString("pass/" + userId)))),
-                header(HEADER, authToken))));
-        assertThat(matched, nullValue());
+            assertThat(server, takingRequest(allOf(
+                    url(with(HttpUrl::url, with(URL::toString, containsString("meta")))),
+                    header(HEADER, authToken))));
+            assertThat(server, takingRequest(allOf(
+                    url(with(HttpUrl::url, with(URL::toString, containsString("v2/matches")))),
+                    header(HEADER, authToken))));
+            assertThat(conversations, contains(
+                    new ConversationDto(
+                            "52b4d9ed6c5685412c0002a15bcc1a0cf51fe1f73b780558",
+                            new ProfileDto(
+                                    "5bcc1a0cf51fe1f73b780558",
+                                    "Marie",
+                                    32,
+                                    null, // not filled
+                                    List.of(
+                                            "https://images-ssl.gotinder.com/5bcc1a0cf51fe1f73b780558/1080x1080_3ea65ee2-33e1-4a8d-8860-73a7cf2a0a7c.jpg",
+                                            "https://images-ssl.gotinder.com/5bcc1a0cf51fe1f73b780558/1080x1080_d699cc0f-0f82-4add-8da9-8da8df4b39ca.jpg")),
+                            ZonedDateTime.of(2018, 10, 29, 14, 44, 50, 422 * 1000000, ZoneId.of("UTC")),
+                            null),
+                    new ConversationDto(
+                            "52b4d9ed6c5685412c0002a15aafa40957398e766afe7ed4",
+                            new ProfileDto(
+                                    "5aafa40957398e766afe7ed4",
+                                    "Alexandra",
+                                    31,
+                                    null, // not filled
+                                    List.of(
+                                            "https://images-ssl.gotinder.com/5aafa40957398e766afe7ed4/1080x1080_e13be39b-a619-427b-8359-7337e04250f3.jpg")),
+                            ZonedDateTime.of(2018, 10, 26, 10, 10, 8, 500 * 1000000, ZoneId.of("UTC")),
+                            new MessageDto(
+                                    "5bd2e800e46c4dd64d1a0866",
+                                    ZonedDateTime.of(2018, 10, 26, 10, 10, 8, 500 * 1000000, ZoneId.of("UTC")),
+                                    true,
+                                    "Alors les entretiens RH sur Tinder, ça embuache ? 😋"))));
+        }
+
+        @Test
+        void tokenExpired() {
+            server.enqueue(new MockResponse()
+                    .setResponseCode(401)
+                    .setHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
+                    .setBody(readResource("/fr/pinguet62/meetall/provider/tinder/meta_tokenExpired401.json")));
+
+            assertThat(() -> tinderProvider.getConversations(authToken).collectList().block(), throwing(ExpiredTokenException.class));
+        }
     }
 
-    @Test
-    public void likeOrUnlikeProposal_unlike_tokenExpired() {
-        final String userId = "userId";
-        server.enqueue(new MockResponse()
-                .setResponseCode(401)
-                .setHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
-                .setBody(readResource("/fr/pinguet62/meetall/provider/tinder/pass_tokenExpired401.json")));
+    @Nested
+    class getMessages {
+        @Test
+        void ok() {
+            final String matchId = "matchId";
+            server.enqueue(new MockResponse()
+                    .setHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
+                    .setBody(readResource("/fr/pinguet62/meetall/provider/tinder/meta.json")));
+            server.enqueue(new MockResponse()
+                    .setHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
+                    .setBody(readResource("/fr/pinguet62/meetall/provider/tinder/matches_messages.json")));
 
-        assertThat(() -> tinderProvider.likeOrUnlikeProposal(authToken, userId, false).block(), throwing(ExpiredTokenException.class));
+            List<MessageDto> messages = tinderProvider.getMessages(authToken, matchId).collectList().block();
+
+            assertThat(server, takingRequest(allOf(
+                    url(with(HttpUrl::url, with(URL::toString, containsString("meta")))),
+                    header(HEADER, authToken))));
+            assertThat(server, takingRequest(allOf(
+                    url(with(HttpUrl::url, with(URL::toString, containsString("v2/matches/" + matchId + "/messages")))),
+                    header(HEADER, authToken))));
+            assertThat(messages, contains(
+                    new MessageDto(
+                            "5bd2e800e46c4dd64d1a0866",
+                            ZonedDateTime.of(2018, 10, 26, 10, 10, 8, 500 * 1000000, ZoneId.of("UTC")),
+                            true,
+                            "Alors les entretiens RH sur Tinder, ça embuache ? 😋"),
+                    new MessageDto(
+                            "5bd2e7e67cd91a673b1a9873",
+                            ZonedDateTime.of(2018, 10, 26, 10, 9, 42, 830 * 1000000, ZoneId.of("UTC")),
+                            false,
+                            "Bonjour Julien")));
+        }
+
+        @Test
+        void tokenExpired() {
+            final String matchId = "matchId";
+            server.enqueue(new MockResponse()
+                    .setResponseCode(401)
+                    .setHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
+                    .setBody(readResource("/fr/pinguet62/meetall/provider/tinder/meta_tokenExpired401.json")));
+
+            assertThat(() -> tinderProvider.getMessages(authToken, matchId).collectList().block(), throwing(ExpiredTokenException.class));
+        }
     }
 
-    @Test
-    public void likeOrUnlikeProposal_like_notMatched() {
-        final String userId = "userId";
-        server.enqueue(new MockResponse()
-                .setHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
-                .setBody(readResource("/fr/pinguet62/meetall/provider/tinder/like_not-matched.json")));
+    @Nested
+    class sendMessage {
+        @Test
+        void ok() {
+            final String matchId = "5b6329d7f84145486ecaf51a5c1412e7f3902fed66dd3530";
+            server.enqueue(new MockResponse()
+                    .setHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
+                    .setBody(readResource("/fr/pinguet62/meetall/provider/tinder/matches_sendMessage.json")));
 
-        Boolean matched = tinderProvider.likeOrUnlikeProposal(authToken, userId, true).block();
+            MessageDto message = tinderProvider.sendMessage(authToken, matchId, "text").block();
 
-        assertThat(server, takingRequest(allOf(
-                url(with(HttpUrl::url, with(URL::toString, containsString("like/" + userId)))),
-                header(HEADER, authToken))));
-        assertThat(matched, allOf(
-                notNullValue(),
-                is(false)));
+            assertThat(server, takingRequest(allOf(
+                    url(with(HttpUrl::url, with(URL::toString, containsString("user/matches/" + matchId)))),
+                    header(HEADER, authToken))));
+            assertThat(message, is(new MessageDto(
+                    "5c157885c5ee3f110007b6fc",
+                    ZonedDateTime.of(2018, 12, 15, 21, 56, 21, 322 * 1000000, ZoneId.of("UTC")),
+                    true,
+                    "Et perso je fonctionne beaucoup au feeling")));
+        }
+
+        @Test
+        void tokenExpired() {
+            final String matchId = "5b6329d7f84145486ecaf51a5c1412e7f3902fed66dd3530";
+            server.enqueue(new MockResponse()
+                    .setResponseCode(401)
+                    .setHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
+                    .setBody(readResource("/fr/pinguet62/meetall/provider/tinder/matches_sendMessage_tokenExpired401.json")));
+
+            assertThat(() -> tinderProvider.sendMessage(authToken, matchId, "text").block(), throwing(ExpiredTokenException.class));
+        }
     }
 
-    @Test
-    public void likeOrUnlikeProposal_like_matched() {
-        final String userId = "userId";
-        server.enqueue(new MockResponse()
-                .setHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
-                .setBody(readResource("/fr/pinguet62/meetall/provider/tinder/like_matched.json")));
+    @Nested
+    class getProfile {
+        @Test
+        void ok() {
+            final String userId = "userId";
+            server.enqueue(new MockResponse()
+                    .setHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
+                    .setBody(readResource("/fr/pinguet62/meetall/provider/tinder/user.json")));
 
-        Boolean matched = tinderProvider.likeOrUnlikeProposal(authToken, userId, true).block();
+            ProfileDto profile = tinderProvider.getProfile(authToken, userId).block();
 
-        assertThat(server, takingRequest(allOf(
-                url(with(HttpUrl::url, with(URL::toString, containsString("like/" + userId)))),
-                header(HEADER, authToken))));
-        assertThat(matched, allOf(
-                notNullValue(),
-                is(true)));
+            assertThat(server, takingRequest(allOf(
+                    url(with(HttpUrl::url, with(URL::toString, containsString("user/" + userId)))),
+                    header(HEADER, authToken))));
+            assertThat(profile, is(new ProfileDto(
+                    "5b486956f408df634d26de3b",
+                    "Al",
+                    31,
+                    "My description",
+                    List.of(
+                            "https://images-ssl.gotinder.com/5b486956f408df634d26de3b/1080x1080_7cd50312-0063-4814-89b0-1568886056ba.jpg"))));
+        }
+
+        @Test
+        void tokenExpired() {
+            final String userId = "userId";
+            server.enqueue(new MockResponse()
+                    .setResponseCode(401)
+                    .setHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
+                    .setBody(readResource("/fr/pinguet62/meetall/provider/tinder/user_tokenExpired401.json")));
+
+            assertThat(() -> tinderProvider.getProfile(authToken, userId).block(), throwing(ExpiredTokenException.class));
+        }
     }
-
-    @Test
-    public void likeOrUnlikeProposal_like_tokenExpired() {
-        final String userId = "userId";
-        server.enqueue(new MockResponse()
-                .setResponseCode(401)
-                .setHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
-                .setBody(readResource("/fr/pinguet62/meetall/provider/tinder/like_tokenExpired401.json")));
-
-        assertThat(() -> tinderProvider.likeOrUnlikeProposal(authToken, userId, true).block(), throwing(ExpiredTokenException.class));
-    }
-
-    @Test
-    public void likeOrUnlikeProposal_like_likeRemaining() {
-        final String userId = "userId";
-        server.enqueue(new MockResponse()
-                .setHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
-                .setBody(readResource("/fr/pinguet62/meetall/provider/tinder/like_like-remaining.json")));
-
-        assertThat(() -> tinderProvider.likeOrUnlikeProposal(authToken, userId, true).block(), throwing(RuntimeException.class));
-        assertThat(server, takingRequest(allOf(
-                url(with(HttpUrl::url, with(URL::toString, containsString("like/" + userId)))),
-                header(HEADER, authToken))));
-    }
-
-    @Test
-    public void getConversations() {
-        server.enqueue(new MockResponse()
-                .setHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
-                .setBody(readResource("/fr/pinguet62/meetall/provider/tinder/meta.json")));
-        server.enqueue(new MockResponse()
-                .setHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
-                .setBody(readResource("/fr/pinguet62/meetall/provider/tinder/matches.json")));
-
-        List<ConversationDto> conversations = tinderProvider.getConversations(authToken).collectList().block();
-
-        assertThat(server, takingRequest(allOf(
-                url(with(HttpUrl::url, with(URL::toString, containsString("meta")))),
-                header(HEADER, authToken))));
-        assertThat(server, takingRequest(allOf(
-                url(with(HttpUrl::url, with(URL::toString, containsString("v2/matches")))),
-                header(HEADER, authToken))));
-        assertThat(conversations, contains(
-                new ConversationDto(
-                        "52b4d9ed6c5685412c0002a15bcc1a0cf51fe1f73b780558",
-                        new ProfileDto(
-                                "5bcc1a0cf51fe1f73b780558",
-                                "Marie",
-                                32,
-                                null, // not filled
-                                List.of(
-                                        "https://images-ssl.gotinder.com/5bcc1a0cf51fe1f73b780558/1080x1080_3ea65ee2-33e1-4a8d-8860-73a7cf2a0a7c.jpg",
-                                        "https://images-ssl.gotinder.com/5bcc1a0cf51fe1f73b780558/1080x1080_d699cc0f-0f82-4add-8da9-8da8df4b39ca.jpg")),
-                        ZonedDateTime.of(2018, 10, 29, 14, 44, 50, 422 * 1000000, ZoneId.of("UTC")),
-                        null),
-                new ConversationDto(
-                        "52b4d9ed6c5685412c0002a15aafa40957398e766afe7ed4",
-                        new ProfileDto(
-                                "5aafa40957398e766afe7ed4",
-                                "Alexandra",
-                                31,
-                                null, // not filled
-                                List.of(
-                                        "https://images-ssl.gotinder.com/5aafa40957398e766afe7ed4/1080x1080_e13be39b-a619-427b-8359-7337e04250f3.jpg")),
-                        ZonedDateTime.of(2018, 10, 26, 10, 10, 8, 500 * 1000000, ZoneId.of("UTC")),
-                        new MessageDto(
-                                "5bd2e800e46c4dd64d1a0866",
-                                ZonedDateTime.of(2018, 10, 26, 10, 10, 8, 500 * 1000000, ZoneId.of("UTC")),
-                                true,
-                                "Alors les entretiens RH sur Tinder, ça embuache ? 😋"))));
-    }
-
-    @Test
-    public void getConversations_tokenExpired() {
-        server.enqueue(new MockResponse()
-                .setResponseCode(401)
-                .setHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
-                .setBody(readResource("/fr/pinguet62/meetall/provider/tinder/meta_tokenExpired401.json")));
-
-        assertThat(() -> tinderProvider.getConversations(authToken).collectList().block(), throwing(ExpiredTokenException.class));
-    }
-
-    @Test
-    public void getMessages() {
-        final String matchId = "matchId";
-        server.enqueue(new MockResponse()
-                .setHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
-                .setBody(readResource("/fr/pinguet62/meetall/provider/tinder/meta.json")));
-        server.enqueue(new MockResponse()
-                .setHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
-                .setBody(readResource("/fr/pinguet62/meetall/provider/tinder/matches_messages.json")));
-
-        List<MessageDto> messages = tinderProvider.getMessages(authToken, matchId).collectList().block();
-
-        assertThat(server, takingRequest(allOf(
-                url(with(HttpUrl::url, with(URL::toString, containsString("meta")))),
-                header(HEADER, authToken))));
-        assertThat(server, takingRequest(allOf(
-                url(with(HttpUrl::url, with(URL::toString, containsString("v2/matches/" + matchId + "/messages")))),
-                header(HEADER, authToken))));
-        assertThat(messages, contains(
-                new MessageDto(
-                        "5bd2e800e46c4dd64d1a0866",
-                        ZonedDateTime.of(2018, 10, 26, 10, 10, 8, 500 * 1000000, ZoneId.of("UTC")),
-                        true,
-                        "Alors les entretiens RH sur Tinder, ça embuache ? 😋"),
-                new MessageDto(
-                        "5bd2e7e67cd91a673b1a9873",
-                        ZonedDateTime.of(2018, 10, 26, 10, 9, 42, 830 * 1000000, ZoneId.of("UTC")),
-                        false,
-                        "Bonjour Julien")));
-    }
-
-    @Test
-    public void getMessages_tokenExpired() {
-        final String matchId = "matchId";
-        server.enqueue(new MockResponse()
-                .setResponseCode(401)
-                .setHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
-                .setBody(readResource("/fr/pinguet62/meetall/provider/tinder/meta_tokenExpired401.json")));
-
-        assertThat(() -> tinderProvider.getMessages(authToken, matchId).collectList().block(), throwing(ExpiredTokenException.class));
-    }
-
-    @Test
-    public void sendMessage() {
-        final String matchId = "5b6329d7f84145486ecaf51a5c1412e7f3902fed66dd3530";
-        server.enqueue(new MockResponse()
-                .setHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
-                .setBody(readResource("/fr/pinguet62/meetall/provider/tinder/matches_sendMessage.json")));
-
-        MessageDto message = tinderProvider.sendMessage(authToken, matchId, "text").block();
-
-        assertThat(server, takingRequest(allOf(
-                url(with(HttpUrl::url, with(URL::toString, containsString("user/matches/" + matchId)))),
-                header(HEADER, authToken))));
-        assertThat(message, is(new MessageDto(
-                "5c157885c5ee3f110007b6fc",
-                ZonedDateTime.of(2018, 12, 15, 21, 56, 21, 322 * 1000000, ZoneId.of("UTC")),
-                true,
-                "Et perso je fonctionne beaucoup au feeling")));
-    }
-
-    @Test
-    public void sendMessage_tokenExpired() {
-        final String matchId = "5b6329d7f84145486ecaf51a5c1412e7f3902fed66dd3530";
-        server.enqueue(new MockResponse()
-                .setResponseCode(401)
-                .setHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
-                .setBody(readResource("/fr/pinguet62/meetall/provider/tinder/matches_sendMessage_tokenExpired401.json")));
-
-        assertThat(() -> tinderProvider.sendMessage(authToken, matchId, "text").block(), throwing(ExpiredTokenException.class));
-    }
-
-    @Test
-    public void getProfile() {
-        final String userId = "userId";
-        server.enqueue(new MockResponse()
-                .setHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
-                .setBody(readResource("/fr/pinguet62/meetall/provider/tinder/user.json")));
-
-        ProfileDto profile = tinderProvider.getProfile(authToken, userId).block();
-
-        assertThat(server, takingRequest(allOf(
-                url(with(HttpUrl::url, with(URL::toString, containsString("user/" + userId)))),
-                header(HEADER, authToken))));
-        assertThat(profile, is(new ProfileDto(
-                "5b486956f408df634d26de3b",
-                "Al",
-                31,
-                "My description",
-                List.of(
-                        "https://images-ssl.gotinder.com/5b486956f408df634d26de3b/1080x1080_7cd50312-0063-4814-89b0-1568886056ba.jpg"))));
-    }
-
-    @Test
-    public void getProfile_tokenExpired() {
-        final String userId = "userId";
-        server.enqueue(new MockResponse()
-                .setResponseCode(401)
-                .setHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
-                .setBody(readResource("/fr/pinguet62/meetall/provider/tinder/user_tokenExpired401.json")));
-
-        assertThat(() -> tinderProvider.getProfile(authToken, userId).block(), throwing(ExpiredTokenException.class));
-    }
-
 }

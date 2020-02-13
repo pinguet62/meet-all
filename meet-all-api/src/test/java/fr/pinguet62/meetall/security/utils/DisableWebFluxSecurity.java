@@ -20,10 +20,9 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  * </ol>
  *
  * @example <pre>
- * @RunWith(SpringRunner.class)
  * @WebFluxTest(controllers = SampleController.class)
  * @DisableWebFluxSecurity
- * public class SampleControllerTest {
+ * class SampleControllerTest {
  * </pre>
  */
 @Target(TYPE)

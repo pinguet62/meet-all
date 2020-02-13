@@ -4,9 +4,9 @@ import fr.pinguet62.meetall.login.FacebookApi.MeResponseDto;
 import okhttp3.HttpUrl;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
@@ -25,25 +25,25 @@ import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
-public class FacebookApiTest {
+class FacebookApiTest {
 
-    private MockWebServer server;
+    MockWebServer server;
 
-    private FacebookApi facebookApi;
+    FacebookApi facebookApi;
 
-    @Before
-    public void startServer() {
+    @BeforeEach
+    void startServer() {
         server = new MockWebServer();
         facebookApi = new FacebookApi(WebClient.builder(), server.url("/").toString());
     }
 
-    @After
-    public void stopServer() throws IOException {
+    @AfterEach
+    void stopServer() throws IOException {
         server.shutdown();
     }
 
     @Test
-    public void getMe() {
+    void ok() {
         final String accessToken = "accessToken";
         final String id = "id";
         server.enqueue(new MockResponse()
@@ -59,7 +59,7 @@ public class FacebookApiTest {
     }
 
     @Test
-    public void getMe_invalidToken() {
+    void invalidToken() {
         final String accessToken = "accessToken";
         server.enqueue(new MockResponse()
                 .setHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
@@ -79,5 +79,4 @@ public class FacebookApiTest {
 
         assertThat(response::block, throwing(RuntimeException.class));
     }
-
 }

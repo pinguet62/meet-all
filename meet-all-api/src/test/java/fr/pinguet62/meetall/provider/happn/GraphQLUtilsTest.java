@@ -1,6 +1,7 @@
 package fr.pinguet62.meetall.provider.happn;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
@@ -8,62 +9,64 @@ import static fr.pinguet62.meetall.provider.happn.GraphQLUtils.parseGraph;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
-public class GraphQLUtilsTest {
+class GraphQLUtilsTest {
 
     static class BaseType {
         @GraphQLField
-        private SubType first;
+        SubType first;
     }
 
     static class SubType {
         @GraphQLField
-        private SubSubType second;
+        SubSubType second;
     }
 
     static class SubSubType {
-        private String value;
+        String value;
     }
 
     static class BaseListType {
         @GraphQLField
-        private List<SubSubType> elements;
+        List<SubSubType> elements;
     }
 
     static class BaseAdditionalType {
         @GraphQLField(additional = ".first(11).second(22)")
-        private SubSubType full;
+        SubSubType full;
     }
 
     /**
      * @see GraphQLField
      */
     @Test
-    public void test_parseGraph_simple() {
+    void simple() {
         assertThat(parseGraph(SubSubType.class), is("value"));
     }
 
-    /**
-     * @see GraphQLField
-     */
-    @Test
-    public void test_parseGraph_subTypes() {
-        assertThat(parseGraph(BaseType.class), is("first.fields(second.fields(value))"));
-    }
+    @Nested
+    class subTypes {
+        /**
+         * @see GraphQLField
+         */
+        @Test
+        void simple() {
+            assertThat(parseGraph(BaseType.class), is("first.fields(second.fields(value))"));
+        }
 
-    /**
-     * @see GraphQLField
-     */
-    @Test
-    public void test_parseGraph_subTypes_list() {
-        assertThat(parseGraph(BaseListType.class), is("elements.fields(value)"));
+        /**
+         * @see GraphQLField
+         */
+        @Test
+        void list() {
+            assertThat(parseGraph(BaseListType.class), is("elements.fields(value)"));
+        }
     }
 
     /**
      * @see GraphQLField#additional()
      */
     @Test
-    public void test_parseGraph_additional() {
+    void additional() {
         assertThat(parseGraph(BaseAdditionalType.class), is("full.first(11).second(22).fields(value)"));
     }
-
 }

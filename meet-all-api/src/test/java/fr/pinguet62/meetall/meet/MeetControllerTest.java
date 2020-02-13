@@ -6,13 +6,12 @@ import fr.pinguet62.meetall.provider.model.MessageDto;
 import fr.pinguet62.meetall.provider.model.ProfileDto;
 import fr.pinguet62.meetall.provider.model.ProposalDto;
 import fr.pinguet62.meetall.security.utils.WithMockUserId;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentMatchers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -28,10 +27,9 @@ import static org.mockito.Mockito.when;
 import static org.springframework.http.HttpStatus.PARTIAL_CONTENT;
 import static org.springframework.security.test.web.reactive.server.SecurityMockServerConfigurers.csrf;
 
-@RunWith(SpringRunner.class)
 @WebFluxTest(MeetController.class)
 @WithMockUserId(currentUserId)
-public class MeetControllerTest {
+class MeetControllerTest {
 
     /**
      * @see WithMockUserId
@@ -39,40 +37,44 @@ public class MeetControllerTest {
     static final String currentUserId = "userId";
 
     @Autowired
-    private WebTestClient webTestClient;
+    WebTestClient webTestClient;
 
     @MockBean
-    private MeetService meetService;
+    MeetService meetService;
 
-    @Test
-    public void getProposals() {
-        when(meetService.getProposalsForUser(currentUserId)).thenReturn(Mono.just(new PartialArrayList<>(List.of(
-                new ProposalDto("proposal-1", new ProfileDto("profile-id-1", "profile-name-1", 1, "description-1", emptyList())),
-                new ProposalDto("proposal-2", new ProfileDto("profile-id-2", "profile-name-2", 2, "description-2", emptyList()))))));
+    @Nested
+    @WithMockUserId(currentUserId)
+    class getProposals {
+        @Test
+        void ok() {
+            when(meetService.getProposalsForUser(currentUserId)).thenReturn(Mono.just(new PartialArrayList<>(List.of(
+                    new ProposalDto("proposal-1", new ProfileDto("profile-id-1", "profile-name-1", 1, "description-1", emptyList())),
+                    new ProposalDto("proposal-2", new ProfileDto("profile-id-2", "profile-name-2", 2, "description-2", emptyList()))))));
 
-        webTestClient
-                .get()
-                .uri("/proposals")
-                .exchange()
-                .expectStatus().isOk()
-                .expectBody()
-                .jsonPath("$[0].id").isEqualTo("proposal-1")
-                .jsonPath("$[1].id").isEqualTo("proposal-2");
+            webTestClient
+                    .get()
+                    .uri("/proposals")
+                    .exchange()
+                    .expectStatus().isOk()
+                    .expectBody()
+                    .jsonPath("$[0].id").isEqualTo("proposal-1")
+                    .jsonPath("$[1].id").isEqualTo("proposal-2");
+        }
+
+        @Test
+        void partial() {
+            when(meetService.getProposalsForUser(currentUserId)).thenReturn(Mono.just(new PartialArrayList<>(emptyList(), true)));
+
+            webTestClient
+                    .get()
+                    .uri("/proposals")
+                    .exchange()
+                    .expectStatus().isEqualTo(PARTIAL_CONTENT);
+        }
     }
 
     @Test
-    public void getProposals_partial() {
-        when(meetService.getProposalsForUser(currentUserId)).thenReturn(Mono.just(new PartialArrayList<>(emptyList(), true)));
-
-        webTestClient
-                .get()
-                .uri("/proposals")
-                .exchange()
-                .expectStatus().isEqualTo(PARTIAL_CONTENT);
-    }
-
-    @Test
-    public void unlikeProposal() {
+    void unlikeProposal() {
         final String credentialId = "42";
         final String id = "99";
 
@@ -90,7 +92,7 @@ public class MeetControllerTest {
     }
 
     @Test
-    public void likeProposal() {
+    void likeProposal() {
         final String credentialId = "42";
         final String id = "99";
 
@@ -107,35 +109,39 @@ public class MeetControllerTest {
         verify(meetService).likeOrUnlikeProposal(currentUserId, credentialId, id, true);
     }
 
-    @Test
-    public void getConversations() {
-        when(meetService.getConversationsForUser(currentUserId)).thenReturn(Mono.just(new PartialArrayList<>(List.of(
-                new ConversationDto("conversation-1", new ProfileDto("profile-id-1", "profile-name-1", 1, "description-1", emptyList()), now(), new MessageDto("message-1", now(), true, "message-text-1")),
-                new ConversationDto("conversation-2", new ProfileDto("profile-id-2", "profile-name-2", 2, "description-2", emptyList()), now(), new MessageDto("message-2", now(), false, "message-text-2"))), false)));
+    @Nested
+    @WithMockUserId(currentUserId)
+    class getConversations {
+        @Test
+        void ok() {
+            when(meetService.getConversationsForUser(currentUserId)).thenReturn(Mono.just(new PartialArrayList<>(List.of(
+                    new ConversationDto("conversation-1", new ProfileDto("profile-id-1", "profile-name-1", 1, "description-1", emptyList()), now(), new MessageDto("message-1", now(), true, "message-text-1")),
+                    new ConversationDto("conversation-2", new ProfileDto("profile-id-2", "profile-name-2", 2, "description-2", emptyList()), now(), new MessageDto("message-2", now(), false, "message-text-2"))), false)));
 
-        webTestClient
-                .get()
-                .uri("/conversations")
-                .exchange()
-                .expectStatus().isOk()
-                .expectBody()
-                .jsonPath("$[0].id").isEqualTo("conversation-1")
-                .jsonPath("$[1].id").isEqualTo("conversation-2");
+            webTestClient
+                    .get()
+                    .uri("/conversations")
+                    .exchange()
+                    .expectStatus().isOk()
+                    .expectBody()
+                    .jsonPath("$[0].id").isEqualTo("conversation-1")
+                    .jsonPath("$[1].id").isEqualTo("conversation-2");
+        }
+
+        @Test
+        void partial() {
+            when(meetService.getConversationsForUser(currentUserId)).thenReturn(Mono.just(new PartialArrayList<>(emptyList(), true)));
+
+            webTestClient
+                    .get()
+                    .uri("/conversations")
+                    .exchange()
+                    .expectStatus().isEqualTo(PARTIAL_CONTENT);
+        }
     }
 
     @Test
-    public void getConversations_partial() {
-        when(meetService.getConversationsForUser(currentUserId)).thenReturn(Mono.just(new PartialArrayList<>(emptyList(), true)));
-
-        webTestClient
-                .get()
-                .uri("/conversations")
-                .exchange()
-                .expectStatus().isEqualTo(PARTIAL_CONTENT);
-    }
-
-    @Test
-    public void getMessages() {
+    void getMessages() {
         final String credentialId = "42";
         final String id = "99";
 
@@ -155,7 +161,7 @@ public class MeetControllerTest {
     }
 
     @Test
-    public void sendMessage() {
+    void sendMessage() {
         final String credentialId = "42";
         final String id = "99";
         final String text = "text";
@@ -177,7 +183,7 @@ public class MeetControllerTest {
     }
 
     @Test
-    public void getProfile() {
+    void getProfile() {
         final String credentialId = "42";
         final String id = "99";
 
@@ -197,7 +203,7 @@ public class MeetControllerTest {
     }
 
     @Test
-    public void setPosition() {
+    void setPosition() {
         when(meetService.setPosition(ArgumentMatchers.eq(currentUserId), eq(48.8534, 0.0001), eq(2.3488, 0.0001), eq(35.1, 0.0001))).thenReturn(Mono.empty());
 
         webTestClient.mutateWith(csrf())
@@ -207,5 +213,4 @@ public class MeetControllerTest {
                 .expectStatus().isNoContent()
                 .expectBody().isEmpty();
     }
-
 }

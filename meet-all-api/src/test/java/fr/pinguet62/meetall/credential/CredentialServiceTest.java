@@ -2,8 +2,8 @@ package fr.pinguet62.meetall.credential;
 
 import fr.pinguet62.meetall.provider.ProviderFactory;
 import fr.pinguet62.meetall.provider.ProviderService;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -15,21 +15,21 @@ import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class CredentialServiceTest {
+class CredentialServiceTest {
 
-    private CredentialRepository credentialRepository;
-    private ProviderFactory providerFactory;
-    private CredentialService service;
+    CredentialRepository credentialRepository;
+    ProviderFactory providerFactory;
+    CredentialService service;
 
-    @Before
-    public void buildService() {
+    @BeforeEach
+    void buildService() {
         credentialRepository = mock(CredentialRepository.class);
         providerFactory = mock(ProviderFactory.class);
         service = new CredentialService(credentialRepository, providerFactory);
     }
 
     @Test
-    public void getRegisteredCredentials() {
+    void getRegisteredCredentials() {
         when(credentialRepository.findByUserId("userId")).thenReturn(Flux.just(
                 new Credential("91", "userId", TINDER, "tinderCredential_91", "label 91"),
                 new Credential("92", "userId", HAPPN, "happnCredential_92", "label 92")));
@@ -52,7 +52,7 @@ public class CredentialServiceTest {
     }
 
     @Test
-    public void deleteCredential() {
+    void deleteCredential() {
         Credential tinderCredential = new Credential("99", "userId", TINDER, "credential_99", "label 99");
         when(credentialRepository.findById("99")).thenReturn(Mono.just(tinderCredential));
         when(credentialRepository.delete(tinderCredential)).thenReturn(Mono.empty());

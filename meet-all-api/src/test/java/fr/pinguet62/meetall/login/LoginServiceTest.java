@@ -2,8 +2,8 @@ package fr.pinguet62.meetall.login;
 
 import fr.pinguet62.meetall.login.FacebookApi.MeResponseDto;
 import fr.pinguet62.meetall.security.JwtTokenGenerator;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import reactor.core.publisher.Mono;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -11,21 +11,21 @@ import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class LoginServiceTest {
+class LoginServiceTest {
 
-    private FacebookApi facebookApi;
-    private JwtTokenGenerator jwtTokenGenerator;
-    private LoginService loginService;
+    FacebookApi facebookApi;
+    JwtTokenGenerator jwtTokenGenerator;
+    LoginService loginService;
 
-    @Before
-    public void initMock() {
+    @BeforeEach
+    void initMock() {
         facebookApi = mock(FacebookApi.class);
         jwtTokenGenerator = mock(JwtTokenGenerator.class);
         loginService = new LoginService(facebookApi, jwtTokenGenerator);
     }
 
     @Test
-    public void login() {
+    void login() {
         final String accessToken = "accessToken";
         final String jwtToken = "jwtToken";
         final String userId = "userId";
@@ -37,5 +37,4 @@ public class LoginServiceTest {
 
         assertThat(result.block(), is(jwtToken));
     }
-
 }

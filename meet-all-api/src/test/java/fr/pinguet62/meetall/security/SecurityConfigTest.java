@@ -1,10 +1,9 @@
 package fr.pinguet62.meetall.security;
 
 import fr.pinguet62.meetall.config.OpenApiConfig;
-import org.junit.BeforeClass;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.springdoc.core.SpringDocConfigProperties;
 import org.springdoc.core.SpringDocConfiguration;
 import org.springdoc.core.SwaggerUiConfigParameters;
@@ -13,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -33,7 +31,6 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.HttpHeaders.WWW_AUTHENTICATE;
 import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 
-@RunWith(SpringRunner.class)
 @SpringBootTest(classes = {SecurityConfig.class, OpenApiConfig.class, TestController.class, JwtTokenGenerator.class},
         properties = {
                 // "spring.security.oauth2.resourceserver.jwt.key-value = ",
@@ -41,12 +38,12 @@ import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 // spring.factories: org.springframework.boot.autoconfigure.EnableAutoConfiguration
 @Import({SpringDocConfiguration.class, SpringDocConfigProperties.class, SwaggerUiConfigProperties.class, SwaggerUiConfigParameters.class})
 @AutoConfigureWebTestClient
-public class SecurityConfigTest {
+class SecurityConfigTest {
 
     private static SecretKey KEY;
 
-    @BeforeClass
-    public static void initKey() {
+    @BeforeAll
+    static void initKey() {
         KEY = generateRandomSecretKey();
         System.setProperty("spring.security.oauth2.resourceserver.jwt.key-value", SecretKeyUtils.toString(KEY));
     }
@@ -64,7 +61,7 @@ public class SecurityConfigTest {
 
     @EnableWebFlux
     @RestController
-    public static class TestController {
+    static class TestController {
         @GetMapping("/userId")
         public Mono<String> showUserId() {
             return ApplicationReactiveSecurityContextHolder.getAuthentication()
@@ -73,13 +70,13 @@ public class SecurityConfigTest {
     }
 
     @Autowired
-    private WebTestClient webTestClient;
+    WebTestClient webTestClient;
 
     @Autowired
-    private JwtTokenGenerator jwtTokenGenerator;
+    JwtTokenGenerator jwtTokenGenerator;
 
     @Test
-    public void noToken() {
+    void noToken() {
         final String jwtToken = null;
 
         webTestClient.get().uri("/userId")
@@ -89,7 +86,7 @@ public class SecurityConfigTest {
     }
 
     @Test
-    public void badJwtToken() {
+    void badJwtToken() {
         final String jwtToken = "bad";
 
         webTestClient.get().uri("/userId")
@@ -99,13 +96,13 @@ public class SecurityConfigTest {
                 .expectHeader().value(WWW_AUTHENTICATE, containsString("invalid_token"));
     }
 
-    @Ignore("JWS support only 1 algorithm (HS256)")
+    @Disabled("JWS support only 1 algorithm (HS256)")
     @Test
-    public void badJwtAlgorithm() {
+    void badJwtAlgorithm() {
     }
 
     @Test
-    public void badJwtSignature() {
+    void badJwtSignature() {
         final String userId = "3";
 
         String jwtToken = jwtTokenGenerator.generateToken(userId, ALGORITHM, generateRandomSecretKey());
@@ -117,7 +114,7 @@ public class SecurityConfigTest {
     }
 
     @Test
-    public void ok() {
+    void ok() {
         final String userId = "3";
 
         String jwtToken = jwtTokenGenerator.generateToken(userId);
@@ -132,7 +129,7 @@ public class SecurityConfigTest {
      * {@code is(not(UNAUTHORIZED))} because {@code 404} because module not loaded
      */
     @Test
-    public void openApi() {
+    void openApi() {
         webTestClient.get()
                 .uri("/swagger-ui.html")
                 .exchange()

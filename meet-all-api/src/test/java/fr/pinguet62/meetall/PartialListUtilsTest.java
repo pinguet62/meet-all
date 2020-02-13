@@ -3,7 +3,7 @@ package fr.pinguet62.meetall;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import reactor.core.publisher.Flux;
 
 import java.util.ArrayList;
@@ -13,17 +13,17 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.nullValue;
 import static reactor.core.publisher.Flux.just;
 
-public class PartialListUtilsTest {
+class PartialListUtilsTest {
 
     @Test
-    public void partialEmpty() {
+    void partialEmpty() {
         PartialList<Object> value = PartialListUtils.partialEmpty();
 
         assertThat(value, isPartialList(true));
     }
 
     @Test
-    public void concatPartialList_shouldApplyMaskOnPartialFlag() {
+    void concatPartialList_shouldApplyMaskOnPartialFlag() {
         assertThat(
                 just(new PartialArrayList<>(List.of(1), false), new PartialArrayList<>(List.of(2), false), new PartialArrayList<>(List.of(3), false))
                         .reduce(PartialListUtils.concatPartialList())
@@ -42,7 +42,7 @@ public class PartialListUtilsTest {
     }
 
     @Test
-    public void concatPartialList_shouldMergeValues() {
+    void concatPartialList_shouldMergeValues() {
         assertThat(
                 just(new PartialArrayList<>(List.of(1, 2)), new PartialArrayList<>(List.of(3, 4)), new PartialArrayList<>(List.of(5, 6)))
                         .reduce(PartialListUtils.concatPartialList())
@@ -51,7 +51,7 @@ public class PartialListUtilsTest {
     }
 
     @Test
-    public void concatPartialList_single() {
+    void concatPartialList_single() {
         assertThat(
                 just(new PartialArrayList<>(List.of(1, 2), false))
                         .reduce(PartialListUtils.concatPartialList())
@@ -65,7 +65,7 @@ public class PartialListUtilsTest {
     }
 
     @Test
-    public void concatPartialList_empty() {
+    void concatPartialList_empty() {
         assertThat(
                 Flux.<PartialList<Void>>empty()
                         .reduce(PartialListUtils.concatPartialList())
