@@ -22,7 +22,7 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
-import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 public class FacebookApiTest {
 
@@ -46,7 +46,7 @@ public class FacebookApiTest {
         final String accessToken = "accessToken";
         final String id = "id";
         server.enqueue(new MockResponse()
-                .setHeader(CONTENT_TYPE, APPLICATION_JSON_UTF8_VALUE)
+                .setHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
                 .setBody("{ \"id\": \"" + id + "\" }"));
 
         Mono<MeResponseDto> response = facebookApi.getMe(accessToken);
@@ -61,7 +61,7 @@ public class FacebookApiTest {
     public void getMe_invalidToken() {
         final String accessToken = "accessToken";
         server.enqueue(new MockResponse()
-                .setHeader(CONTENT_TYPE, APPLICATION_JSON_UTF8_VALUE)
+                .setHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
                 .setResponseCode(BAD_REQUEST.value())
                 .setBody("{\n" +
                         "    \"error\": {\n" +

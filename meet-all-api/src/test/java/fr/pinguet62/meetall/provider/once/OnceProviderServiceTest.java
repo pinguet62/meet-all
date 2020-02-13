@@ -34,7 +34,7 @@ import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
 import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
-import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 public class OnceProviderServiceTest {
 
@@ -57,7 +57,7 @@ public class OnceProviderServiceTest {
     @Test
     public void getProposals_notYetViewed() {
         server.enqueue(new MockResponse()
-                .setHeader(CONTENT_TYPE, APPLICATION_JSON_UTF8_VALUE)
+                .setHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
                 .setBody(readResource("/fr/pinguet62/meetall/provider/once/match-notYetViewed.json")));
 
         List<ProposalDto> proposal = onceProvider.getProposals(authToken).collectList().block();
@@ -79,7 +79,7 @@ public class OnceProviderServiceTest {
     @Test
     public void getProposals_alreadyLiked() {
         server.enqueue(new MockResponse()
-                .setHeader(CONTENT_TYPE, APPLICATION_JSON_UTF8_VALUE)
+                .setHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
                 .setBody(readResource("/fr/pinguet62/meetall/provider/once/match-alreadyLiked.json")));
 
         List<ProposalDto> proposal = onceProvider.getProposals(authToken).collectList().block();
@@ -93,7 +93,7 @@ public class OnceProviderServiceTest {
     @Test
     public void getProposals_alreadyPassed() {
         server.enqueue(new MockResponse()
-                .setHeader(CONTENT_TYPE, APPLICATION_JSON_UTF8_VALUE)
+                .setHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
                 .setBody(readResource("/fr/pinguet62/meetall/provider/once/match-alreadyPassed.json")));
 
         List<ProposalDto> proposal = onceProvider.getProposals(authToken).collectList().block();
@@ -108,7 +108,7 @@ public class OnceProviderServiceTest {
     public void likeOrUnlikeProposal_unlike() {
         final String matchId = "MEA356800065";
         server.enqueue(new MockResponse()
-                .setHeader(CONTENT_TYPE, APPLICATION_JSON_UTF8_VALUE)
+                .setHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
                 .setBody(readResource("/fr/pinguet62/meetall/provider/once/match_pass.json")));
 
         Boolean matched = onceProvider.likeOrUnlikeProposal(authToken, matchId, false).block();
@@ -123,7 +123,7 @@ public class OnceProviderServiceTest {
     public void likeOrUnlikeProposal_like_notMatched() {
         final String matchId = "MEA356800065";
         server.enqueue(new MockResponse()
-                .setHeader(CONTENT_TYPE, APPLICATION_JSON_UTF8_VALUE)
+                .setHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
                 .setBody(readResource("/fr/pinguet62/meetall/provider/once/match_like_not-matched.json")));
 
         Boolean matched = onceProvider.likeOrUnlikeProposal(authToken, matchId, true).block();
@@ -140,7 +140,7 @@ public class OnceProviderServiceTest {
     public void likeOrUnlikeProposal_like_matched() {
         final String matchId = "MEA356800065";
         server.enqueue(new MockResponse()
-                .setHeader(CONTENT_TYPE, APPLICATION_JSON_UTF8_VALUE)
+                .setHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
                 .setBody(readResource("/fr/pinguet62/meetall/provider/once/match_like_matched.json")));
 
         Boolean matched = onceProvider.likeOrUnlikeProposal(authToken, matchId, true).block();
@@ -156,7 +156,7 @@ public class OnceProviderServiceTest {
     @Test
     public void getConversations() {
         server.enqueue(new MockResponse()
-                .setHeader(CONTENT_TYPE, APPLICATION_JSON_UTF8_VALUE)
+                .setHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
                 .setBody(readResource("/fr/pinguet62/meetall/provider/once/connections.json")));
 
         List<ConversationDto> conversations = onceProvider.getConversations(authToken).collectList().block();
@@ -184,7 +184,7 @@ public class OnceProviderServiceTest {
     public void getMessages() {
         final String matchId = "MEA346007886";
         server.enqueue(new MockResponse()
-                .setHeader(CONTENT_TYPE, APPLICATION_JSON_UTF8_VALUE)
+                .setHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
                 .setBody(readResource("/fr/pinguet62/meetall/provider/once/messages.json")));
 
         List<MessageDto> messages = onceProvider.getMessages(authToken, matchId).collectList().block();
@@ -210,7 +210,7 @@ public class OnceProviderServiceTest {
     public void sendMessages() {
         final String matchId = "MEA346007886";
         server.enqueue(new MockResponse()
-                .setHeader(CONTENT_TYPE, APPLICATION_JSON_UTF8_VALUE)
+                .setHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
                 .setBody(readResource("/fr/pinguet62/meetall/provider/once/message_send.json")));
 
         MessageDto message = onceProvider.sendMessage(authToken, matchId, "text").block();
@@ -229,7 +229,7 @@ public class OnceProviderServiceTest {
     public void getProfile() {
         final String matchId = "MEA346007886";
         server.enqueue(new MockResponse()
-                .setHeader(CONTENT_TYPE, APPLICATION_JSON_UTF8_VALUE)
+                .setHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
                 .setBody(readResource("/fr/pinguet62/meetall/provider/once/match_id.json")));
 
         ProfileDto profile = onceProvider.getProfile(authToken, matchId).block();

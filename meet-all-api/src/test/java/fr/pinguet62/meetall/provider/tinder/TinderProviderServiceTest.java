@@ -35,7 +35,7 @@ import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
 import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
-import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 public class TinderProviderServiceTest {
 
@@ -58,10 +58,10 @@ public class TinderProviderServiceTest {
     @Test
     public void getProposals() {
         server.enqueue(new MockResponse()
-                .setHeader(CONTENT_TYPE, APPLICATION_JSON_UTF8_VALUE)
+                .setHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
                 .setBody(readResource("/fr/pinguet62/meetall/provider/tinder/profile.json")));
         server.enqueue(new MockResponse()
-                .setHeader(CONTENT_TYPE, APPLICATION_JSON_UTF8_VALUE)
+                .setHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
                 .setBody(readResource("/fr/pinguet62/meetall/provider/tinder/recs_core.json")));
 
         List<ProposalDto> proposals = tinderProvider.getProposals(authToken).collectList().block();
@@ -96,7 +96,7 @@ public class TinderProviderServiceTest {
     public void getProposals_tokenExpired() {
         server.enqueue(new MockResponse()
                 .setResponseCode(401)
-                .setHeader(CONTENT_TYPE, APPLICATION_JSON_UTF8_VALUE)
+                .setHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
                 .setBody(readResource("/fr/pinguet62/meetall/provider/tinder/profile_tokenExpired401.json")));
 
         assertThat(() -> tinderProvider.getProposals(authToken).collectList().block(), throwing(ExpiredTokenException.class));
@@ -106,7 +106,7 @@ public class TinderProviderServiceTest {
     public void likeOrUnlikeProposal_unlike() {
         final String userId = "userId";
         server.enqueue(new MockResponse()
-                .setHeader(CONTENT_TYPE, APPLICATION_JSON_UTF8_VALUE)
+                .setHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
                 .setBody(readResource("/fr/pinguet62/meetall/provider/tinder/pass.json")));
 
         Boolean matched = tinderProvider.likeOrUnlikeProposal(authToken, userId, false).block();
@@ -122,7 +122,7 @@ public class TinderProviderServiceTest {
         final String userId = "userId";
         server.enqueue(new MockResponse()
                 .setResponseCode(401)
-                .setHeader(CONTENT_TYPE, APPLICATION_JSON_UTF8_VALUE)
+                .setHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
                 .setBody(readResource("/fr/pinguet62/meetall/provider/tinder/pass_tokenExpired401.json")));
 
         assertThat(() -> tinderProvider.likeOrUnlikeProposal(authToken, userId, false).block(), throwing(ExpiredTokenException.class));
@@ -132,7 +132,7 @@ public class TinderProviderServiceTest {
     public void likeOrUnlikeProposal_like_notMatched() {
         final String userId = "userId";
         server.enqueue(new MockResponse()
-                .setHeader(CONTENT_TYPE, APPLICATION_JSON_UTF8_VALUE)
+                .setHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
                 .setBody(readResource("/fr/pinguet62/meetall/provider/tinder/like_not-matched.json")));
 
         Boolean matched = tinderProvider.likeOrUnlikeProposal(authToken, userId, true).block();
@@ -149,7 +149,7 @@ public class TinderProviderServiceTest {
     public void likeOrUnlikeProposal_like_matched() {
         final String userId = "userId";
         server.enqueue(new MockResponse()
-                .setHeader(CONTENT_TYPE, APPLICATION_JSON_UTF8_VALUE)
+                .setHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
                 .setBody(readResource("/fr/pinguet62/meetall/provider/tinder/like_matched.json")));
 
         Boolean matched = tinderProvider.likeOrUnlikeProposal(authToken, userId, true).block();
@@ -167,7 +167,7 @@ public class TinderProviderServiceTest {
         final String userId = "userId";
         server.enqueue(new MockResponse()
                 .setResponseCode(401)
-                .setHeader(CONTENT_TYPE, APPLICATION_JSON_UTF8_VALUE)
+                .setHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
                 .setBody(readResource("/fr/pinguet62/meetall/provider/tinder/like_tokenExpired401.json")));
 
         assertThat(() -> tinderProvider.likeOrUnlikeProposal(authToken, userId, true).block(), throwing(ExpiredTokenException.class));
@@ -177,7 +177,7 @@ public class TinderProviderServiceTest {
     public void likeOrUnlikeProposal_like_likeRemaining() {
         final String userId = "userId";
         server.enqueue(new MockResponse()
-                .setHeader(CONTENT_TYPE, APPLICATION_JSON_UTF8_VALUE)
+                .setHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
                 .setBody(readResource("/fr/pinguet62/meetall/provider/tinder/like_like-remaining.json")));
 
         assertThat(() -> tinderProvider.likeOrUnlikeProposal(authToken, userId, true).block(), throwing(RuntimeException.class));
@@ -189,10 +189,10 @@ public class TinderProviderServiceTest {
     @Test
     public void getConversations() {
         server.enqueue(new MockResponse()
-                .setHeader(CONTENT_TYPE, APPLICATION_JSON_UTF8_VALUE)
+                .setHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
                 .setBody(readResource("/fr/pinguet62/meetall/provider/tinder/meta.json")));
         server.enqueue(new MockResponse()
-                .setHeader(CONTENT_TYPE, APPLICATION_JSON_UTF8_VALUE)
+                .setHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
                 .setBody(readResource("/fr/pinguet62/meetall/provider/tinder/matches.json")));
 
         List<ConversationDto> conversations = tinderProvider.getConversations(authToken).collectList().block();
@@ -235,7 +235,7 @@ public class TinderProviderServiceTest {
     public void getConversations_tokenExpired() {
         server.enqueue(new MockResponse()
                 .setResponseCode(401)
-                .setHeader(CONTENT_TYPE, APPLICATION_JSON_UTF8_VALUE)
+                .setHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
                 .setBody(readResource("/fr/pinguet62/meetall/provider/tinder/meta_tokenExpired401.json")));
 
         assertThat(() -> tinderProvider.getConversations(authToken).collectList().block(), throwing(ExpiredTokenException.class));
@@ -245,10 +245,10 @@ public class TinderProviderServiceTest {
     public void getMessages() {
         final String matchId = "matchId";
         server.enqueue(new MockResponse()
-                .setHeader(CONTENT_TYPE, APPLICATION_JSON_UTF8_VALUE)
+                .setHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
                 .setBody(readResource("/fr/pinguet62/meetall/provider/tinder/meta.json")));
         server.enqueue(new MockResponse()
-                .setHeader(CONTENT_TYPE, APPLICATION_JSON_UTF8_VALUE)
+                .setHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
                 .setBody(readResource("/fr/pinguet62/meetall/provider/tinder/matches_messages.json")));
 
         List<MessageDto> messages = tinderProvider.getMessages(authToken, matchId).collectList().block();
@@ -277,7 +277,7 @@ public class TinderProviderServiceTest {
         final String matchId = "matchId";
         server.enqueue(new MockResponse()
                 .setResponseCode(401)
-                .setHeader(CONTENT_TYPE, APPLICATION_JSON_UTF8_VALUE)
+                .setHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
                 .setBody(readResource("/fr/pinguet62/meetall/provider/tinder/meta_tokenExpired401.json")));
 
         assertThat(() -> tinderProvider.getMessages(authToken, matchId).collectList().block(), throwing(ExpiredTokenException.class));
@@ -287,7 +287,7 @@ public class TinderProviderServiceTest {
     public void sendMessage() {
         final String matchId = "5b6329d7f84145486ecaf51a5c1412e7f3902fed66dd3530";
         server.enqueue(new MockResponse()
-                .setHeader(CONTENT_TYPE, APPLICATION_JSON_UTF8_VALUE)
+                .setHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
                 .setBody(readResource("/fr/pinguet62/meetall/provider/tinder/matches_sendMessage.json")));
 
         MessageDto message = tinderProvider.sendMessage(authToken, matchId, "text").block();
@@ -307,7 +307,7 @@ public class TinderProviderServiceTest {
         final String matchId = "5b6329d7f84145486ecaf51a5c1412e7f3902fed66dd3530";
         server.enqueue(new MockResponse()
                 .setResponseCode(401)
-                .setHeader(CONTENT_TYPE, APPLICATION_JSON_UTF8_VALUE)
+                .setHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
                 .setBody(readResource("/fr/pinguet62/meetall/provider/tinder/matches_sendMessage_tokenExpired401.json")));
 
         assertThat(() -> tinderProvider.sendMessage(authToken, matchId, "text").block(), throwing(ExpiredTokenException.class));
@@ -317,7 +317,7 @@ public class TinderProviderServiceTest {
     public void getProfile() {
         final String userId = "userId";
         server.enqueue(new MockResponse()
-                .setHeader(CONTENT_TYPE, APPLICATION_JSON_UTF8_VALUE)
+                .setHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
                 .setBody(readResource("/fr/pinguet62/meetall/provider/tinder/user.json")));
 
         ProfileDto profile = tinderProvider.getProfile(authToken, userId).block();
@@ -338,7 +338,7 @@ public class TinderProviderServiceTest {
         final String userId = "userId";
         server.enqueue(new MockResponse()
                 .setResponseCode(401)
-                .setHeader(CONTENT_TYPE, APPLICATION_JSON_UTF8_VALUE)
+                .setHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
                 .setBody(readResource("/fr/pinguet62/meetall/provider/tinder/user_tokenExpired401.json")));
 
         assertThat(() -> tinderProvider.getProfile(authToken, userId).block(), throwing(ExpiredTokenException.class));
