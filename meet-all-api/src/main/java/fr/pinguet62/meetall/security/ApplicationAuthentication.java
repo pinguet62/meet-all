@@ -1,26 +1,24 @@
 package fr.pinguet62.meetall.security;
 
 import lombok.Getter;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 
 import java.util.Collection;
-
-import static java.util.Objects.requireNonNull;
 
 /**
  * Data from current logged user, used by this application.
  * <p>
  * Example: current user's ID.
  */
+@RequiredArgsConstructor
 public class ApplicationAuthentication implements Authentication {
 
     @Getter
+    @NonNull
     private final String userId;
-
-    public ApplicationAuthentication(String userId) {
-        this.userId = requireNonNull(userId);
-    }
 
     @Override
     public String getName() {

@@ -1,32 +1,36 @@
 package fr.pinguet62.meetall.login;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Getter;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
+import static java.util.Objects.requireNonNull;
+
 @Component
 public class FacebookApi {
 
-    @Data
-    @NoArgsConstructor
-    @AllArgsConstructor
+    @Getter
     public static class MeResponseDto {
-        //private String name;
-        private String id;
+        private final String id;
+
+        @JsonCreator
+        public MeResponseDto(@JsonProperty(value = "id", required = true) String id) {
+            this.id = requireNonNull(id);
+        }
     }
 
     private final WebClient webClient;
 
-    public FacebookApi() {
-        this("https://graph.facebook.com");
+    public FacebookApi(WebClient.Builder webClientBuilder) {
+        this(webClientBuilder, "https://graph.facebook.com");
     }
 
     // testing
-    FacebookApi(String baseUrl) {
-        this.webClient = WebClient.builder().baseUrl(baseUrl).build();
+    FacebookApi(WebClient.Builder webClientBuilder, String baseUrl) {
+        this.webClient = webClientBuilder.baseUrl(baseUrl).build();
     }
 
     public Mono<MeResponseDto> getMe(String accessToken) {

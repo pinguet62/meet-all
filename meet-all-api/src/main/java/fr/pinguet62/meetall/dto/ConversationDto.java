@@ -4,17 +4,20 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
+import org.springframework.lang.Nullable;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.time.ZonedDateTime;
+import java.util.Optional;
 
 import static com.fasterxml.jackson.annotation.JsonFormat.Shape.STRING;
 import static java.util.Objects.requireNonNull;
+import static java.util.Optional.ofNullable;
 
-@EqualsAndHashCode // testing
-@ToString // testing
+@ToString
+@EqualsAndHashCode
 @Getter
 public class ConversationDto {
 
@@ -35,11 +38,15 @@ public class ConversationDto {
 
     private final MessageDto lastMessage; // TODO LazyMessageDto
 
-    public ConversationDto(String id, ProfileDto profile, ZonedDateTime date, MessageDto lastMessage) {
+    public ConversationDto(String id, ProfileDto profile, ZonedDateTime date, @Nullable MessageDto lastMessage) {
         this.id = requireNonNull(id);
         this.profile = requireNonNull(profile);
         this.date = requireNonNull(date);
         this.lastMessage = lastMessage;
+    }
+
+    public Optional<MessageDto> getLastMessage() {
+        return ofNullable(lastMessage);
     }
 
     public ConversationDto withId(String value) {

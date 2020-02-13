@@ -97,7 +97,7 @@ public class ProvidersServiceTest {
         // Provider: HAPPN
         ProviderService happnProviderService = mock(ProviderService.class);
         when(happnProviderService.getId()).thenReturn(HAPPN);
-        when(happnProviderService.getProposals("happnCredential_92")).thenReturn(Flux.error(new ExpiredTokenException()));
+        when(happnProviderService.getProposals("happnCredential_92")).thenReturn(Flux.error(new ExpiredTokenException(null)));
         providerServices.add(happnProviderService);
 
         Mono<PartialList<ProposalDto>> result = service.getProposalsForUser(userId);
@@ -157,7 +157,7 @@ public class ProvidersServiceTest {
         // Provider: HAPPN
         ProviderService happnProviderService = mock(ProviderService.class);
         when(happnProviderService.getId()).thenReturn(HAPPN);
-        when(happnProviderService.getConversations("happnCredential_92")).thenReturn(Flux.error(new ExpiredTokenException()));
+        when(happnProviderService.getConversations("happnCredential_92")).thenReturn(Flux.error(new ExpiredTokenException(null)));
         providerServices.add(happnProviderService);
 
         Mono<PartialList<ConversationDto>> result = service.getConversationsForUser(userId);

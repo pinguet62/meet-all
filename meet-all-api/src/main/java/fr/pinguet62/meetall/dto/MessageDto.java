@@ -11,8 +11,8 @@ import java.time.ZonedDateTime;
 
 import static java.util.Objects.requireNonNull;
 
-@EqualsAndHashCode // testing
-@ToString // testing
+@ToString
+@EqualsAndHashCode
 @Getter
 public class MessageDto {
 

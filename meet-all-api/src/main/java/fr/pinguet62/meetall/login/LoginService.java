@@ -1,23 +1,21 @@
 package fr.pinguet62.meetall.login;
 
 import fr.pinguet62.meetall.security.JwtTokenGenerator;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Mono;
 
-import static java.util.Objects.requireNonNull;
-
-@Service
 @Transactional
+@Service
+@RequiredArgsConstructor
 public class LoginService {
 
+    @NonNull
     private final FacebookApi facebookApi;
+    @NonNull
     private final JwtTokenGenerator jwtTokenGenerator;
-
-    public LoginService(FacebookApi facebookApi, JwtTokenGenerator jwtTokenGenerator) {
-        this.facebookApi = requireNonNull(facebookApi);
-        this.jwtTokenGenerator = requireNonNull(jwtTokenGenerator);
-    }
 
     /**
      * @param accessToken Facebook {@code access_token}
@@ -25,7 +23,8 @@ public class LoginService {
      */
     public Mono<String> login(String accessToken) {
         return facebookApi.getMe(accessToken)
-                .map(it -> jwtTokenGenerator.generateToken(it.getId()));
+                .map(FacebookApi.MeResponseDto::getId)
+                .map(jwtTokenGenerator::generateToken);
     }
 
 }

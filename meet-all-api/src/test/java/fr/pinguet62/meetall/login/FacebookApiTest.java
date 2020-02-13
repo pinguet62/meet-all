@@ -7,6 +7,7 @@ import okhttp3.mockwebserver.MockWebServer;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 import java.io.IOException;
@@ -33,7 +34,7 @@ public class FacebookApiTest {
     @Before
     public void startServer() {
         server = new MockWebServer();
-        facebookApi = new FacebookApi(server.url("/").toString());
+        facebookApi = new FacebookApi(WebClient.builder(), server.url("/").toString());
     }
 
     @After

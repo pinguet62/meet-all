@@ -19,6 +19,7 @@ import static java.util.Objects.requireNonNull;
 public class JwtTokenGenerator {
 
     static final Function<String, Algorithm> ALGORITHM = Algorithm::HMAC256;
+
     private final String secret;
 
     public JwtTokenGenerator(@Value("${spring.security.oauth2.jwt.secret}") String secret) {

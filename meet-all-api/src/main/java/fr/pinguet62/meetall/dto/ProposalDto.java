@@ -9,8 +9,8 @@ import javax.validation.constraints.NotNull;
 
 import static java.util.Objects.requireNonNull;
 
-@EqualsAndHashCode // testing
-@ToString // testing
+@ToString
+@EqualsAndHashCode
 @Getter
 public class ProposalDto {
 
