@@ -28,6 +28,10 @@ jobs:
         env:
           CI: true
         run: npm run test
+      - name: Upgrade Chrome to lastet version
+        run: |
+          sudo apt-get update
+          sudo apt-get install google-chrome-stable
       - working-directory: ./meet-all-ui
         env:
           CI: true
