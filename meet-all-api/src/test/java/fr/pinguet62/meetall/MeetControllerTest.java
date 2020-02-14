@@ -25,7 +25,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.HttpStatus.PARTIAL_CONTENT;
 import static org.springframework.security.test.web.reactive.server.SecurityMockServerConfigurers.csrf;
-import static org.springframework.web.reactive.function.BodyInserters.fromObject;
+import static org.springframework.web.reactive.function.BodyInserters.fromValue;
 
 @RunWith(SpringRunner.class)
 @WebFluxTest(MeetController.class)
@@ -160,7 +160,7 @@ public class MeetControllerTest {
         webTestClient.mutateWith(csrf())
                 .post()
                 .uri(uriBuilder -> uriBuilder.path("/conversations").pathSegment(transformedId).pathSegment("message").build())
-                .body(fromObject(text))
+                .body(fromValue(text))
                 .exchange()
                 .expectStatus().isCreated()
                 .expectBody()

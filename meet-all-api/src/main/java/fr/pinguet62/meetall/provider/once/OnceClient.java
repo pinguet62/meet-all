@@ -12,7 +12,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
-import static org.springframework.web.reactive.function.BodyInserters.fromObject;
+import static org.springframework.web.reactive.function.BodyInserters.fromValue;
 
 @Component
 public class OnceClient {
@@ -68,7 +68,7 @@ public class OnceClient {
     public Mono<OnceSendMessageResponseDto> sendMessageToMatch(String authorization, String matchId, String text) {
         return webClient.post()
                 .uri("/v1/message")
-                .body(fromObject(new OnceSendMessageRequestDto(matchId, text)))
+                .body(fromValue(new OnceSendMessageRequestDto(matchId, text)))
                 .header(HEADER, authorization)
                 .retrieve().bodyToMono(OnceSendMessageResponseDto.class);
     }

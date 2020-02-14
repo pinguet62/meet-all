@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
-import static org.springframework.web.reactive.function.BodyInserters.fromObject;
+import static org.springframework.web.reactive.function.BodyInserters.fromValue;
 
 @Component
 public class TinderClient {
@@ -70,7 +70,7 @@ public class TinderClient {
     public Mono<TinderSendMessageResponseDto> sendMessageToMatch(String authToken, String matchId, String text) {
         return webClient.post()
                 .uri("/user/matches/{matchId}", matchId)
-                .body(fromObject(new TinderSendMessageRequestDto(text)))
+                .body(fromValue(new TinderSendMessageRequestDto(text)))
                 .header(HEADER, authToken)
                 .retrieve().bodyToMono(TinderSendMessageResponseDto.class);
     }

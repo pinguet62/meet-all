@@ -83,8 +83,9 @@ public class PartialListUtilsTest {
                 isPartialList(true));
     }
 
+    @SafeVarargs
     public static <T> Matcher<PartialList<T>> isPartialList(boolean partial, T... items) {
-        return new TypeSafeMatcher<PartialList<T>>() {
+        return new TypeSafeMatcher<>() {
             @Override
             public void describeTo(Description description) {
                 description.appendValue(new PartialArrayList<>(List.of(items), partial));

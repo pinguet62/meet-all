@@ -17,7 +17,7 @@ import reactor.core.publisher.Mono;
 
 import static fr.pinguet62.meetall.provider.happn.GraphQLUtils.parseGraph;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
-import static org.springframework.web.reactive.function.BodyInserters.fromObject;
+import static org.springframework.web.reactive.function.BodyInserters.fromValue;
 
 @Component
 public class HappnClient {
@@ -89,7 +89,7 @@ public class HappnClient {
                         .pathSegment("conversations").pathSegment(conversationId).pathSegment("messages")
                         .queryParam("fields", parseGraph(HappnMessageDto.class))
                         .build())
-                .body(fromObject(new HappnSendMessageRequestDto(text)))
+                .body(fromValue(new HappnSendMessageRequestDto(text)))
                 .header(HEADER, "OAuth=\"" + authToken + "\"")
                 .retrieve().bodyToMono(HappnSendMessageResponseDto.class);
     }

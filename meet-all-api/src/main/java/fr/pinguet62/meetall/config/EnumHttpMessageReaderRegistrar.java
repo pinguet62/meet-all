@@ -9,7 +9,7 @@ public class EnumHttpMessageReaderRegistrar implements CodecCustomizer {
 
     @Override
     public void customize(CodecConfigurer configurer) {
-        configurer.customCodecs().reader(new EnumHttpMessageReader());
+        configurer.customCodecs().register(new EnumHttpMessageReader());
     }
 
 }
