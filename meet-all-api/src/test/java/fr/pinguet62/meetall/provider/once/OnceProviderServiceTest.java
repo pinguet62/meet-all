@@ -23,8 +23,6 @@ import static fr.pinguet62.meetall.MatcherUtils.with;
 import static fr.pinguet62.meetall.TestUtils.readResource;
 import static fr.pinguet62.meetall.provider.once.OnceClient.HEADER;
 import static java.time.ZoneOffset.UTC;
-import static java.util.Arrays.asList;
-import static java.util.Collections.singletonList;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.containsString;
@@ -71,7 +69,7 @@ public class OnceProviderServiceTest {
                         "MEA353970154",
                         "Anne-marie",
                         27,
-                        asList(
+                        List.of(
                                 "https://d110abryny6tab.cloudfront.net/pictures/EA6728641/33787916_original.jpg",
                                 "https://d110abryny6tab.cloudfront.net/pictures/EA6728641/33803466_original.jpg")))));
     }
@@ -171,7 +169,7 @@ public class OnceProviderServiceTest {
                                 "MEA346007886",
                                 "Louise",
                                 27,
-                                singletonList("https://d110abryny6tab.cloudfront.net/pictures/EA7464845/33485378_original.jpg")),
+                                List.of("https://d110abryny6tab.cloudfront.net/pictures/EA7464845/33485378_original.jpg")),
                         ZonedDateTime.of(2018, 11, 24, 18, 37, 48, 0, UTC),
                         new MessageDto(
                                 "MEA346007886::2",
@@ -241,7 +239,7 @@ public class OnceProviderServiceTest {
                 "MEA346007886",
                 "Louise",
                 27,
-                asList(
+                List.of(
                         "https://d110abryny6tab.cloudfront.net/pictures/EA7464845/33485378_original.jpg",
                         "https://d110abryny6tab.cloudfront.net/pictures/EA7464845/33485380_original.jpg"))));
     }

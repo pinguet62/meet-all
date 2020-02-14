@@ -64,14 +64,16 @@ public class FacebookApiTest {
         server.enqueue(new MockResponse()
                 .setHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
                 .setResponseCode(BAD_REQUEST.value())
-                .setBody("{\n" +
-                        "    \"error\": {\n" +
-                        "        \"message\": \"Invalid OAuth access token.\",\n" +
-                        "        \"type\": \"OAuthException\",\n" +
-                        "        \"code\": 190,\n" +
-                        "        \"fbtrace_id\": \"FKvHS5NDFBd\"\n" +
-                        "    }\n" +
-                        "}"));
+                .setBody("""
+                        {
+                            "error": {
+                                "message": "Invalid OAuth access token.",
+                                "type": "OAuthException",
+                                "code": 190,
+                                "fbtrace_id": "FKvHS5NDFBd"
+                            }
+                        }
+                        """));
 
         Mono<MeResponseDto> response = facebookApi.getMe(accessToken);
 

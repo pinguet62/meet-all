@@ -14,12 +14,13 @@ import org.springframework.util.LinkedMultiValueMap;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.List;
+
 import static fr.pinguet62.meetall.Utils.mapOf;
 import static fr.pinguet62.meetall.credential.CredentialControllerTest.currentUserId;
 import static fr.pinguet62.meetall.provider.Provider.HAPPN;
 import static fr.pinguet62.meetall.provider.Provider.TINDER;
 import static java.lang.String.valueOf;
-import static java.util.Collections.singletonList;
 import static java.util.Optional.of;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.MediaType.MULTIPART_FORM_DATA;
@@ -81,9 +82,9 @@ public class CredentialControllerTest {
                 .post()
                 .uri("/credential")
                 .body(fromMultipartData(new LinkedMultiValueMap<>(mapOf(
-                        "provider", singletonList(provider),
-                        "credential", singletonList(credential),
-                        "label", singletonList(label)))))
+                        "provider", List.of(provider),
+                        "credential", List.of(credential),
+                        "label", List.of(label)))))
                 .exchange()
                 .expectStatus().isCreated()
                 .expectBody()
@@ -111,8 +112,8 @@ public class CredentialControllerTest {
                 .uri(uriBuilder -> uriBuilder.path("/credential").pathSegment(valueOf(id)).build())
                 .contentType(MULTIPART_FORM_DATA)
                 .body(fromMultipartData(new LinkedMultiValueMap<>(mapOf(
-                        "credential", singletonList(credential),
-                        "label", singletonList(label)))))
+                        "credential", List.of(credential),
+                        "label", List.of(label)))))
                 .exchange()
                 .expectStatus().isOk()
                 .expectBody()

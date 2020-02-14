@@ -14,7 +14,6 @@ import java.util.Optional;
 
 import static fr.pinguet62.meetall.provider.Provider.HAPPN;
 import static fr.pinguet62.meetall.provider.Provider.TINDER;
-import static java.util.Arrays.asList;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
@@ -45,7 +44,7 @@ public class CredentialServiceTest {
         when(credentialRepository.findById(91)).thenReturn(Optional.of(credential91));
         Credential credential92 = new Credential(92, userId, HAPPN, "happnCredential_92", "label 92");
         when(credentialRepository.findById(92)).thenReturn(Optional.of(credential92));
-        when(credentialRepository.findByUserId(userId)).thenReturn(asList(credential91, credential92));
+        when(credentialRepository.findByUserId(userId)).thenReturn(List.of(credential91, credential92));
         // Provider: TINDER
         ProviderService tinderProviderService = mock(ProviderService.class);
         when(tinderProviderService.getId()).thenReturn(TINDER);

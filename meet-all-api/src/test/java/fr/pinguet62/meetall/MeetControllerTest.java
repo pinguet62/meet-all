@@ -16,9 +16,10 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.List;
+
 import static fr.pinguet62.meetall.MeetControllerTest.currentUserId;
 import static java.time.ZonedDateTime.now;
-import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -44,7 +45,7 @@ public class MeetControllerTest {
 
     @Test
     public void getProposals() {
-        when(providersService.getProposalsForUser(currentUserId)).thenReturn(Mono.just(new PartialArrayList<>(asList(
+        when(providersService.getProposalsForUser(currentUserId)).thenReturn(Mono.just(new PartialArrayList<>(List.of(
                 new ProposalDto("proposal-1", new ProfileDto("profile-id-1", "profile-name-1", 1, emptyList())),
                 new ProposalDto("proposal-2", new ProfileDto("profile-id-2", "profile-name-2", 2, emptyList()))))));
 
@@ -105,7 +106,7 @@ public class MeetControllerTest {
 
     @Test
     public void getConversations() {
-        when(providersService.getConversationsForUser(currentUserId)).thenReturn(Mono.just(new PartialArrayList<>(asList(
+        when(providersService.getConversationsForUser(currentUserId)).thenReturn(Mono.just(new PartialArrayList<>(List.of(
                 new ConversationDto("conversation-1", new ProfileDto("profile-id-1", "profile-name-1", 1, emptyList()), now(), new MessageDto("message-1", now(), true, "message-text-1")),
                 new ConversationDto("conversation-2", new ProfileDto("profile-id-2", "profile-name-2", 2, emptyList()), now(), new MessageDto("message-2", now(), false, "message-text-2"))), false)));
 
@@ -133,7 +134,7 @@ public class MeetControllerTest {
         final int credentialId = 42;
         final String id = "99";
 
-        when(providersService.getMessagesForUser(currentUserId, credentialId, id)).thenReturn(Flux.fromIterable(asList(
+        when(providersService.getMessagesForUser(currentUserId, credentialId, id)).thenReturn(Flux.fromIterable(List.of(
                 new MessageDto("message-1", now(), true, "message-text-1"),
                 new MessageDto("message-2", now(), false, "message-text-2"))));
 
