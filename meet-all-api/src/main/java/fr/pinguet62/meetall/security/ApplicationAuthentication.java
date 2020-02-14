@@ -1,28 +1,23 @@
 package fr.pinguet62.meetall.security;
 
 import lombok.Getter;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.authentication.AbstractAuthenticationToken;
 
-import java.util.Collection;
+import static java.util.Objects.requireNonNull;
 
 /**
  * Data from current logged user, used by this application.
  * <p>
  * Example: current user's ID.
  */
-@RequiredArgsConstructor
-public class ApplicationAuthentication implements Authentication {
+public class ApplicationAuthentication extends AbstractAuthenticationToken {
 
     @Getter
-    @NonNull
     private final String userId;
 
-    @Override
-    public String getName() {
-        return userId;
+    public ApplicationAuthentication(String userId) {
+        super(null);
+        this.userId = requireNonNull(userId);
     }
 
     @Override
@@ -36,23 +31,8 @@ public class ApplicationAuthentication implements Authentication {
     }
 
     @Override
-    public Object getDetails() {
-        return null;
-    }
-
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
-    }
-
-    @Override
     public boolean isAuthenticated() {
         return true;
-    }
-
-    @Override
-    public void setAuthenticated(boolean isAuthenticated) throws IllegalArgumentException {
-        throw new IllegalArgumentException();
     }
 
 }

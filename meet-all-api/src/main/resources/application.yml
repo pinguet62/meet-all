@@ -3,5 +3,6 @@ spring:
     url: ${JDBC_DATABASE_URL:}
   security:
     oauth2:
-      jwt:
-        secret: meet-all
+      resourceserver:
+        jwt:
+          key-value: pXjg7MSyU2biZtVj52K4lJPT9eXe4fmejgVUYfaFJPI=

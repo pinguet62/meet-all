@@ -1,17 +1,24 @@
 package fr.pinguet62.meetall.security;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
+import org.springframework.security.oauth2.jwt.NimbusReactiveJwtDecoder;
 import org.springframework.security.web.server.SecurityWebFilterChain;
+
+import static fr.pinguet62.meetall.security.SecretKeyUtils.fromString;
 
 @Configuration
 @EnableWebFluxSecurity
 public class SecurityConfig {
 
+    @Value("${spring.security.oauth2.resourceserver.jwt.key-value}")
+    private String jwtSymmetricKey;
+
     @Bean
-    public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http, JwtTokenGenerator jwtTokenGenerator) {
+    public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http) {
         // @formatter:off
         return http
                 .cors()
@@ -20,7 +27,8 @@ public class SecurityConfig {
                 // JWT config
                 .oauth2ResourceServer()
                         .jwt()
-                                .authenticationManager(new ApplicationAuthenticationManager(jwtTokenGenerator::verifyAndConvertToken))
+                                .jwtDecoder(NimbusReactiveJwtDecoder.withSecretKey(fromString(jwtSymmetricKey)).build())
+                                .jwtAuthenticationConverter(JwtToApplicationAuthenticationConverter::convert)
                         .and()
                 .and()
                 // public/private routes
