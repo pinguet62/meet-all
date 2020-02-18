@@ -10,7 +10,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import reactor.core.publisher.Mono;
 
-import static fr.pinguet62.meetall.login.LoginController.TOKEN_PARAM;
 import static org.mockito.Mockito.when;
 
 @RunWith(SpringRunner.class)
@@ -37,7 +36,7 @@ public class LoginControllerTest {
         webTestClient.post()
                 .uri(uriBuilder -> uriBuilder
                         .path("/login")
-                        .queryParam(TOKEN_PARAM, accessToken)
+                        .queryParam("access_token", accessToken)
                         .build())
                 .exchange()
                 .expectStatus().isOk()

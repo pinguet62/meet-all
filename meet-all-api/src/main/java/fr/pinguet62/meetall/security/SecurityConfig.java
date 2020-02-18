@@ -1,5 +1,6 @@
 package fr.pinguet62.meetall.security;
 
+import fr.pinguet62.meetall.config.OpenApiConfig;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,11 +15,11 @@ import static fr.pinguet62.meetall.security.SecretKeyUtils.fromString;
 @EnableWebFluxSecurity
 public class SecurityConfig {
 
-    @Value("${spring.security.oauth2.resourceserver.jwt.key-value}")
-    private String jwtSymmetricKey;
-
     @Bean
-    public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http) {
+    public SecurityWebFilterChain securityWebFilterChain(
+            ServerHttpSecurity http,
+            @Value("${spring.security.oauth2.resourceserver.jwt.key-value}") String jwtSymmetricKey,
+            OpenApiConfig openApiConfig) {
         // @formatter:off
         return http
                 .cors()
@@ -33,6 +34,8 @@ public class SecurityConfig {
                 .and()
                 // public/private routes
                 .authorizeExchange()
+                        .pathMatchers(openApiConfig.getPublicRoutesPathMatchers())
+                                .permitAll()
                         .pathMatchers("/login", "/user", "/photo/*")
                                 .permitAll()
                         .anyExchange()

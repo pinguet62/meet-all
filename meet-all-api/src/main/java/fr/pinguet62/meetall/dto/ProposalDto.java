@@ -1,5 +1,6 @@
 package fr.pinguet62.meetall.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
@@ -14,6 +15,10 @@ import static java.util.Objects.requireNonNull;
 @Getter
 public class ProposalDto {
 
+    @Schema(example = "TINDER#9876543210",
+            description = """
+                    Internal ID<br>
+                    Generated from provider's *key* and provider's *id*""")
     @NotNull
     private final String id;
 
