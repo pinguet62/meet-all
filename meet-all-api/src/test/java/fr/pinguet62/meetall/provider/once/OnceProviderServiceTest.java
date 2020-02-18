@@ -10,6 +10,7 @@ import okhttp3.mockwebserver.MockWebServer;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.springframework.web.reactive.function.client.WebClient;
 
 import java.io.IOException;
 import java.net.URL;
@@ -44,7 +45,7 @@ public class OnceProviderServiceTest {
     @Before
     public void startServer() {
         server = new MockWebServer();
-        onceProvider = new OnceProviderService(new OnceClient(server.url("/").toString()));
+        onceProvider = new OnceProviderService(new OnceClient(WebClient.builder(), server.url("/").toString()));
     }
 
     @After

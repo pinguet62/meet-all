@@ -26,13 +26,13 @@ public class HappnClient {
 
     private final WebClient webClient;
 
-    public HappnClient() {
-        this("https://api.happn.fr/api");
+    public HappnClient(WebClient.Builder webClientBuilder) {
+        this(webClientBuilder, "https://api.happn.fr/api");
     }
 
     // testing
-    HappnClient(String baseUrl) {
-        webClient = WebClient.builder().baseUrl(baseUrl).build();
+    HappnClient(WebClient.Builder webClientBuilder, String baseUrl) {
+        webClient = webClientBuilder.baseUrl(baseUrl).build();
     }
 
     public Mono<HappnNotificationsResponseDto> getNotifications(String authToken) {

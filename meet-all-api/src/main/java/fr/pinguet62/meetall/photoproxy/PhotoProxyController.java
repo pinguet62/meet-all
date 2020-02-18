@@ -10,7 +10,11 @@ import reactor.core.publisher.Mono;
 @RestController
 public class PhotoProxyController {
 
-    private final WebClient webClient = WebClient.builder().build();
+    private final WebClient webClient;
+
+    public PhotoProxyController(WebClient.Builder webClientBuilder) {
+        this.webClient = webClientBuilder.build();
+    }
 
     @GetMapping("/photo/{encodedUrl:.+}")
     public Mono<ResponseEntity<byte[]>> proxifyPhoto(@PathVariable String encodedUrl) {

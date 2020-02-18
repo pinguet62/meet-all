@@ -9,6 +9,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.client.AutoConfigureWebClient;
 import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -26,6 +27,7 @@ import static org.springframework.http.HttpStatus.ACCEPTED;
 
 @RunWith(SpringRunner.class)
 @WebFluxTest(PhotoProxyController.class)
+@AutoConfigureWebClient
 @DisableWebFluxSecurity
 public class PhotoProxyControllerTest {
 

@@ -21,13 +21,13 @@ public class OnceClient {
 
     private final WebClient webClient;
 
-    public OnceClient() {
-        this("https://onceapi.com");
+    public OnceClient(WebClient.Builder webClientBuilder) {
+        this(webClientBuilder, "https://onceapi.com");
     }
 
     // testing
-    OnceClient(String baseUrl) {
-        webClient = WebClient.builder().baseUrl(baseUrl).build();
+    OnceClient(WebClient.Builder webClientBuilder, String baseUrl) {
+        webClient = webClientBuilder.baseUrl(baseUrl).build();
     }
 
     public Mono<OnceMatchAllResponseDto> getMatchs(String authorization) {

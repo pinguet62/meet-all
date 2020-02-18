@@ -22,13 +22,13 @@ public class TinderClient {
 
     private final WebClient webClient;
 
-    public TinderClient() {
-        this("https://api.gotinder.com");
+    public TinderClient(WebClient.Builder webClientBuilder) {
+        this(webClientBuilder, "https://api.gotinder.com");
     }
 
     // testing
-    TinderClient(String baseUrl) {
-        webClient = WebClient.builder().baseUrl(baseUrl).build();
+    TinderClient(WebClient.Builder webClientBuilder, String baseUrl) {
+        webClient = webClientBuilder.baseUrl(baseUrl).build();
     }
 
     public Mono<TinderGetRecommendationsResponseDto> getRecommendations(String authToken) {

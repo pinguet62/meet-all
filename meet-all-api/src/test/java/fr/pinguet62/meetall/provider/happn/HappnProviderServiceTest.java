@@ -11,6 +11,7 @@ import okhttp3.mockwebserver.MockWebServer;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.springframework.web.reactive.function.client.WebClient;
 
 import java.io.IOException;
 import java.net.URL;
@@ -45,7 +46,7 @@ public class HappnProviderServiceTest {
     @Before
     public void startServer() {
         server = new MockWebServer();
-        happnProvider = new HappnProviderService(new HappnClient(server.url("/").toString()));
+        happnProvider = new HappnProviderService(new HappnClient(WebClient.builder(), server.url("/").toString()));
     }
 
     @After
