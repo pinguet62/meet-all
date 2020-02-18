@@ -7,6 +7,7 @@ import fr.pinguet62.meetall.provider.once.dto.OnceMatchLikeResponseDto;
 import fr.pinguet62.meetall.provider.once.dto.OnceMessagesResponseDto;
 import fr.pinguet62.meetall.provider.once.dto.OnceSendMessageRequestDto;
 import fr.pinguet62.meetall.provider.once.dto.OnceSendMessageResponseDto;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
@@ -21,6 +22,7 @@ public class OnceClient {
 
     private final WebClient webClient;
 
+    @Autowired
     public OnceClient(WebClient.Builder webClientBuilder) {
         this(webClientBuilder, "https://onceapi.com");
     }

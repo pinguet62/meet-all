@@ -9,6 +9,7 @@ import fr.pinguet62.meetall.provider.tinder.dto.TinderLikeResponseDto;
 import fr.pinguet62.meetall.provider.tinder.dto.TinderProfileResponseDto;
 import fr.pinguet62.meetall.provider.tinder.dto.TinderSendMessageRequestDto;
 import fr.pinguet62.meetall.provider.tinder.dto.TinderSendMessageResponseDto;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
@@ -22,6 +23,7 @@ public class TinderClient {
 
     private final WebClient webClient;
 
+    @Autowired
     public TinderClient(WebClient.Builder webClientBuilder) {
         this(webClientBuilder, "https://api.gotinder.com");
     }
