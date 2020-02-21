@@ -16,7 +16,7 @@ import reactor.core.publisher.Mono;
 @Tag(name = "Login")
 @RestController
 @RequiredArgsConstructor
-public class LoginController {
+class LoginController {
 
     @NonNull
     private final LoginService loginService;

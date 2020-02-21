@@ -4,7 +4,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 
-public class GraphQLUtils {
+class GraphQLUtils {
 
     public static String parseGraph(Class<?> baseType) {
         String result = "";

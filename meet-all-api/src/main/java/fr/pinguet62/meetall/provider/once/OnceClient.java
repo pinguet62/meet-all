@@ -16,7 +16,7 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.web.reactive.function.BodyInserters.fromValue;
 
 @Component
-public class OnceClient {
+class OnceClient {
 
     static final String HEADER = AUTHORIZATION;
 

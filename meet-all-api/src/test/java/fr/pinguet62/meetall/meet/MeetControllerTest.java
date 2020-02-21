@@ -1,10 +1,10 @@
-package fr.pinguet62.meetall;
+package fr.pinguet62.meetall.meet;
 
-import fr.pinguet62.meetall.dto.ConversationDto;
-import fr.pinguet62.meetall.dto.MessageDto;
-import fr.pinguet62.meetall.dto.ProfileDto;
-import fr.pinguet62.meetall.dto.ProposalDto;
-import fr.pinguet62.meetall.provider.ProvidersService;
+import fr.pinguet62.meetall.PartialArrayList;
+import fr.pinguet62.meetall.provider.model.ConversationDto;
+import fr.pinguet62.meetall.provider.model.MessageDto;
+import fr.pinguet62.meetall.provider.model.ProfileDto;
+import fr.pinguet62.meetall.provider.model.ProposalDto;
 import fr.pinguet62.meetall.security.utils.WithMockUserId;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -18,7 +18,7 @@ import reactor.core.publisher.Mono;
 
 import java.util.List;
 
-import static fr.pinguet62.meetall.MeetControllerTest.currentUserId;
+import static fr.pinguet62.meetall.meet.MeetControllerTest.currentUserId;
 import static java.time.ZonedDateTime.now;
 import static java.util.Collections.emptyList;
 import static org.mockito.Mockito.verify;
@@ -41,11 +41,11 @@ public class MeetControllerTest {
     private WebTestClient webTestClient;
 
     @MockBean
-    private ProvidersService providersService;
+    private MeetService meetService;
 
     @Test
     public void getProposals() {
-        when(providersService.getProposalsForUser(currentUserId)).thenReturn(Mono.just(new PartialArrayList<>(List.of(
+        when(meetService.getProposalsForUser(currentUserId)).thenReturn(Mono.just(new PartialArrayList<>(List.of(
                 new ProposalDto("proposal-1", new ProfileDto("profile-id-1", "profile-name-1", 1, emptyList())),
                 new ProposalDto("proposal-2", new ProfileDto("profile-id-2", "profile-name-2", 2, emptyList()))))));
 
@@ -60,7 +60,7 @@ public class MeetControllerTest {
 
     @Test
     public void getProposals_partial() {
-        when(providersService.getProposalsForUser(currentUserId)).thenReturn(Mono.just(new PartialArrayList<>(emptyList(), true)));
+        when(meetService.getProposalsForUser(currentUserId)).thenReturn(Mono.just(new PartialArrayList<>(emptyList(), true)));
 
         webTestClient.get()
                 .uri("/proposals")
@@ -73,7 +73,7 @@ public class MeetControllerTest {
         final int credentialId = 42;
         final String id = "99";
 
-        when(providersService.likeOrUnlikeProposal(currentUserId, credentialId, id, false)).thenReturn(Mono.empty());
+        when(meetService.likeOrUnlikeProposal(currentUserId, credentialId, id, false)).thenReturn(Mono.empty());
 
         String transformedId = TransformedId.format(credentialId, id);
         webTestClient.mutateWith(csrf())
@@ -83,7 +83,7 @@ public class MeetControllerTest {
                 .expectStatus().isOk()
                 .expectBody().isEmpty();
 
-        verify(providersService).likeOrUnlikeProposal(currentUserId, credentialId, id, false);
+        verify(meetService).likeOrUnlikeProposal(currentUserId, credentialId, id, false);
     }
 
     @Test
@@ -91,7 +91,7 @@ public class MeetControllerTest {
         final int credentialId = 42;
         final String id = "99";
 
-        when(providersService.likeOrUnlikeProposal(currentUserId, credentialId, id, true)).thenReturn(Mono.just(true));
+        when(meetService.likeOrUnlikeProposal(currentUserId, credentialId, id, true)).thenReturn(Mono.just(true));
 
         String transformedId = TransformedId.format(credentialId, id);
         webTestClient.mutateWith(csrf())
@@ -101,12 +101,12 @@ public class MeetControllerTest {
                 .expectStatus().isOk()
                 .expectBody(Boolean.class).isEqualTo(true);
 
-        verify(providersService).likeOrUnlikeProposal(currentUserId, credentialId, id, true);
+        verify(meetService).likeOrUnlikeProposal(currentUserId, credentialId, id, true);
     }
 
     @Test
     public void getConversations() {
-        when(providersService.getConversationsForUser(currentUserId)).thenReturn(Mono.just(new PartialArrayList<>(List.of(
+        when(meetService.getConversationsForUser(currentUserId)).thenReturn(Mono.just(new PartialArrayList<>(List.of(
                 new ConversationDto("conversation-1", new ProfileDto("profile-id-1", "profile-name-1", 1, emptyList()), now(), new MessageDto("message-1", now(), true, "message-text-1")),
                 new ConversationDto("conversation-2", new ProfileDto("profile-id-2", "profile-name-2", 2, emptyList()), now(), new MessageDto("message-2", now(), false, "message-text-2"))), false)));
 
@@ -121,7 +121,7 @@ public class MeetControllerTest {
 
     @Test
     public void getConversations_partial() {
-        when(providersService.getConversationsForUser(currentUserId)).thenReturn(Mono.just(new PartialArrayList<>(emptyList(), true)));
+        when(meetService.getConversationsForUser(currentUserId)).thenReturn(Mono.just(new PartialArrayList<>(emptyList(), true)));
 
         webTestClient.get()
                 .uri("/conversations")
@@ -134,7 +134,7 @@ public class MeetControllerTest {
         final int credentialId = 42;
         final String id = "99";
 
-        when(providersService.getMessagesForUser(currentUserId, credentialId, id)).thenReturn(Flux.fromIterable(List.of(
+        when(meetService.getMessagesForUser(currentUserId, credentialId, id)).thenReturn(Flux.fromIterable(List.of(
                 new MessageDto("message-1", now(), true, "message-text-1"),
                 new MessageDto("message-2", now(), false, "message-text-2"))));
 
@@ -154,7 +154,7 @@ public class MeetControllerTest {
         final String id = "99";
         final String text = "text";
 
-        when(providersService.sendMessage(currentUserId, credentialId, id, text)).thenReturn(Mono.just(new MessageDto("message-9", now(), true, text)));
+        when(meetService.sendMessage(currentUserId, credentialId, id, text)).thenReturn(Mono.just(new MessageDto("message-9", now(), true, text)));
 
         String transformedId = TransformedId.format(credentialId, id);
         webTestClient.mutateWith(csrf())
@@ -175,7 +175,7 @@ public class MeetControllerTest {
         final int credentialId = 42;
         final String id = "99";
 
-        when(providersService.getProfileForUser(currentUserId, credentialId, id)).thenReturn(Mono.just(new ProfileDto("profile-id", "profile-name", 29, emptyList())));
+        when(meetService.getProfileForUser(currentUserId, credentialId, id)).thenReturn(Mono.just(new ProfileDto("profile-id", "profile-name", 29, emptyList())));
 
         String transformedId = TransformedId.format(credentialId, id);
         webTestClient.get()

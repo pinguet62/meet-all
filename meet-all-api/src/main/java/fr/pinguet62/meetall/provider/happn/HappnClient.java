@@ -21,7 +21,7 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.web.reactive.function.BodyInserters.fromValue;
 
 @Component
-public class HappnClient {
+class HappnClient {
 
     static final String HEADER = AUTHORIZATION;
 

@@ -11,7 +11,7 @@ import reactor.core.publisher.Mono;
 import static java.util.Objects.requireNonNull;
 
 @Component
-public class FacebookApi {
+class FacebookApi {
 
     @Getter
     public static class MeResponseDto {

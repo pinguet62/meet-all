@@ -6,7 +6,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface CredentialRepository extends JpaRepository<Credential, Integer> {
+interface CredentialRepository extends JpaRepository<Credential, Integer> {
 
     List<Credential> findByUserId(String userId);
 

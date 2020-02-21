@@ -1,10 +1,6 @@
 package fr.pinguet62.meetall.provider.happn;
 
-import fr.pinguet62.meetall.dto.ConversationDto;
-import fr.pinguet62.meetall.dto.MessageDto;
-import fr.pinguet62.meetall.dto.ProfileDto;
-import fr.pinguet62.meetall.dto.ProposalDto;
-import fr.pinguet62.meetall.exception.ExpiredTokenException;
+import fr.pinguet62.meetall.ExpiredTokenException;
 import fr.pinguet62.meetall.provider.Provider;
 import fr.pinguet62.meetall.provider.ProviderService;
 import fr.pinguet62.meetall.provider.happn.dto.HappnConversationsResponseDto;
@@ -13,6 +9,10 @@ import fr.pinguet62.meetall.provider.happn.dto.HappnNotificationsResponseDto;
 import fr.pinguet62.meetall.provider.happn.dto.HappnSendMessageResponseDto;
 import fr.pinguet62.meetall.provider.happn.dto.HappnUserAcceptedResponseDto;
 import fr.pinguet62.meetall.provider.happn.dto.HappnUserResponseDto;
+import fr.pinguet62.meetall.provider.model.ConversationDto;
+import fr.pinguet62.meetall.provider.model.MessageDto;
+import fr.pinguet62.meetall.provider.model.ProfileDto;
+import fr.pinguet62.meetall.provider.model.ProposalDto;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Flux;

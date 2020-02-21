@@ -16,9 +16,10 @@ import javax.validation.constraints.NotEmpty;
 import static java.util.Objects.requireNonNull;
 import static javax.persistence.EnumType.STRING;
 import static javax.persistence.GenerationType.IDENTITY;
+import static lombok.AccessLevel.PROTECTED;
 
 @Entity
-@NoArgsConstructor
+@NoArgsConstructor(access = PROTECTED)
 @Getter
 @Setter
 public class Credential {

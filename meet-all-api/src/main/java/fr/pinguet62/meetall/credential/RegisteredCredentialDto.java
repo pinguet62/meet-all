@@ -1,4 +1,4 @@
-package fr.pinguet62.meetall.dto;
+package fr.pinguet62.meetall.credential;
 
 import fr.pinguet62.meetall.provider.Provider;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -14,7 +14,7 @@ import static java.util.Objects.requireNonNull;
 @ToString
 @EqualsAndHashCode
 @Getter
-public class RegisteredCredentialDto {
+class RegisteredCredentialDto {
 
     @Schema(required = true, description = "Internal ID")
     private final int id;

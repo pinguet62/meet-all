@@ -1,8 +1,8 @@
 package fr.pinguet62.meetall.provider.once;
 
-import fr.pinguet62.meetall.dto.ConversationDto;
-import fr.pinguet62.meetall.dto.MessageDto;
-import fr.pinguet62.meetall.dto.ProfileDto;
+import fr.pinguet62.meetall.provider.model.ConversationDto;
+import fr.pinguet62.meetall.provider.model.MessageDto;
+import fr.pinguet62.meetall.provider.model.ProfileDto;
 import fr.pinguet62.meetall.provider.once.dto.OnceConnectionDto;
 import fr.pinguet62.meetall.provider.once.dto.OnceMessagesDto;
 import fr.pinguet62.meetall.provider.once.dto.OncePictureDto;
@@ -14,7 +14,7 @@ import java.time.ZoneId;
 import static java.time.ZoneOffset.UTC;
 import static java.util.stream.Collectors.toList;
 
-public class OnceConverters {
+class OnceConverters {
 
     private static final ZoneId ZONE_ID = UTC;
 

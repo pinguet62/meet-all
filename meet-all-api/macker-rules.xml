@@ -1,0 +1,110 @@
+<?xml version="1.0"?>
+<!DOCTYPE macker PUBLIC "-//innig//DTD Macker 0.4//EN" "http://innig.net/macker/dtd/macker-0.4.dtd">
+<!-- Graph dependency
+login
+meet -> credentials \
+     \- - - - - - - -> provider
+      \-> photoproxy
+-->
+<macker>
+    <ruleset name="'login' cannot access to other modules">
+        <access-rule>
+            <deny>
+                <from class="fr.pinguet62.meetall.login.**"/>
+                <to class="fr.pinguet62.meetall.meet.**"/>
+            </deny>
+            <deny>
+                <from class="fr.pinguet62.meetall.login.**"/>
+                <to class="fr.pinguet62.meetall.credentials.**"/>
+            </deny>
+            <deny>
+                <from class="fr.pinguet62.meetall.login.**"/>
+                <to class="fr.pinguet62.meetall.provider.**"/>
+            </deny>
+            <deny>
+                <from class="fr.pinguet62.meetall.login.**"/>
+                <to class="fr.pinguet62.meetall.photoproxy.**"/>
+            </deny>
+        </access-rule>
+    </ruleset>
+    <ruleset name="'meet' cannot access to 'login' modules">
+        <access-rule>
+            <deny>
+                <from class="fr.pinguet62.meetall.meet.**"/>
+                <to class="fr.pinguet62.meetall.login.**"/>
+            </deny>
+            <allow>
+                <from class="fr.pinguet62.meetall.meet.**"/>
+                <to class="fr.pinguet62.meetall.credentials.**"/>
+            </allow>
+            <allow>
+                <from class="fr.pinguet62.meetall.meet.**"/>
+                <to class="fr.pinguet62.meetall.provider.**"/>
+            </allow>
+            <allow>
+                <from class="fr.pinguet62.meetall.meet.**"/>
+                <to class="fr.pinguet62.meetall.photoproxy.**"/>
+            </allow>
+        </access-rule>
+    </ruleset>
+    <ruleset name="'credentials' can only access to 'provider'">
+        <access-rule>
+            <deny>
+                <from class="fr.pinguet62.meetall.credentials.**"/>
+                <to class="fr.pinguet62.meetall.login.**"/>
+            </deny>
+            <deny>
+                <from class="fr.pinguet62.meetall.credentials.**"/>
+                <to class="fr.pinguet62.meetall.meet.**"/>
+            </deny>
+            <allow>
+                <from class="fr.pinguet62.meetall.credentials.**"/>
+                <to class="fr.pinguet62.meetall.provider.**"/>
+            </allow>
+            <deny>
+                <from class="fr.pinguet62.meetall.credentials.**"/>
+                <to class="fr.pinguet62.meetall.photoproxy.**"/>
+            </deny>
+        </access-rule>
+    </ruleset>
+    <ruleset name="'provider' cannot access to other modules">
+        <access-rule>
+            <deny>
+                <from class="fr.pinguet62.meetall.provider.**"/>
+                <to class="fr.pinguet62.meetall.login.**"/>
+            </deny>
+            <deny>
+                <from class="fr.pinguet62.meetall.provider.**"/>
+                <to class="fr.pinguet62.meetall.meet.**"/>
+            </deny>
+            <deny>
+                <from class="fr.pinguet62.meetall.provider.**"/>
+                <to class="fr.pinguet62.meetall.credentials.**"/>
+            </deny>
+            <deny>
+                <from class="fr.pinguet62.meetall.provider.**"/>
+                <to class="fr.pinguet62.meetall.photoproxy.**"/>
+            </deny>
+        </access-rule>
+    </ruleset>
+    <ruleset name="'photoproxy' cannot access to other modules">
+        <access-rule>
+            <deny>
+                <from class="fr.pinguet62.meetall.photoproxy.**"/>
+                <to class="fr.pinguet62.meetall.login.**"/>
+            </deny>
+            <deny>
+                <from class="fr.pinguet62.meetall.photoproxy.**"/>
+                <to class="fr.pinguet62.meetall.meet.**"/>
+            </deny>
+            <deny>
+                <from class="fr.pinguet62.meetall.photoproxy.**"/>
+                <to class="fr.pinguet62.meetall.credentials.**"/>
+            </deny>
+            <deny>
+                <from class="fr.pinguet62.meetall.photoproxy.**"/>
+                <to class="fr.pinguet62.meetall.provider.**"/>
+            </deny>
+        </access-rule>
+    </ruleset>
+</macker>

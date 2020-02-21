@@ -10,7 +10,7 @@ import reactor.core.publisher.Mono;
 @Transactional
 @Service
 @RequiredArgsConstructor
-public class LoginService {
+class LoginService {
 
     @NonNull
     private final FacebookApi facebookApi;

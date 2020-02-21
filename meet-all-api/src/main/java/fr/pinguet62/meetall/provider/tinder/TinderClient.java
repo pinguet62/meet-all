@@ -17,7 +17,7 @@ import reactor.core.publisher.Mono;
 import static org.springframework.web.reactive.function.BodyInserters.fromValue;
 
 @Component
-public class TinderClient {
+class TinderClient {
 
     static final String HEADER = "x-auth-token";
 

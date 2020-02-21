@@ -1,4 +1,4 @@
-package fr.pinguet62.meetall.exception;
+package fr.pinguet62.meetall;
 
 public class ExpiredTokenException extends RuntimeException {
 

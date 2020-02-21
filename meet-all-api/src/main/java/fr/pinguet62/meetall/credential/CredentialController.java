@@ -1,6 +1,5 @@
 package fr.pinguet62.meetall.credential;
 
-import fr.pinguet62.meetall.dto.RegisteredCredentialDto;
 import fr.pinguet62.meetall.provider.Provider;
 import fr.pinguet62.meetall.security.ApplicationAuthentication;
 import fr.pinguet62.meetall.security.ApplicationReactiveSecurityContextHolder;
@@ -25,7 +24,7 @@ import static org.springframework.http.HttpStatus.CREATED;
 @Tag(name = "Credentials")
 @RequiredArgsConstructor
 @RestController
-public class CredentialController {
+class CredentialController {
 
     private final CredentialService loginService;
 

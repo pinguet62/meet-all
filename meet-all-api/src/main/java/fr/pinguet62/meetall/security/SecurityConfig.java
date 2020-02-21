@@ -13,7 +13,7 @@ import static fr.pinguet62.meetall.security.SecretKeyUtils.fromString;
 
 @Configuration
 @EnableWebFluxSecurity
-public class SecurityConfig {
+class SecurityConfig {
 
     @Bean
     public SecurityWebFilterChain securityWebFilterChain(

@@ -3,7 +3,7 @@ package fr.pinguet62.meetall.security;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
 
-public class ApplicationCorsConfigurationSource extends UrlBasedCorsConfigurationSource {
+class ApplicationCorsConfigurationSource extends UrlBasedCorsConfigurationSource {
 
     public ApplicationCorsConfigurationSource() {
         registerCorsConfiguration("/**", getCorsConfig());

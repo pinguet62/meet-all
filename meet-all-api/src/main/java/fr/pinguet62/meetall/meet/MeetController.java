@@ -1,10 +1,9 @@
-package fr.pinguet62.meetall;
+package fr.pinguet62.meetall.meet;
 
-import fr.pinguet62.meetall.dto.ConversationDto;
-import fr.pinguet62.meetall.dto.MessageDto;
-import fr.pinguet62.meetall.dto.ProfileDto;
-import fr.pinguet62.meetall.dto.ProposalDto;
-import fr.pinguet62.meetall.provider.ProvidersService;
+import fr.pinguet62.meetall.provider.model.ConversationDto;
+import fr.pinguet62.meetall.provider.model.MessageDto;
+import fr.pinguet62.meetall.provider.model.ProfileDto;
+import fr.pinguet62.meetall.provider.model.ProposalDto;
 import fr.pinguet62.meetall.security.ApplicationAuthentication;
 import fr.pinguet62.meetall.security.ApplicationReactiveSecurityContextHolder;
 import io.swagger.v3.oas.annotations.Operation;
@@ -30,16 +29,16 @@ import static org.springframework.http.HttpStatus.PARTIAL_CONTENT;
 @Tag(name = "Meet")
 @RequiredArgsConstructor
 @RestController
-public class MeetController {
+class MeetController {
 
-    private final ProvidersService providersService;
+    private final MeetService meetService;
 
     @Operation(summary = "List all new (matchable) proposals")
     @GetMapping("/proposals")
     public Mono<ResponseEntity<List<ProposalDto>>> getProposals() {
         return ApplicationReactiveSecurityContextHolder.getAuthentication()
                 .map(ApplicationAuthentication::getUserId)
-                .flatMap(providersService::getProposalsForUser)
+                .flatMap(meetService::getProposalsForUser)
                 .map(it -> it.isPartial() ? new ResponseEntity<>(it, PARTIAL_CONTENT) : ResponseEntity.ok(it));
     }
 
@@ -49,7 +48,7 @@ public class MeetController {
         TransformedId transformedId = TransformedId.parse(id);
         return ApplicationReactiveSecurityContextHolder.getAuthentication()
                 .map(ApplicationAuthentication::getUserId)
-                .flatMap(userId -> providersService.likeOrUnlikeProposal(userId, transformedId.getCredentialId(), transformedId.getValueId(), true));
+                .flatMap(userId -> meetService.likeOrUnlikeProposal(userId, transformedId.getCredentialId(), transformedId.getValueId(), true));
     }
 
     @Operation(summary = "Refuse a proposal")
@@ -58,7 +57,7 @@ public class MeetController {
         TransformedId transformedId = TransformedId.parse(id);
         return ApplicationReactiveSecurityContextHolder.getAuthentication()
                 .map(ApplicationAuthentication::getUserId)
-                .flatMap(userId -> providersService.likeOrUnlikeProposal(userId, transformedId.getCredentialId(), transformedId.getValueId(), false));
+                .flatMap(userId -> meetService.likeOrUnlikeProposal(userId, transformedId.getCredentialId(), transformedId.getValueId(), false));
     }
 
     @Operation(summary = "List all (available) conversations")
@@ -66,7 +65,7 @@ public class MeetController {
     public Mono<ResponseEntity<List<ConversationDto>>> getConversations() {
         return ApplicationReactiveSecurityContextHolder.getAuthentication()
                 .map(ApplicationAuthentication::getUserId)
-                .flatMap(providersService::getConversationsForUser)
+                .flatMap(meetService::getConversationsForUser)
                 .map(it -> it.isPartial() ? new ResponseEntity<>(it, PARTIAL_CONTENT) : ResponseEntity.ok(it));
     }
 
@@ -78,7 +77,7 @@ public class MeetController {
         TransformedId transformedId = TransformedId.parse(id);
         return ApplicationReactiveSecurityContextHolder.getAuthentication()
                 .map(ApplicationAuthentication::getUserId)
-                .flatMapMany(userId -> providersService.getMessagesForUser(userId, transformedId.getCredentialId(), transformedId.getValueId()));
+                .flatMapMany(userId -> meetService.getMessagesForUser(userId, transformedId.getCredentialId(), transformedId.getValueId()));
     }
 
     @Operation(summary = "Send a message",
@@ -89,7 +88,7 @@ public class MeetController {
         TransformedId transformedId = TransformedId.parse(id);
         return ApplicationReactiveSecurityContextHolder.getAuthentication()
                 .map(ApplicationAuthentication::getUserId)
-                .flatMap(userId -> providersService.sendMessage(userId, transformedId.getCredentialId(), transformedId.getValueId(), text));
+                .flatMap(userId -> meetService.sendMessage(userId, transformedId.getCredentialId(), transformedId.getValueId(), text));
     }
 
     /**
@@ -101,7 +100,7 @@ public class MeetController {
         TransformedId transformedId = TransformedId.parse(id);
         return ApplicationReactiveSecurityContextHolder.getAuthentication()
                 .map(ApplicationAuthentication::getUserId)
-                .flatMap(userId -> providersService.getProfileForUser(userId, transformedId.getCredentialId(), transformedId.getValueId()));
+                .flatMap(userId -> meetService.getProfileForUser(userId, transformedId.getCredentialId(), transformedId.getValueId()));
     }
 
 }

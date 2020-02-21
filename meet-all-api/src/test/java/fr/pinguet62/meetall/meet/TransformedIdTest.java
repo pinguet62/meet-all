@@ -1,11 +1,10 @@
-package fr.pinguet62.meetall;
+package fr.pinguet62.meetall.meet;
 
 import org.junit.Test;
 
 import java.util.List;
 
 import static fr.pinguet62.meetall.MatcherUtils.throwing;
-import static fr.pinguet62.meetall.TransformedId.SEPARATOR;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
@@ -36,10 +35,10 @@ public class TransformedIdTest {
         assertThat(() -> TransformedId.parse(null), is(throwing(RuntimeException.class)));
         for (String value : List.of(
                 "", // empty
-                42 + "id", // without separator
-                42 + SEPARATOR, // missing credentialId
-                SEPARATOR + "id", // missing ID
-                "unknownProvider" + SEPARATOR + "id" // invalid credentialId
+                "42id", // without separator
+                "42#", // missing credentialId
+                "#id", // missing ID
+                "unknownProvider#id" // invalid credentialId
         )) {
             assertThat(() -> TransformedId.parse(value), is(throwing(RuntimeException.class)));
         }

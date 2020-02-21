@@ -15,7 +15,7 @@ import reactor.core.publisher.Mono;
 
 @Tag(name = "Photo")
 @RestController
-public class PhotoProxyController {
+class PhotoProxyController {
 
     private final WebClient webClient;
 

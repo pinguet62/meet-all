@@ -1,6 +1,5 @@
 package fr.pinguet62.meetall.credential;
 
-import fr.pinguet62.meetall.dto.RegisteredCredentialDto;
 import fr.pinguet62.meetall.provider.Provider;
 import fr.pinguet62.meetall.security.utils.WithMockUserId;
 import org.junit.Test;

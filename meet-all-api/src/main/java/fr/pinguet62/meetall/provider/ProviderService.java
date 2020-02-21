@@ -1,10 +1,10 @@
 package fr.pinguet62.meetall.provider;
 
-import fr.pinguet62.meetall.dto.ConversationDto;
-import fr.pinguet62.meetall.dto.MessageDto;
-import fr.pinguet62.meetall.dto.ProfileDto;
-import fr.pinguet62.meetall.dto.ProposalDto;
-import fr.pinguet62.meetall.exception.ExpiredTokenException;
+import fr.pinguet62.meetall.ExpiredTokenException;
+import fr.pinguet62.meetall.provider.model.ConversationDto;
+import fr.pinguet62.meetall.provider.model.MessageDto;
+import fr.pinguet62.meetall.provider.model.ProfileDto;
+import fr.pinguet62.meetall.provider.model.ProposalDto;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 

@@ -1,9 +1,9 @@
 package fr.pinguet62.meetall.provider.tinder;
 
-import fr.pinguet62.meetall.dto.ConversationDto;
-import fr.pinguet62.meetall.dto.MessageDto;
-import fr.pinguet62.meetall.dto.ProfileDto;
-import fr.pinguet62.meetall.dto.ProposalDto;
+import fr.pinguet62.meetall.provider.model.ConversationDto;
+import fr.pinguet62.meetall.provider.model.MessageDto;
+import fr.pinguet62.meetall.provider.model.ProfileDto;
+import fr.pinguet62.meetall.provider.model.ProposalDto;
 import fr.pinguet62.meetall.provider.tinder.dto.TinderLikeResponseDto;
 import fr.pinguet62.meetall.provider.tinder.dto.TinderMatchDto;
 import fr.pinguet62.meetall.provider.tinder.dto.TinderMessageDto;
@@ -17,7 +17,7 @@ import java.time.temporal.ChronoUnit;
 import static java.time.ZonedDateTime.now;
 import static java.util.stream.Collectors.toList;
 
-public class TinderConverters {
+class TinderConverters {
 
     public static ProposalDto convert(TinderRecommendationDto input) {
         return new ProposalDto(

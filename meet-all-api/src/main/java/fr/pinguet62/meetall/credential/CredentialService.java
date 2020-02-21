@@ -1,16 +1,14 @@
 package fr.pinguet62.meetall.credential;
 
-import fr.pinguet62.meetall.dto.RegisteredCredentialDto;
-import fr.pinguet62.meetall.exception.ForbiddenException;
-import fr.pinguet62.meetall.exception.NotFoundException;
 import fr.pinguet62.meetall.provider.Provider;
-import fr.pinguet62.meetall.provider.ProvidersService;
+import fr.pinguet62.meetall.provider.ProviderFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.List;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -19,7 +17,11 @@ import java.util.Optional;
 public class CredentialService {
 
     private final CredentialRepository credentialRepository;
-    private final ProvidersService providersService;
+    private final ProviderFactory providerFactory;
+
+    public List<Credential> findByUserId(String userId) {
+        return credentialRepository.findByUserId(userId);
+    }
 
     /**
      * @param userId {@link Credential#getUserId()}
@@ -27,7 +29,7 @@ public class CredentialService {
     public Flux<RegisteredCredentialDto> getRegisteredCredentials(String userId) {
         return Flux.fromIterable(credentialRepository.findByUserId(userId))
                 .flatMap(providerCredential ->
-                        providersService.getProviderService(providerCredential.getProvider())
+                        providerFactory.getProviderService(providerCredential.getProvider())
                                 .checkCredential(providerCredential.getCredential())
                                 .map(ok -> new RegisteredCredentialDto(providerCredential.getId(), providerCredential.getLabel(), providerCredential.getProvider(), ok)));
     }
@@ -49,7 +51,7 @@ public class CredentialService {
         createdCredential = credentialRepository.save(createdCredential);
         return Mono.just(createdCredential)
                 .flatMap(providerCredential ->
-                        providersService.getProviderService(providerCredential.getProvider())
+                        providerFactory.getProviderService(providerCredential.getProvider())
                                 .checkCredential(providerCredential.getCredential())
                                 .map(ok -> new RegisteredCredentialDto(providerCredential.getId(), providerCredential.getLabel(), providerCredential.getProvider(), ok)));
     }
@@ -75,7 +77,7 @@ public class CredentialService {
 
         return Mono.just(updatedCredential)
                 .flatMap(providerCredential ->
-                        providersService.getProviderService(providerCredential.getProvider())
+                        providerFactory.getProviderService(providerCredential.getProvider())
                                 .checkCredential(providerCredential.getCredential())
                                 .map(ok -> new RegisteredCredentialDto(providerCredential.getId(), providerCredential.getLabel(), providerCredential.getProvider(), ok)));
     }
@@ -96,7 +98,7 @@ public class CredentialService {
 
         return Mono.just(deletedCredential)
                 .flatMap(providerCredential ->
-                        providersService.getProviderService(providerCredential.getProvider())
+                        providerFactory.getProviderService(providerCredential.getProvider())
                                 .checkCredential(providerCredential.getCredential())
                                 .map(ok -> new RegisteredCredentialDto(providerCredential.getId(), providerCredential.getLabel(), providerCredential.getProvider(), ok)));
     }

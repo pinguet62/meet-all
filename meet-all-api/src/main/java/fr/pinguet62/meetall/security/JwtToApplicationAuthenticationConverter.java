@@ -5,7 +5,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.oauth2.jwt.Jwt;
 import reactor.core.publisher.Mono;
 
-public class JwtToApplicationAuthenticationConverter {
+class JwtToApplicationAuthenticationConverter {
 
     public static Mono<? extends AbstractAuthenticationToken> convert(Jwt jwt) throws AuthenticationException {
         String userId = jwt.getSubject();

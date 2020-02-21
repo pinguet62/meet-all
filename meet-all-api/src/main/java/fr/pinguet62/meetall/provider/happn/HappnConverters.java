@@ -1,18 +1,18 @@
 package fr.pinguet62.meetall.provider.happn;
 
-import fr.pinguet62.meetall.dto.ConversationDto;
-import fr.pinguet62.meetall.dto.MessageDto;
-import fr.pinguet62.meetall.dto.ProfileDto;
-import fr.pinguet62.meetall.dto.ProposalDto;
 import fr.pinguet62.meetall.provider.happn.dto.HappnConversationDto;
 import fr.pinguet62.meetall.provider.happn.dto.HappnMessageDto;
 import fr.pinguet62.meetall.provider.happn.dto.HappnNotificationDto;
 import fr.pinguet62.meetall.provider.happn.dto.HappnProfileDto;
 import fr.pinguet62.meetall.provider.happn.dto.HappnUserDto;
+import fr.pinguet62.meetall.provider.model.ConversationDto;
+import fr.pinguet62.meetall.provider.model.MessageDto;
+import fr.pinguet62.meetall.provider.model.ProfileDto;
+import fr.pinguet62.meetall.provider.model.ProposalDto;
 
 import static java.util.stream.Collectors.toList;
 
-public class HappnConverters {
+class HappnConverters {
 
     public static ProposalDto convert(HappnNotificationDto input) {
         return new ProposalDto(
