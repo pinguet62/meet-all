@@ -13,13 +13,13 @@ import fr.pinguet62.meetall.provider.once.dto.OnceMatchLikeResponseDto;
 import fr.pinguet62.meetall.provider.once.dto.OnceMatchLikeResultDto;
 import fr.pinguet62.meetall.provider.once.dto.OnceMessagesResponseDto;
 import fr.pinguet62.meetall.provider.once.dto.OnceSendMessageResponseDto;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import static fr.pinguet62.meetall.provider.Provider.ONCE;
 import static fr.pinguet62.meetall.provider.once.OnceConverters.convert;
-import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 import static reactor.core.publisher.Flux.fromIterable;
 
@@ -27,14 +27,11 @@ import static reactor.core.publisher.Flux.fromIterable;
  * Target user is identified by {@link ConversationDto#getId()},
  * because {@link #getProfile(String, String)} webservice takes this value as input.
  */
+@RequiredArgsConstructor
 @Component
 public class OnceProviderService implements ProviderService {
 
     private final OnceClient client;
-
-    OnceProviderService(OnceClient client) {
-        this.client = requireNonNull(client);
-    }
 
     @Override
     public Provider getId() {
@@ -46,10 +43,10 @@ public class OnceProviderService implements ProviderService {
         return client.getMatchs(authorization)
                 .map(OnceMatchAllResponseDto::getResult)
                 .flatMapMany(result -> fromIterable(result.getMatches())
-                        .filter(match -> !match.getViewed())
+                        .filter(match -> !match.isViewed())
                         .map(match -> new ProposalDto(
                                 match.getId(),
-                                convert(match.getId(), match.getUser(), result.getBase_url()))));
+                                convert(match.getId(), match.getUser(), result.getBaseUrl()))));
     }
 
     @Override
@@ -57,7 +54,7 @@ public class OnceProviderService implements ProviderService {
         return likeOrUnlike ?
                 client.likeMatch(authorization, matchId)
                         .map(OnceMatchLikeResponseDto::getResult)
-                        .map(OnceMatchLikeResultDto::getConnected) :
+                        .map(OnceMatchLikeResultDto::isConnected) :
                 client.passMatch(authorization, matchId)
                         .map(it -> null);
     }
@@ -66,7 +63,7 @@ public class OnceProviderService implements ProviderService {
     public Flux<ConversationDto> getConversations(String authorization) {
         return client.getConnections(authorization)
                 .map(OnceConversationsResponseDto::getResult)
-                .flatMapIterable(result -> result.getConnections().stream().map(x -> convert(x, result.getBase_url())).collect(toList()));
+                .flatMapIterable(result -> result.getConnections().stream().map(x -> convert(x, result.getBaseUrl())).collect(toList()));
     }
 
     /**
@@ -93,7 +90,7 @@ public class OnceProviderService implements ProviderService {
     public Mono<ProfileDto> getProfile(String authorization, String matchId) {
         return client.getMatch(authorization, matchId)
                 .map(OnceMatchByIdResponseDto::getResult)
-                .map(it -> convert(it.getMatch().getId(), it.getMatch().getUser(), it.getBase_url()));
+                .map(it -> convert(it.getMatch().getId(), it.getMatch().getUser(), it.getBaseUrl()));
     }
 
 }

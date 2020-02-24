@@ -1,12 +1,23 @@
 package fr.pinguet62.meetall.provider.once.dto;
 
-import lombok.Data;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Getter;
 
-@Data
+import static java.util.Objects.requireNonNull;
+
+@Getter
 public class OnceMatchResultMatchDto {
 
-    private String id;
-    private OnceUserDto user;
-    private Boolean viewed;
+    private final String id;
+    private final OnceUserDto user;
+    private final boolean viewed;
 
+    public OnceMatchResultMatchDto(
+            @JsonProperty(value = "id", required = true) String id,
+            @JsonProperty(value = "user", required = true) OnceUserDto user,
+            @JsonProperty(value = "viewed", required = true) boolean viewed) {
+        this.id = requireNonNull(id);
+        this.user = requireNonNull(user);
+        this.viewed = viewed;
+    }
 }

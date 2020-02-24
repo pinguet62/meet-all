@@ -15,11 +15,11 @@ import fr.pinguet62.meetall.provider.tinder.dto.TinderGetMetaResponseDto;
 import fr.pinguet62.meetall.provider.tinder.dto.TinderGetRecommendationsResponseDto;
 import fr.pinguet62.meetall.provider.tinder.dto.TinderGetRecommendationsResponseDto.TinderGetRecommendationsDataResponseDto;
 import fr.pinguet62.meetall.provider.tinder.dto.TinderGetUserResponseDto;
-import fr.pinguet62.meetall.provider.tinder.dto.TinderLikeResponseDto;
 import fr.pinguet62.meetall.provider.tinder.dto.TinderProfileDto;
 import fr.pinguet62.meetall.provider.tinder.dto.TinderProfileLikesDto;
 import fr.pinguet62.meetall.provider.tinder.dto.TinderProfileResponseDto;
 import fr.pinguet62.meetall.provider.tinder.dto.TinderUserDto;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClientResponseException.Unauthorized;
 import reactor.core.publisher.Flux;
@@ -27,7 +27,7 @@ import reactor.core.publisher.Mono;
 
 import static fr.pinguet62.meetall.provider.Provider.TINDER;
 import static fr.pinguet62.meetall.provider.tinder.TinderConverters.convert;
-import static java.util.Objects.requireNonNull;
+import static reactor.core.publisher.Mono.empty;
 
 /**
  * <ol>
@@ -48,14 +48,11 @@ import static java.util.Objects.requireNonNull;
  * </li>
  * </ol>
  */
+@RequiredArgsConstructor
 @Component
 public class TinderProviderService implements ProviderService {
 
     private final TinderClient client;
-
-    TinderProviderService(TinderClient client) {
-        this.client = requireNonNull(client);
-    }
 
     @Override
     public Provider getId() {
@@ -71,7 +68,7 @@ public class TinderProviderService implements ProviderService {
                 .onErrorMap(Unauthorized.class, ExpiredTokenException::new)
                 .map(TinderProfileResponseDto::getData)
                 .map(TinderProfileDto::getLikes)
-                .map(TinderProfileLikesDto::getLikes_remaining)
+                .map(TinderProfileLikesDto::getLikesRemaining)
                 .flatMapMany(limit ->
                         client.getRecommendations(authToken)
                                 .map(TinderGetRecommendationsResponseDto::getData)
@@ -85,11 +82,16 @@ public class TinderProviderService implements ProviderService {
      */
     @Override
     public Mono<Boolean> likeOrUnlikeProposal(String authToken, String userId, boolean likeOrUnlike) {
-        Mono<TinderLikeResponseDto> likeOrPass = likeOrUnlike ? client.likeUser(authToken, userId) : client.passUser(authToken, userId);
-        return likeOrPass
-                .onErrorMap(Unauthorized.class, ExpiredTokenException::new)
-                .flatMap(it -> it.getRate_limited_until() != null ? Mono.error(new RuntimeException()) : Mono.just(it)) // "likes remaining" support
-                .flatMap(it -> likeOrUnlike ? Mono.just(convert(it)) : Mono.empty());
+        if (likeOrUnlike) {
+            return client.likeUser(authToken, userId)
+                    .onErrorMap(Unauthorized.class, ExpiredTokenException::new)
+                    .flatMap(it -> it.getRateLimitedUntil().isPresent() ? Mono.error(new RuntimeException()) : Mono.just(it)) // "likes remaining" support
+                    .flatMap(it -> likeOrUnlike ? Mono.just(convert(it)) : empty());
+        } else {
+            return client.passUser(authToken, userId)
+                    .onErrorMap(Unauthorized.class, ExpiredTokenException::new)
+                    .flatMap(it -> empty());
+        }
     }
 
     @Override
@@ -99,7 +101,7 @@ public class TinderProviderService implements ProviderService {
                         client.getMatches(authToken)
                                 .map(TinderGetConversationResponseDto::getData)
                                 .flatMapIterable(TinderGetConversationDataResponseDto::getMatches)
-                                .map(tinderMessageDto -> convert(tinderMessageDto, me.get_id())));
+                                .map(tinderMessageDto -> convert(tinderMessageDto, me.getId())));
     }
 
     @Override
@@ -109,7 +111,7 @@ public class TinderProviderService implements ProviderService {
                         client.getMessagesForMatch(authToken, matchId)
                                 .map(TinderGetMessagesResponseDto::getData)
                                 .flatMapIterable(TinderGetMessagesDataResponseDto::getMessages)
-                                .map(tinderMessageDto -> convert(tinderMessageDto, me.get_id())));
+                                .map(tinderMessageDto -> convert(tinderMessageDto, me.getId())));
     }
 
     @Override

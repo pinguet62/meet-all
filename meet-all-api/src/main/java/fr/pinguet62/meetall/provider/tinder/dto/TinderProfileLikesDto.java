@@ -1,10 +1,16 @@
 package fr.pinguet62.meetall.provider.tinder.dto;
 
-import lombok.Data;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Getter;
 
-@Data
+@Getter
 public class TinderProfileLikesDto {
 
-    private Integer likes_remaining;
+    private final int likesRemaining;
+
+    public TinderProfileLikesDto(
+            @JsonProperty(value = "likes_remaining", required = true) int likesRemaining) {
+        this.likesRemaining = likesRemaining;
+    }
 
 }

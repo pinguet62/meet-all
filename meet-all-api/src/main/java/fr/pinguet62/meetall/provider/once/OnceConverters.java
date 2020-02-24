@@ -20,14 +20,14 @@ class OnceConverters {
 
     public static ConversationDto convert(OnceConnectionDto input, String baseUrl) {
         return new ConversationDto(
-                input.getMatch_id(),
-                convert(input.getMatch_id(), input.getUser(), baseUrl),
-                Instant.ofEpochSecond(input.getMessage_sent_at()).atZone(ZONE_ID),
+                input.getMatchId(),
+                convert(input.getMatchId(), input.getUser(), baseUrl),
+                Instant.ofEpochSecond(input.getMessageSentAt()).atZone(ZONE_ID),
                 new MessageDto(
-                        input.getMatch_id() + "::" + input.getLast_message_id(),
-                        Instant.ofEpochSecond(input.getMessage_sent_at()).atZone(ZONE_ID),
-                        !input.getSender_id().equals(input.getUser().getId()),
-                        input.getLast_message()));
+                        input.getMatchId() + "::" + input.getLastMessageId(),
+                        Instant.ofEpochSecond(input.getMessageSentAt()).atZone(ZONE_ID),
+                        !input.getSenderId().equals(input.getUser().getId()),
+                        input.getLastMessage()));
     }
 
     public static ProfileDto convert(String matchId, OnceUserDto input, String baseUrl) {
@@ -44,15 +44,15 @@ class OnceConverters {
     public static MessageDto convert(OnceMessagesDto input, OnceUserDto user) {
         return new MessageDto(
                 input.getId(),
-                Instant.ofEpochSecond(input.getCreated_at()).atZone(ZONE_ID),
-                !input.getSender_id().equals(user.getId()),
+                Instant.ofEpochSecond(input.getCreatedAt()).atZone(ZONE_ID),
+                !input.getSenderId().equals(user.getId()),
                 input.getMessage());
     }
 
     public static MessageDto convertSentMessage(OnceMessagesDto input) {
         return new MessageDto(
                 input.getId(),
-                Instant.ofEpochSecond(input.getCreated_at()).atZone(ZONE_ID),
+                Instant.ofEpochSecond(input.getCreatedAt()).atZone(ZONE_ID),
                 true,
                 input.getMessage());
     }

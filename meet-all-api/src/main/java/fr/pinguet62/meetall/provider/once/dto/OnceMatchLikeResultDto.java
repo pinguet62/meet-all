@@ -1,10 +1,15 @@
 package fr.pinguet62.meetall.provider.once.dto;
 
-import lombok.Data;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Getter;
 
-@Data
+@Getter
 public class OnceMatchLikeResultDto {
 
-    private Boolean connected;
+    private final boolean connected;
 
+    public OnceMatchLikeResultDto(
+            @JsonProperty(value = "connected", required = true) boolean connected) {
+        this.connected = connected;
+    }
 }

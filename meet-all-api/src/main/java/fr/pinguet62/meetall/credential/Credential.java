@@ -52,15 +52,15 @@ public class Credential {
     private String label;
 
     public Credential(String userId, Provider provider, String credential, String label) {
-        this(null, userId, provider, credential, label);
-    }
-
-    public Credential(Integer id, String userId, Provider provider, String credential, String label) {
-        this.id = id;
         this.userId = requireNonNull(userId);
         this.label = requireNonNull(label);
         this.provider = requireNonNull(provider);
         this.credential = requireNonNull(credential);
+    }
+
+    public Credential(int id, String userId, Provider provider, String credential, String label) {
+        this(userId, provider, credential, label);
+        this.id = id;
     }
 
 }

@@ -9,6 +9,7 @@ import fr.pinguet62.meetall.provider.tinder.dto.TinderLikeResponseDto;
 import fr.pinguet62.meetall.provider.tinder.dto.TinderProfileResponseDto;
 import fr.pinguet62.meetall.provider.tinder.dto.TinderSendMessageRequestDto;
 import fr.pinguet62.meetall.provider.tinder.dto.TinderSendMessageResponseDto;
+import fr.pinguet62.meetall.provider.tinder.dto.TinderUnlikeResponseDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -24,7 +25,7 @@ class TinderClient {
     private final WebClient webClient;
 
     @Autowired
-    public TinderClient(WebClient.Builder webClientBuilder) {
+    TinderClient(WebClient.Builder webClientBuilder) {
         this(webClientBuilder, "https://api.gotinder.com");
     }
 
@@ -33,43 +34,42 @@ class TinderClient {
         webClient = webClientBuilder.baseUrl(baseUrl).build();
     }
 
-    public Mono<TinderGetRecommendationsResponseDto> getRecommendations(String authToken) {
+    Mono<TinderGetRecommendationsResponseDto> getRecommendations(String authToken) {
         return webClient.get()
                 .uri("/v2/recs/core")
                 .header(HEADER, authToken)
                 .retrieve().bodyToMono(TinderGetRecommendationsResponseDto.class);
     }
 
-    public Mono<TinderLikeResponseDto> likeUser(String authToken, String userId) {
-        return likeOrPassUser(authToken, userId, "like");
-    }
-
-    public Mono<TinderLikeResponseDto> passUser(String authToken, String userId) {
-        return likeOrPassUser(authToken, userId, "pass");
-    }
-
-    private Mono<TinderLikeResponseDto> likeOrPassUser(String authToken, String userId, String likeOrPass) {
+    Mono<TinderLikeResponseDto> likeUser(String authToken, String userId) {
         return webClient.get()
-                .uri(uriBuilder -> uriBuilder.path(likeOrPass).pathSegment(userId).build())
+                .uri(uriBuilder -> uriBuilder.path("like").pathSegment(userId).build())
                 .header(HEADER, authToken)
                 .retrieve().bodyToMono(TinderLikeResponseDto.class);
     }
 
-    public Mono<TinderGetConversationResponseDto> getMatches(String authToken) {
+    Mono<TinderUnlikeResponseDto> passUser(String authToken, String userId) {
+        return webClient.get()
+                .uri(uriBuilder -> uriBuilder.path("pass").pathSegment(userId).build())
+                .header(HEADER, authToken)
+                .retrieve().bodyToMono(TinderUnlikeResponseDto.class);
+    }
+
+    Mono<TinderGetConversationResponseDto> getMatches(String authToken) {
         return webClient.get()
                 .uri("/v2/matches?count=60")
                 .header(HEADER, authToken)
                 .retrieve().bodyToMono(TinderGetConversationResponseDto.class);
     }
 
-    public Mono<TinderGetMessagesResponseDto> getMessagesForMatch(String authToken, String matchId) {
+    Mono<TinderGetMessagesResponseDto> getMessagesForMatch(String authToken, String matchId) {
         return webClient.get()
                 .uri("/v2/matches/{matchId}/messages?count=100", matchId)
                 .header(HEADER, authToken)
                 .retrieve().bodyToMono(TinderGetMessagesResponseDto.class);
     }
 
-    public Mono<TinderSendMessageResponseDto> sendMessageToMatch(String authToken, String matchId, String text) {
+    Mono<TinderSendMessageResponseDto> sendMessageToMatch(String authToken, String matchId, String text) {
         return webClient.post()
                 .uri("/user/matches/{matchId}", matchId)
                 .body(fromValue(new TinderSendMessageRequestDto(text)))
@@ -77,14 +77,14 @@ class TinderClient {
                 .retrieve().bodyToMono(TinderSendMessageResponseDto.class);
     }
 
-    public Mono<TinderGetUserResponseDto> getUser(String authToken, String userId) {
+    Mono<TinderGetUserResponseDto> getUser(String authToken, String userId) {
         return webClient.get()
                 .uri("/user/{userId}", userId)
                 .header(HEADER, authToken)
                 .retrieve().bodyToMono(TinderGetUserResponseDto.class);
     }
 
-    public Mono<TinderProfileResponseDto> getProfile(String authToken) {
+    Mono<TinderProfileResponseDto> getProfile(String authToken) {
         return webClient.get()
                 .uri(uriBuilder -> uriBuilder
                         .path("/v2/profile")
@@ -94,7 +94,7 @@ class TinderClient {
                 .retrieve().bodyToMono(TinderProfileResponseDto.class);
     }
 
-    public Mono<TinderGetMetaResponseDto> getMeta(String authToken) {
+    Mono<TinderGetMetaResponseDto> getMeta(String authToken) {
         return webClient.get()
                 .uri("/meta")
                 .header(HEADER, authToken)

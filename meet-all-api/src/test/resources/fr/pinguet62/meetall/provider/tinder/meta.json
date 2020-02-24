@@ -1,5 +1,12 @@
 {
   "user": {
-    "_id": "52b4d9ed6c5685412c0002a1"
+    "_id": "52b4d9ed6c5685412c0002a1",
+    "birth_date": "1989-02-27T12:43:19.465Z",
+    "name": "JuL",
+    "photos": [
+      {
+        "url": "https://images-ssl.gotinder.com/5b6329d7f84145486ecaf51a/original_55965a96-5239-4f18-bb3e-8c87d374c5fd.png"
+      }
+    ]
   }
 }

@@ -1,27 +1,44 @@
 package fr.pinguet62.meetall.provider.once.dto;
 
-import lombok.Data;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Getter;
 
-@Data
+import static java.util.Objects.requireNonNull;
+
+@Getter
 public class OnceConnectionDto {
 
-    private OnceUserDto user;
+    private final OnceUserDto user;
     /**
      * @see OnceUserDto#getId()
      */
-    private String sender_id;
-    private String match_id;
+    private final String senderId;
+    private final String matchId;
     /**
      * @see OnceMessagesDto#getMessage()
      */
-    private String last_message;
+    private final String lastMessage;
     /**
      * @see OnceMessagesDto#getId()
      */
-    private String last_message_id;
+    private final String lastMessageId;
     /**
-     * @see OnceMessagesDto#getCreated_at()
+     * @see OnceMessagesDto#getCreatedAt()
      */
-    private Long message_sent_at;
+    private final long messageSentAt;
 
+    public OnceConnectionDto(
+            @JsonProperty(value = "user", required = true) OnceUserDto user,
+            @JsonProperty(value = "sender_id", required = true) String senderId,
+            @JsonProperty(value = "match_id", required = true) String matchId,
+            @JsonProperty(value = "last_message", required = true) String lastMessage,
+            @JsonProperty(value = "last_message_id", required = true) String lastMessageId,
+            @JsonProperty(value = "message_sent_at", required = true) long messageSentAt) {
+        this.user = requireNonNull(user);
+        this.senderId = requireNonNull(senderId);
+        this.matchId = requireNonNull(matchId);
+        this.lastMessage = requireNonNull(lastMessage);
+        this.lastMessageId = requireNonNull(lastMessageId);
+        this.messageSentAt = requireNonNull(messageSentAt);
+    }
 }

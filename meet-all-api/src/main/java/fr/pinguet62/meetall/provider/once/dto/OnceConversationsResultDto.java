@@ -1,13 +1,22 @@
 package fr.pinguet62.meetall.provider.once.dto;
 
-import lombok.Data;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Getter;
 
 import java.util.List;
 
-@Data
+import static java.util.Objects.requireNonNull;
+
+@Getter
 public class OnceConversationsResultDto {
 
-    private List<OnceConnectionDto> connections;
-    private String base_url;
+    private final List<OnceConnectionDto> connections;
+    private final String baseUrl;
 
+    public OnceConversationsResultDto(
+            @JsonProperty(value = "connections", required = true) List<OnceConnectionDto> connections,
+            @JsonProperty(value = "base_url", required = true) String baseUrl) {
+        this.connections = requireNonNull(connections);
+        this.baseUrl = requireNonNull(baseUrl);
+    }
 }

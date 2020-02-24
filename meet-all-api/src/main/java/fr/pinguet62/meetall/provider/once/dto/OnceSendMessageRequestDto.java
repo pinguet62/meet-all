@@ -1,5 +1,6 @@
 package fr.pinguet62.meetall.provider.once.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 
 import static java.util.Objects.requireNonNull;
@@ -7,11 +8,12 @@ import static java.util.Objects.requireNonNull;
 @Getter
 public class OnceSendMessageRequestDto {
 
-    private final String match_id;
+    @JsonProperty("match_id")
+    private final String matchId;
     private final String message;
 
-    public OnceSendMessageRequestDto(String match_id, String message) {
-        this.match_id = requireNonNull(match_id);
+    public OnceSendMessageRequestDto(String matchId, String message) {
+        this.matchId = requireNonNull(matchId);
         this.message = requireNonNull(message);
     }
 
