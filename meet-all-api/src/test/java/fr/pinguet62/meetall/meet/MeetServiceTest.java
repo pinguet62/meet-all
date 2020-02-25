@@ -49,9 +49,9 @@ public class MeetServiceTest {
 
     @Test
     public void getProposalsForUser() {
-        when(credentialService.findByUserId("userId")).thenReturn(List.of(
-                new Credential(91, "userId", TINDER, "tinderCredential_91", "label 91"),
-                new Credential(92, "userId", HAPPN, "happnCredential_92", "label 92")));
+        when(credentialService.findByUserId("userId")).thenReturn(Flux.just(
+                new Credential("91", "userId", TINDER, "tinderCredential_91", "label 91"),
+                new Credential("92", "userId", HAPPN, "happnCredential_92", "label 92")));
         when(providerFactory.getProviderService(TINDER)).thenAnswer(a -> {
             ProviderService providerService = mock(ProviderService.class);
             when(providerService.getProposals("tinderCredential_91")).thenReturn(Flux.just(
@@ -78,9 +78,9 @@ public class MeetServiceTest {
 
     @Test
     public void getProposalsForUser_partial() {
-        when(credentialService.findByUserId("userId")).thenReturn(List.of(
-                new Credential(91, "userId", TINDER, "tinderCredential_91", "label 91"),
-                new Credential(92, "userId", HAPPN, "happnCredential_92", "label 92")));
+        when(credentialService.findByUserId("userId")).thenReturn(Flux.just(
+                new Credential("91", "userId", TINDER, "tinderCredential_91", "label 91"),
+                new Credential("92", "userId", HAPPN, "happnCredential_92", "label 92")));
         when(providerFactory.getProviderService(TINDER)).thenAnswer(a -> {
             ProviderService providerService = mock(ProviderService.class);
             when(providerService.getProposals("tinderCredential_91")).thenReturn(Flux.just(
@@ -103,9 +103,9 @@ public class MeetServiceTest {
 
     @Test
     public void getConversationsForUser() {
-        when(credentialService.findByUserId("userId")).thenReturn(List.of(
-                new Credential(91, "userId", TINDER, "tinderCredential_91", "label 91"),
-                new Credential(92, "userId", HAPPN, "happnCredential_92", "label 92")));
+        when(credentialService.findByUserId("userId")).thenReturn(Flux.just(
+                new Credential("91", "userId", TINDER, "tinderCredential_91", "label 91"),
+                new Credential("92", "userId", HAPPN, "happnCredential_92", "label 92")));
         when(providerFactory.getProviderService(TINDER)).thenAnswer(a -> {
             ProviderService providerService = mock(ProviderService.class);
             when(providerService.getConversations("tinderCredential_91")).thenReturn(Flux.just(
@@ -132,9 +132,9 @@ public class MeetServiceTest {
 
     @Test
     public void getConversationsForUser_partial() {
-        when(credentialService.findByUserId("userId")).thenReturn(List.of(
-                new Credential(91, "userId", TINDER, "tinderCredential_91", "label 91"),
-                new Credential(92, "userId", HAPPN, "happnCredential_92", "label 92")));
+        when(credentialService.findByUserId("userId")).thenReturn(Flux.just(
+                new Credential("91", "userId", TINDER, "tinderCredential_91", "label 91"),
+                new Credential("92", "userId", HAPPN, "happnCredential_92", "label 92")));
         when(providerFactory.getProviderService(TINDER)).thenAnswer(a -> {
             ProviderService providerService = mock(ProviderService.class);
             when(providerService.getConversations("tinderCredential_91")).thenReturn(Flux.just(
@@ -163,9 +163,9 @@ public class MeetServiceTest {
         final Duration delay = ofSeconds(5);
 
         StepVerifier.withVirtualTime(() -> {
-            when(credentialService.findByUserId("userId")).thenReturn(List.of(
-                    new Credential(91, "userId", TINDER, "tinderCredential_91", "label 91"),
-                    new Credential(92, "userId", HAPPN, "happnCredential_92", "label 92")));
+            when(credentialService.findByUserId("userId")).thenReturn(Flux.just(
+                    new Credential("91", "userId", TINDER, "tinderCredential_91", "label 91"),
+                    new Credential("92", "userId", HAPPN, "happnCredential_92", "label 92")));
             when(providerFactory.getProviderService(TINDER)).thenAnswer(a -> {
                 ProviderService providerService = mock(ProviderService.class);
                 when(providerService.getConversations("tinderCredential_91")).thenReturn(
@@ -191,8 +191,8 @@ public class MeetServiceTest {
 
     @Test
     public void getMessagesForUser() {
-        when(credentialService.findByUserId("userId")).thenReturn(List.of(
-                new Credential(42, "userId", TINDER, "secret", "label")));
+        when(credentialService.findByUserId("userId")).thenReturn(Flux.just(
+                new Credential("42", "userId", TINDER, "secret", "label")));
         when(providerFactory.getProviderService(TINDER)).thenAnswer(a -> {
             ProviderService providerService = mock(ProviderService.class);
             when(providerService.getMessages("secret", "99")).thenReturn(Flux.just(
@@ -202,7 +202,7 @@ public class MeetServiceTest {
             return providerService;
         });
 
-        Flux<MessageDto> messages = service.getMessagesForUser("userId", 42, "99");
+        Flux<MessageDto> messages = service.getMessagesForUser("userId", "42", "99");
 
         assertThat(messages.collectList().block(), contains(
                 new MessageDto("42#mess1", ZonedDateTime.of(2001, 4, 7, 9, 13, 37, 27, UTC), false, "text 1"),
@@ -212,15 +212,15 @@ public class MeetServiceTest {
 
     @Test
     public void getProfileForUser() {
-        when(credentialService.findByUserId("userId")).thenReturn(List.of(
-                new Credential(42, "userId", TINDER, "secret", "label")));
+        when(credentialService.findByUserId("userId")).thenReturn(Flux.just(
+                new Credential("42", "userId", TINDER, "secret", "label")));
         when(providerFactory.getProviderService(TINDER)).thenAnswer(a -> {
             ProviderService providerService = mock(ProviderService.class);
             when(providerService.getProfile("secret", "99")).thenReturn(Mono.just(new ProfileDto("profTinder", "profile name", 1, List.of("https://google.fr/favicon.png"))));
             return providerService;
         });
 
-        Mono<ProfileDto> profile = service.getProfileForUser("userId", 42, "99");
+        Mono<ProfileDto> profile = service.getProfileForUser("userId", "42", "99");
 
         assertThat(profile.block(), is(new ProfileDto(42 + "#" + "profTinder", "profile name", 1, List.of(encode("https://google.fr/favicon.png")))));
     }

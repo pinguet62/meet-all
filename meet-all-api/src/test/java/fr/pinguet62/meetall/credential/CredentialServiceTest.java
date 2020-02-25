@@ -7,9 +7,6 @@ import org.junit.Test;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.util.List;
-import java.util.Optional;
-
 import static fr.pinguet62.meetall.provider.Provider.HAPPN;
 import static fr.pinguet62.meetall.provider.Provider.TINDER;
 import static org.hamcrest.Matchers.contains;
@@ -33,9 +30,9 @@ public class CredentialServiceTest {
 
     @Test
     public void getRegisteredCredentials() {
-        when(credentialRepository.findByUserId("userId")).thenReturn(List.of(
-                new Credential(91, "userId", TINDER, "tinderCredential_91", "label 91"),
-                new Credential(92, "userId", HAPPN, "happnCredential_92", "label 92")));
+        when(credentialRepository.findByUserId("userId")).thenReturn(Flux.just(
+                new Credential("91", "userId", TINDER, "tinderCredential_91", "label 91"),
+                new Credential("92", "userId", HAPPN, "happnCredential_92", "label 92")));
         when(providerFactory.getProviderService(TINDER)).thenAnswer(a -> {
             ProviderService providerService = mock(ProviderService.class);
             when(providerService.checkCredential("tinderCredential_91")).thenReturn(Mono.just(true));
@@ -50,27 +47,22 @@ public class CredentialServiceTest {
         Flux<RegisteredCredentialDto> registeredCredentials = service.getRegisteredCredentials("userId");
 
         assertThat(registeredCredentials.collectList().block(), contains(
-                new RegisteredCredentialDto(91, "label 91", TINDER, true),
-                new RegisteredCredentialDto(92, "label 92", HAPPN, false)));
+                new RegisteredCredentialDto("91", "label 91", TINDER, true),
+                new RegisteredCredentialDto("92", "label 92", HAPPN, false)));
     }
 
     @Test
     public void deleteCredential() {
-        when(credentialRepository.findById(91)).thenReturn(Optional.of(new Credential(91, "userId", TINDER, "tinderCredential_91", "label 91")));
-        when(credentialRepository.findById(92)).thenReturn(Optional.of(new Credential(92, "userId", HAPPN, "happnCredential_92", "label 92")));
+        Credential tinderCredential = new Credential("99", "userId", TINDER, "credential_99", "label 99");
+        when(credentialRepository.findById("99")).thenReturn(Mono.just(tinderCredential));
+        when(credentialRepository.delete(tinderCredential)).thenReturn(Mono.empty());
         when(providerFactory.getProviderService(TINDER)).thenAnswer(a -> {
             ProviderService providerService = mock(ProviderService.class);
-            when(providerService.checkCredential("tinderCredential_91")).thenReturn(Mono.just(true));
-            return providerService;
-        });
-        when(providerFactory.getProviderService(HAPPN)).thenAnswer(a -> {
-            ProviderService providerService = mock(ProviderService.class);
-            when(providerService.checkCredential("happnCredential_92")).thenReturn(Mono.just(false));
+            when(providerService.checkCredential("credential_99")).thenReturn(Mono.just(true));
             return providerService;
         });
 
-        assertThat(service.deleteCredential("userId", 91).block(), is(new RegisteredCredentialDto(91, "label 91", TINDER, true)));
-        assertThat(service.deleteCredential("userId", 92).block(), is(new RegisteredCredentialDto(92, "label 92", HAPPN, false)));
+        assertThat(service.deleteCredential("userId", "99").block(), is(new RegisteredCredentialDto("99", "label 99", TINDER, true)));
     }
 
 }

@@ -8,7 +8,6 @@ import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.util.List;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -19,7 +18,7 @@ public class CredentialService {
     private final CredentialRepository credentialRepository;
     private final ProviderFactory providerFactory;
 
-    public List<Credential> findByUserId(String userId) {
+    public Flux<Credential> findByUserId(String userId) {
         return credentialRepository.findByUserId(userId);
     }
 
@@ -27,7 +26,7 @@ public class CredentialService {
      * @param userId {@link Credential#getUserId()}
      */
     public Flux<RegisteredCredentialDto> getRegisteredCredentials(String userId) {
-        return Flux.fromIterable(credentialRepository.findByUserId(userId))
+        return credentialRepository.findByUserId(userId)
                 .flatMap(providerCredential ->
                         providerFactory.getProviderService(providerCredential.getProvider())
                                 .checkCredential(providerCredential.getCredential())
@@ -44,12 +43,12 @@ public class CredentialService {
         // TODO ConflictException when provider.getMeta().get_id() already exists
 
         Credential createdCredential = new Credential(
+                null, // @Id generated
                 userId,
                 provider,
                 credential,
                 label);
-        createdCredential = credentialRepository.save(createdCredential);
-        return Mono.just(createdCredential)
+        return credentialRepository.save(createdCredential)
                 .flatMap(providerCredential ->
                         providerFactory.getProviderService(providerCredential.getProvider())
                                 .checkCredential(providerCredential.getCredential())
@@ -62,20 +61,20 @@ public class CredentialService {
      * @param credential {@link Credential#getCredential()}
      * @param label      {@link Credential#getLabel()}
      */
-    public Mono<RegisteredCredentialDto> updateCredential(String userId, int id, Optional<String> credential, Optional<String> label) {
-        Credential updatedCredential = credentialRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException(Credential.class, id));
-
-        if (!updatedCredential.getUserId().equals(userId)) {
-            throw new ForbiddenException();
-        }
-
-        credential.ifPresent(updatedCredential::setCredential);
-        label.ifPresent(updatedCredential::setLabel);
-
-        updatedCredential = credentialRepository.save(updatedCredential);
-
-        return Mono.just(updatedCredential)
+    public Mono<RegisteredCredentialDto> updateCredential(String userId, String id, Optional<String> credential, Optional<String> label) {
+        return credentialRepository.findById(id)
+                .switchIfEmpty(Mono.error(new NotFoundException(Credential.class, id)))
+                .doOnNext(updatedCredential -> {
+                    if (!updatedCredential.getUserId().equals(userId)) {
+                        throw new ForbiddenException();
+                    }
+                })
+                .map(it -> {
+                    credential.ifPresent(it::withCredential);
+                    label.ifPresent(it::withLabel);
+                    return it;
+                })
+                .flatMap(credentialRepository::save)
                 .flatMap(providerCredential ->
                         providerFactory.getProviderService(providerCredential.getProvider())
                                 .checkCredential(providerCredential.getCredential())
@@ -86,21 +85,20 @@ public class CredentialService {
      * @param userId {@link Credential#getUserId()}
      * @param id     {@link Credential#getId()}
      */
-    public Mono<RegisteredCredentialDto> deleteCredential(String userId, int id) {
-        Credential deletedCredential = credentialRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException(Credential.class, id));
-
-        if (!deletedCredential.getUserId().equals(userId)) {
-            throw new ForbiddenException();
-        }
-
-        credentialRepository.delete(deletedCredential);
-
-        return Mono.just(deletedCredential)
-                .flatMap(providerCredential ->
-                        providerFactory.getProviderService(providerCredential.getProvider())
-                                .checkCredential(providerCredential.getCredential())
-                                .map(ok -> new RegisteredCredentialDto(providerCredential.getId(), providerCredential.getLabel(), providerCredential.getProvider(), ok)));
+    public Mono<RegisteredCredentialDto> deleteCredential(String userId, String id) {
+        return credentialRepository.findById(id)
+                .switchIfEmpty(Mono.error(new NotFoundException(Credential.class, id)))
+                .doOnNext(updatedCredential -> {
+                    if (!updatedCredential.getUserId().equals(userId)) {
+                        throw new ForbiddenException();
+                    }
+                })
+                .flatMap(deletedCredential ->
+                        credentialRepository.delete(deletedCredential)
+                                .then(Mono.defer(() ->
+                                        providerFactory.getProviderService(deletedCredential.getProvider())
+                                                .checkCredential(deletedCredential.getCredential())
+                                                .map(ok -> new RegisteredCredentialDto(deletedCredential.getId(), deletedCredential.getLabel(), deletedCredential.getProvider(), ok)))));
     }
 
 }

@@ -1,6 +1,7 @@
 spring:
-  datasource:
-    url: ${JDBC_DATABASE_URL:}
+  data:
+    mongodb:
+      uri: ${MONGODB_URI:}
   security:
     oauth2:
       resourceserver:

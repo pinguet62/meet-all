@@ -17,7 +17,7 @@ import static java.util.Objects.requireNonNull;
 class RegisteredCredentialDto {
 
     @Schema(required = true, description = "Internal ID")
-    private final int id;
+    private final String id;
 
     @NotEmpty
     @Schema(description = "UI information")
@@ -29,7 +29,7 @@ class RegisteredCredentialDto {
     @Schema(required = true, description = "If the credential is actually valid")
     private final boolean ok;
 
-    public RegisteredCredentialDto(int id, String label, Provider provider, boolean ok) {
+    public RegisteredCredentialDto(String id, String label, Provider provider, boolean ok) {
         this.id = id;
         this.label = requireNonNull(label);
         this.provider = requireNonNull(provider);

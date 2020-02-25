@@ -1,5 +1,6 @@
 package fr.pinguet62.meetall.meet;
 
+import fr.pinguet62.meetall.meet.TransformedId.InvalidTransformedId;
 import org.junit.Test;
 
 import java.util.List;
@@ -11,12 +12,12 @@ import static org.junit.Assert.assertThat;
 public class TransformedIdTest {
 
     /**
-     * @see TransformedId#format(int, String)
+     * @see TransformedId#format(String, String)
      * @see TransformedId#parse(String)
      */
     @Test
     public void shouldBeReversible() {
-        for (int credentialId : List.of(0, 1, 42, 999_999)) {
+        for (String credentialId : List.of("0", "1", "42", "999_999")) {
             for (String valueId : List.of("1", "2", "qwerty")) {
                 String transformed = TransformedId.format(credentialId, valueId);
                 TransformedId transformedId = TransformedId.parse(transformed);
@@ -32,15 +33,14 @@ public class TransformedIdTest {
      */
     @Test
     public void parse_invalidInputShouldThrowException() {
-        assertThat(() -> TransformedId.parse(null), is(throwing(RuntimeException.class)));
+        assertThat(() -> TransformedId.parse(null), is(throwing(InvalidTransformedId.class)));
         for (String value : List.of(
                 "", // empty
                 "42id", // without separator
                 "42#", // missing credentialId
-                "#id", // missing ID
-                "unknownProvider#id" // invalid credentialId
+                "#id" // missing ID
         )) {
-            assertThat(() -> TransformedId.parse(value), is(throwing(RuntimeException.class)));
+            assertThat(() -> TransformedId.parse(value), is(throwing(InvalidTransformedId.class)));
         }
     }
 

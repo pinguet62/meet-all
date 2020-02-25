@@ -5,10 +5,15 @@ import fr.pinguet62.meetall.provider.model.ConversationDto;
 import fr.pinguet62.meetall.provider.model.ProfileDto;
 import lombok.Getter;
 
-import static java.lang.Integer.parseInt;
 import static java.util.Objects.requireNonNull;
 
 class TransformedId {
+
+    static class InvalidTransformedId extends IllegalArgumentException {
+        InvalidTransformedId(String message) {
+            super(message);
+        }
+    }
 
     private static final String SEPARATOR = "#";
 
@@ -16,7 +21,7 @@ class TransformedId {
      * @see Credential#getId()
      */
     @Getter
-    private final int credentialId;
+    private final String credentialId;
 
     /**
      * @see ProfileDto#getId()
@@ -25,18 +30,27 @@ class TransformedId {
     @Getter
     private final String valueId;
 
-    private TransformedId(int credentialId, String valueId) {
-        this.credentialId = credentialId;
+    private TransformedId(String credentialId, String valueId) {
+        this.credentialId = requireNonNull(credentialId);
+        if (credentialId.isBlank()) throw new InvalidTransformedId("\"credential\" cannot be blank");
         this.valueId = requireNonNull(valueId);
+        if (valueId.isBlank()) throw new InvalidTransformedId("\"credential\" cannot be blank");
     }
 
-    public static String format(int credential, String valueId) {
+    public static String format(String credential, String valueId) throws InvalidTransformedId {
+        if (credential == null) throw new InvalidTransformedId("\"credential\" cannot be null");
+        if (valueId == null) throw new InvalidTransformedId("\"valueId\" cannot be null");
+        if (credential.contains(SEPARATOR)) throw new InvalidTransformedId("\"valueId\" cannot contains internal separator");
+        if (valueId.contains(SEPARATOR)) throw new InvalidTransformedId("\"valueId\" cannot contains separator");
         return String.format("%s%s%s", credential, SEPARATOR, valueId);
     }
 
-    public static TransformedId parse(String transformed) {
+    public static TransformedId parse(String transformed) throws InvalidTransformedId {
+        if (transformed == null) throw new InvalidTransformedId("value cannot be null");
         String[] values = transformed.split(SEPARATOR);
-        return new TransformedId(parseInt(values[0]), values[1]);
+        if (values.length == 1) throw new InvalidTransformedId("value doesn't contain separator");
+        if (values.length > 2) throw new InvalidTransformedId("value contains more than 1 separator");
+        return new TransformedId(values[0], values[1]);
     }
 
 }

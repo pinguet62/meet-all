@@ -61,7 +61,7 @@ class CredentialController {
     @Operation(summary = "Update an existing credential")
     @PutMapping("/credential/{id}")
     public Mono<RegisteredCredentialDto> updateCredential(
-            @PathVariable int id,
+            @PathVariable String id,
             @RequestPart(required = false) @Parameter(/*FIXME*/ required = true) String credential,
             @RequestPart(required = false) @Parameter(/*FIXME*/ required = true, description = "UI information") String label) {
         return ApplicationReactiveSecurityContextHolder.getAuthentication()
@@ -74,7 +74,7 @@ class CredentialController {
      */
     @Operation(summary = "Delete a credential")
     @DeleteMapping("/credential/{id}")
-    public Mono<RegisteredCredentialDto> deleteCredential(@PathVariable int id) {
+    public Mono<RegisteredCredentialDto> deleteCredential(@PathVariable String id) {
         return ApplicationReactiveSecurityContextHolder.getAuthentication()
                 .map(ApplicationAuthentication::getUserId)
                 .flatMap(userId -> loginService.deleteCredential(userId, id));

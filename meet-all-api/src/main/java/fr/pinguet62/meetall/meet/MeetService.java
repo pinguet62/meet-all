@@ -37,7 +37,7 @@ class MeetService {
      * @param userId {@link Credential#getUserId()}
      */
     public Mono<PartialList<ProposalDto>> getProposalsForUser(String userId) {
-        return Flux.fromIterable(credentialService.findByUserId(userId))
+        return credentialService.findByUserId(userId)
                 .flatMap(providerCredential -> providerFactory.getProviderService(providerCredential.getProvider())
                         .getProposals(providerCredential.getCredential())
                         .map(it -> it
@@ -51,8 +51,8 @@ class MeetService {
                 .reduce(concatPartialList());
     }
 
-    public Mono<Boolean> likeOrUnlikeProposal(String userId, int credentialId, String proposalId, boolean likeOrUnlike) {
-        return Flux.fromIterable(credentialService.findByUserId(userId))
+    public Mono<Boolean> likeOrUnlikeProposal(String userId, String credentialId, String proposalId, boolean likeOrUnlike) {
+        return credentialService.findByUserId(userId)
                 .filter(providerCredential -> providerCredential.getId().equals(credentialId))
                 .next()
                 .flatMap(providerCredential -> providerFactory.getProviderService(providerCredential.getProvider()).likeOrUnlikeProposal(providerCredential.getCredential(), proposalId, likeOrUnlike));
@@ -66,7 +66,7 @@ class MeetService {
      * @param userId {@link Credential#getUserId()}
      */
     public Mono<PartialList<ConversationDto>> getConversationsForUser(String userId) {
-        return Flux.fromIterable(credentialService.findByUserId(userId))
+        return credentialService.findByUserId(userId)
                 .flatMap(providerCredential -> providerFactory.getProviderService(providerCredential.getProvider())
                         .getConversations(providerCredential.getCredential())
                         .map(it -> {
@@ -94,8 +94,8 @@ class MeetService {
      * @param credentialId   {@link Credential#getId()}
      * @param conversationId {@link ConversationDto#getId()}
      */
-    public Flux<MessageDto> getMessagesForUser(String userId, int credentialId, String conversationId) {
-        return Flux.fromIterable(credentialService.findByUserId(userId))
+    public Flux<MessageDto> getMessagesForUser(String userId, String credentialId, String conversationId) {
+        return credentialService.findByUserId(userId)
                 .filter(providerCredential -> providerCredential.getId().equals(credentialId))
                 .next()
                 .flatMapMany(providerCredential ->
@@ -112,8 +112,8 @@ class MeetService {
      * @param conversationId {@link ConversationDto#getId()}
      * @param text           {@link MessageDto#getText()}
      */
-    public Mono<MessageDto> sendMessage(String userId, int credentialId, String conversationId, String text) {
-        return Flux.fromIterable(credentialService.findByUserId(userId))
+    public Mono<MessageDto> sendMessage(String userId, String credentialId, String conversationId, String text) {
+        return credentialService.findByUserId(userId)
                 .filter(providerCredential -> providerCredential.getId().equals(credentialId))
                 .next()
                 .flatMap(providerCredential ->
@@ -128,8 +128,8 @@ class MeetService {
      * @param credentialId {@link Credential#getId()}
      * @param profileId    {@link ProfileDto#getId()}
      */
-    public Mono<ProfileDto> getProfileForUser(String userId, int credentialId, String profileId) {
-        return Flux.fromIterable(credentialService.findByUserId(userId))
+    public Mono<ProfileDto> getProfileForUser(String userId, String credentialId, String profileId) {
+        return credentialService.findByUserId(userId)
                 .filter(providerCredential -> providerCredential.getId().equals(credentialId))
                 .next()
                 .flatMap(providerCredential ->

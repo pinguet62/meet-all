@@ -70,7 +70,7 @@ public class MeetControllerTest {
 
     @Test
     public void unlikeProposal() {
-        final int credentialId = 42;
+        final String credentialId = "42";
         final String id = "99";
 
         when(meetService.likeOrUnlikeProposal(currentUserId, credentialId, id, false)).thenReturn(Mono.empty());
@@ -88,7 +88,7 @@ public class MeetControllerTest {
 
     @Test
     public void likeProposal() {
-        final int credentialId = 42;
+        final String credentialId = "42";
         final String id = "99";
 
         when(meetService.likeOrUnlikeProposal(currentUserId, credentialId, id, true)).thenReturn(Mono.just(true));
@@ -131,7 +131,7 @@ public class MeetControllerTest {
 
     @Test
     public void getMessages() {
-        final int credentialId = 42;
+        final String credentialId = "42";
         final String id = "99";
 
         when(meetService.getMessagesForUser(currentUserId, credentialId, id)).thenReturn(Flux.fromIterable(List.of(
@@ -150,7 +150,7 @@ public class MeetControllerTest {
 
     @Test
     public void sendMessage() {
-        final int credentialId = 42;
+        final String credentialId = "42";
         final String id = "99";
         final String text = "text";
 
@@ -172,7 +172,7 @@ public class MeetControllerTest {
 
     @Test
     public void getProfile() {
-        final int credentialId = 42;
+        final String credentialId = "42";
         final String id = "99";
 
         when(meetService.getProfileForUser(currentUserId, credentialId, id)).thenReturn(Mono.just(new ProfileDto("profile-id", "profile-name", 29, emptyList())));

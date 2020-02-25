@@ -48,8 +48,8 @@ public class CredentialControllerTest {
     @Test
     public void getRegisteredCredentials() {
         when(credentialService.getRegisteredCredentials(currentUserId)).thenReturn(Flux.just(
-                new RegisteredCredentialDto(11, "first", TINDER, true),
-                new RegisteredCredentialDto(22, "second", HAPPN, false)));
+                new RegisteredCredentialDto("11", "first", TINDER, true),
+                new RegisteredCredentialDto("22", "second", HAPPN, false)));
 
         webTestClient.get()
                 .uri("/credential")
@@ -71,11 +71,12 @@ public class CredentialControllerTest {
      */
     @Test
     public void registerCredential() {
+        final String id = "99";
         final Provider provider = TINDER;
         final String credential = "credential";
         final String label = "label";
 
-        when(credentialService.registerCredential(currentUserId, provider, credential, label)).thenReturn(Mono.just(new RegisteredCredentialDto(99, label, provider, true)));
+        when(credentialService.registerCredential(currentUserId, provider, credential, label)).thenReturn(Mono.just(new RegisteredCredentialDto(id, label, provider, true)));
 
         webTestClient.mutateWith(csrf())
                 .post()
@@ -95,16 +96,16 @@ public class CredentialControllerTest {
     }
 
     /**
-     * @see CredentialController#updateCredential(int, String, String)
+     * @see CredentialController#updateCredential(String, String, String)
      */
     @Test
     public void updateCredential() {
-        final int id = 99;
+        final String id = "99";
         final Provider provider = TINDER;
         final String credential = "credential";
         final String label = "label";
 
-        when(credentialService.updateCredential(currentUserId, id, of(credential), of(label))).thenReturn(Mono.just(new RegisteredCredentialDto(99, label, provider, true)));
+        when(credentialService.updateCredential(currentUserId, id, of(credential), of(label))).thenReturn(Mono.just(new RegisteredCredentialDto(id, label, provider, true)));
 
         webTestClient.mutateWith(csrf())
                 .put()
@@ -124,15 +125,15 @@ public class CredentialControllerTest {
     }
 
     /**
-     * @see CredentialController#deleteCredential(int)
+     * @see CredentialController#deleteCredential(String)
      */
     @Test
     public void deleteCredential() {
-        final int id = 99;
+        final String id = "99";
         final Provider provider = TINDER;
         final String label = "label";
 
-        when(credentialService.deleteCredential(currentUserId, id)).thenReturn(Mono.just(new RegisteredCredentialDto(99, label, provider, true)));
+        when(credentialService.deleteCredential(currentUserId, id)).thenReturn(Mono.just(new RegisteredCredentialDto("99", label, provider, true)));
 
         webTestClient.mutateWith(csrf())
                 .delete()
