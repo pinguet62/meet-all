@@ -34,6 +34,16 @@ class OnceClient {
         webClient = webClientBuilder.baseUrl(baseUrl).build();
     }
 
+    /**
+     * @return HTML page of nginx server.
+     */
+    public Mono<String> get() {
+        return webClient.get()
+                .uri("/")
+                .retrieve()
+                .bodyToMono(String.class);
+    }
+
     public Mono<OnceAuthenticateFacebookResponseDto> authenticateFacebook(String facebookToken) {
         return webClient.post()
                 .uri("/v2/authenticate/facebook")

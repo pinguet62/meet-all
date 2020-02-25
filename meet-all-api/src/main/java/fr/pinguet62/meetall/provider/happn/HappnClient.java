@@ -8,6 +8,7 @@ import fr.pinguet62.meetall.provider.happn.dto.HappnNotificationDto;
 import fr.pinguet62.meetall.provider.happn.dto.HappnNotificationsResponseDto;
 import fr.pinguet62.meetall.provider.happn.dto.HappnOauthRequestDto;
 import fr.pinguet62.meetall.provider.happn.dto.HappnOauthResponseDto;
+import fr.pinguet62.meetall.provider.happn.dto.HappnOptionsDto;
 import fr.pinguet62.meetall.provider.happn.dto.HappnSendMessageRequestDto;
 import fr.pinguet62.meetall.provider.happn.dto.HappnSendMessageResponseDto;
 import fr.pinguet62.meetall.provider.happn.dto.HappnUserAcceptedResponseDto;
@@ -37,6 +38,13 @@ class HappnClient {
     // testing
     HappnClient(WebClient.Builder webClientBuilder, String baseUrl) {
         webClient = webClientBuilder.baseUrl(baseUrl).build();
+    }
+
+    public Mono<HappnOptionsDto> getOptions() {
+        return webClient.options()
+                .uri("/api")
+                .retrieve()
+                .bodyToMono(HappnOptionsDto.class);
     }
 
     public Mono<HappnOauthResponseDto> connectOauthToken(String facebookToken) {
