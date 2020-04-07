@@ -5,10 +5,10 @@ export class SecurityService {
 
     static readonly TOKEN_KEY = 'token';
 
-    private _token: string | null = null;
+    private internalToken: string | null = null;
 
     public get token(): string | null {
-        return this._token;
+        return this.internalToken;
     }
 
     public set token(value: string | null) {
@@ -17,11 +17,11 @@ export class SecurityService {
         } else {
             localStorage.setItem(SecurityService.TOKEN_KEY, value);
         }
-        this._token = value;
+        this.internalToken = value;
     }
 
     constructor() {
-        this._token = localStorage.getItem(SecurityService.TOKEN_KEY);
+        this.internalToken = localStorage.getItem(SecurityService.TOKEN_KEY);
     }
 
     isLogged() {

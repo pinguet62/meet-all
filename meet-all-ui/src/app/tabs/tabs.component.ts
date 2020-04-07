@@ -13,7 +13,7 @@ import {Component} from '@angular/core';
                 </ion-tab-button>
 
                 <ion-tab-button tab="conversations">
-                    <ion-icon name="chatboxes"></ion-icon>
+                    <ion-icon name="chatbubbles"></ion-icon>
                     <ion-label>Conversations</ion-label>
                 </ion-tab-button>
 

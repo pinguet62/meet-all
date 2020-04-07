@@ -5,12 +5,12 @@ import {catchErrorAndPresentAlert} from './alert-controller.utils';
 describe('alert-controller.utils', () => {
     describe('createAndPresentAlert', () => {
         let alerterPresentPromise: Promise<void>;
-        let alerter: { present: () => Promise<void> }; // HTMLIonAlertElement
+        let alerter: HTMLIonAlertElement;
         let alertController: jasmine.SpyObj<AlertController>;
         beforeEach(() => {
             alerterPresentPromise = Promise.resolve();
             spyOn(alerterPresentPromise, 'then').and.callThrough();
-            alerter = {present: () => alerterPresentPromise};
+            alerter = {present: () => alerterPresentPromise} as HTMLIonAlertElement;
             alertController = jasmine.createSpyObj<AlertController>(AlertController.name, ['create']);
             alertController.create.and.returnValue(Promise.resolve(alerter));
         });

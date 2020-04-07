@@ -66,7 +66,7 @@ export class ConversationMessagesComponent {
 
     readonly conversationId: string;
 
-    @ViewChild(IonContent) content: IonContent;
+    @ViewChild(IonContent, {static: false}) content: IonContent;
 
     profile: Profile = null;
     messages: Message[] = null;
@@ -81,14 +81,14 @@ export class ConversationMessagesComponent {
     ) {
         this.conversationId = route.snapshot.paramMap.get('conversationId');
         const profileId = route.snapshot.paramMap.get('profileId');
-        processLoading(loadingController, forkJoin(
+        processLoading(loadingController, forkJoin([
             service.getMessagesByConversation(this.conversationId)
                 .pipe(tap(it => this.messages = it))
                 .pipe(delay(10)) // wait for refresh
                 .pipe(tap(() => this.content.scrollToBottom())),
             service.getProfile(profileId)
                 .pipe(tap(it => this.profile = it)),
-        )).subscribe();
+        ])).subscribe();
     }
 
     public sendMessage() {

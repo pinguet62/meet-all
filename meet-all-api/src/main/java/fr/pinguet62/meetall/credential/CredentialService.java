@@ -4,7 +4,6 @@ import fr.pinguet62.meetall.provider.Provider;
 import fr.pinguet62.meetall.provider.ProviderFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -12,7 +11,6 @@ import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
-@Transactional
 public class CredentialService {
 
     private final CredentialRepository credentialRepository;

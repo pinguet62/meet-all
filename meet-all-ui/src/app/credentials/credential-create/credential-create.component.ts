@@ -62,7 +62,7 @@ export class CredentialCreateComponent {
     onCreate() {
         processLoading(this.loadingController,
             this.service.registerCredential(this.provider, this.credential, this.label)
-                .pipe(tap(() => this.navController.goBack()))
+                .pipe(tap(() => this.navController.back()))
         ).subscribe();
     }
 

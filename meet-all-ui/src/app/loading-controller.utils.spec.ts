@@ -17,13 +17,13 @@ describe('loading-controller.utils', () => {
         let callOrder: string[];
         let loaderPresentPresent: Promise<any>;
         let loaderPresentDismiss: Promise<any>;
-        let loader: { present: () => Promise<void>, dismiss: () => Promise<boolean> }; // HTMLIonLoadingElement
+        let loader: HTMLIonLoadingElement;
         let loadingController: jasmine.SpyObj<LoadingController>;
         beforeEach(() => {
             callOrder = [];
             loaderPresentPresent = createSpyPromise(() => callOrder.push('loaderPresentPresent'));
             loaderPresentDismiss = createSpyPromise(() => callOrder.push('loaderPresentDismiss'));
-            loader = {present: () => loaderPresentPresent, dismiss: () => loaderPresentDismiss};
+            loader = {present: () => loaderPresentPresent, dismiss: () => loaderPresentDismiss} as HTMLIonLoadingElement;
             loadingController = jasmine.createSpyObj<LoadingController>(LoadingController.name, ['create']);
             loadingController.create.and.returnValue(Promise.resolve(loader));
         });
@@ -33,7 +33,7 @@ describe('loading-controller.utils', () => {
                 callOrder.push('source');
                 observer.next('source');
             });
-            const observable = Observable.create(sourceNext);
+            const observable = new Observable(sourceNext);
 
             const result = processLoading(loadingController, observable);
 
@@ -51,7 +51,7 @@ describe('loading-controller.utils', () => {
                 callOrder.push('source');
                 observer.error(new Error('source'));
             });
-            const observable = Observable.create(sourceError);
+            const observable = new Observable(sourceError);
 
             const result = processLoading(loadingController, observable);
 

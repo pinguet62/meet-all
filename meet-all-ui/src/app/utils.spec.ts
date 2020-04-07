@@ -13,8 +13,8 @@ describe('utils', () => {
                 callOrder.push('finalize');
                 observer.next(42);
             });
-            const action = Observable.create(observerNext);
-            Observable.create(sourceNext)
+            const action = new Observable(observerNext);
+            new Observable(sourceNext)
                 .pipe(finalize(action))
                 .subscribe(next => {
                     expect(next).toEqual('source');
@@ -34,8 +34,8 @@ describe('utils', () => {
                 callOrder.push('finalize');
                 observer.next(42);
             });
-            const action = Observable.create(observerNext);
-            Observable.create(sourceError)
+            const action = new Observable(observerNext);
+            new Observable(sourceError)
                 .pipe(finalize(action))
                 .subscribe(
                     () => done.fail(),

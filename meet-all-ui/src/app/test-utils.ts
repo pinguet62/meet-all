@@ -1,19 +1,12 @@
 import {Type} from '@angular/core';
 import {LoadingController} from '@ionic/angular';
-import {Components, LoadingOptions} from '@ionic/core';
+import {LoadingOptions} from '@ionic/core';
 
 export function buildLocation(url: string): Location {
     const a = document.createElement('a');
     a.href = url;
     return a as any as Location;
 }
-
-interface HTMLIonLoadingElement extends Components.IonLoading, HTMLStencilElement {}
-// tslint:disable-next-line
-var HTMLIonLoadingElement: {
-    prototype: HTMLIonLoadingElement;
-    new (): HTMLIonLoadingElement;
-};
 
 function createHTMLIonLoadingElement(): HTMLIonLoadingElement {
     return {
@@ -28,8 +21,8 @@ export class LoadingControllerFake extends LoadingController {
         return Promise.resolve(createHTMLIonLoadingElement());
     }
 
-    dismiss(data?: any, role?: string, id?: string): Promise<void> {
-        return Promise.resolve();
+    dismiss(data?: any, role?: string, id?: string): Promise<boolean> {
+        return Promise.resolve(true);
     }
 
     getTop(): Promise<HTMLIonLoadingElement> {
@@ -39,5 +32,5 @@ export class LoadingControllerFake extends LoadingController {
 }
 
 export function allMethodNames<T>(type: Type<T>): ReadonlyArray<keyof T> {
-    return Object.keys(type.prototype) as any as ReadonlyArray<keyof T>;
+    return Object.getOwnPropertyNames(type.prototype) as any as ReadonlyArray<keyof T>;
 }

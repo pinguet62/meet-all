@@ -37,7 +37,7 @@ module.exports = function (config) {
         flags: ['--no-sandbox']
       }
     };
-    cfg.singleRun = true
+    cfg.singleRun = true;
   }
 
   config.set(cfg);

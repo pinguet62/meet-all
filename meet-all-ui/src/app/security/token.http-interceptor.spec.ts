@@ -1,7 +1,7 @@
 import {Router} from '@angular/router';
 import {of, throwError} from 'rxjs';
 import {TokenHttpInterceptor} from './token.http-interceptor';
-import {HttpErrorResponse, HttpEvent, HttpHandler, HttpRequest} from '@angular/common/http';
+import {HttpErrorResponse, HttpEvent, HttpHandler, HttpRequest, HttpXhrBackend} from '@angular/common/http';
 import {allMethodNames} from '../test-utils';
 import {SecurityService} from './security.service';
 
@@ -21,7 +21,7 @@ describe('token.http-interceptor', () => {
     });
 
     it('When success: no action', done => {
-        const event = jasmine.createSpy('HttpEvent');
+        const event = jasmine.createSpyObj<HttpEvent<any>>(allMethodNames(HttpXhrBackend));
         next.handle.and.returnValue(of(event));
 
         const result = httpInterceptor.intercept(req, next);

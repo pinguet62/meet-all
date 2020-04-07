@@ -1,5 +1,7 @@
 {
-  "name": "meet-all-ui",
-  "integrations": {},
+  "name": "meet-all",
+  "integrations": {
+    "capacitor": {}
+  },
   "type": "angular"
 }
