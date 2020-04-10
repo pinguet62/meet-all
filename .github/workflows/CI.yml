@@ -13,6 +13,17 @@ jobs:
           java-version: 13
       - working-directory: ./meet-all-api
         run: mvn -B package
+      - working-directory: ./meet-all-api
+        run: docker build . -t pinguet62/meet-all-api
+      - if: github.ref == 'refs/heads/master'
+        working-directory: ./meet-all-api
+        env:
+          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+        run: |
+          docker login --username=_ --password=$HEROKU_API_KEY registry.heroku.com
+          docker tag pinguet62/meet-all-api registry.heroku.com/meet-all-api/web
+          docker push registry.heroku.com/meet-all-api/web
+          heroku container:release web --app meet-all-api
   build-ui:
     runs-on: ubuntu-latest
     steps:
@@ -37,4 +48,15 @@ jobs:
           CI: true
         run: npm run e2e
       - working-directory: ./meet-all-ui
-        run: npm run build
+        run: npm run build -- --prod
+      - working-directory: ./meet-all-ui
+        run: docker build . -t pinguet62/meet-all-ui
+      - if: github.ref == 'refs/heads/master'
+        working-directory: ./meet-all-ui
+        env:
+          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+        run: |
+          docker login --username=_ --password=$HEROKU_API_KEY registry.heroku.com
+          docker tag pinguet62/meet-all-ui registry.heroku.com/meet-all-ui/web
+          docker push registry.heroku.com/meet-all-ui/web
+          heroku container:release web --app meet-all-ui

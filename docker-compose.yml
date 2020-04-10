@@ -1,0 +1,19 @@
+version: "3.7"
+services:
+  api:
+    build: ./meet-all-api
+    image: pinguet62/meet-all-api
+    environment:
+      - MONGODB_URI=mongodb://mongodb/test
+      - PORT=8080
+    ports:
+      - "8080:8080"
+  ui:
+    build: ./meet-all-ui
+    image: pinguet62/meet-all-ui
+    environment:
+      - PORT=4200
+    ports:
+      - "4200:4200"
+  mongodb:
+    image: mongo
