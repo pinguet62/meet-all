@@ -6,10 +6,17 @@ import {LoginService} from './login.service';
     template: `
         <ion-content>
             <ion-item>
-                <ion-button (click)="login()">Facebook</ion-button>
+                <ion-button (click)="login()" color="facebook">
+                    <ion-icon slot="start" name="logo-facebook"></ion-icon>
+                    Continue with Facebook
+                </ion-button>
             </ion-item>
-        </ion-content>
-    `,
+        </ion-content>`,
+    styles: [`
+        .ion-color-facebook {
+            --ion-color-base: #4267B2;
+        }
+    `],
 })
 export class LoginComponent {
 
