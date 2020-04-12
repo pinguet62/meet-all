@@ -10,7 +10,7 @@ jobs:
       - name: Set up JDK
         uses: actions/setup-java@v1
         with:
-          java-version: 13
+          java-version: 14
       - working-directory: ./meet-all-api
         run: mvn -B package
       - working-directory: ./meet-all-api
