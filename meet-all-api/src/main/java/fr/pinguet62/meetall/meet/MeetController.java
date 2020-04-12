@@ -9,6 +9,7 @@ import fr.pinguet62.meetall.security.ApplicationReactiveSecurityContextHolder;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -23,10 +24,12 @@ import reactor.core.publisher.Mono;
 
 import java.util.List;
 
+import static fr.pinguet62.meetall.config.OpenApiConfig.BEARER;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.PARTIAL_CONTENT;
 
 @Tag(name = "Meet")
+@SecurityRequirement(name = BEARER)
 @RequiredArgsConstructor
 @RestController
 class MeetController {

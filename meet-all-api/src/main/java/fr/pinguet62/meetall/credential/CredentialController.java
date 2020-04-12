@@ -5,6 +5,7 @@ import fr.pinguet62.meetall.security.ApplicationAuthentication;
 import fr.pinguet62.meetall.security.ApplicationReactiveSecurityContextHolder;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -18,10 +19,12 @@ import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import static fr.pinguet62.meetall.config.OpenApiConfig.BEARER;
 import static java.util.Optional.ofNullable;
 import static org.springframework.http.HttpStatus.CREATED;
 
 @Tag(name = "Credentials")
+@SecurityRequirement(name = BEARER)
 @RequiredArgsConstructor
 @RestController
 class CredentialController {

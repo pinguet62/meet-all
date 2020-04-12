@@ -36,7 +36,7 @@ class SecurityConfig {
                 .authorizeExchange()
                         .pathMatchers(openApiConfig.getPublicRoutesPathMatchers())
                                 .permitAll()
-                        .pathMatchers("/login", "/user", "/photo/*")
+                        .pathMatchers("/login", "/photo/*")
                                 .permitAll()
                         .anyExchange()
                                 .authenticated()
