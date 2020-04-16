@@ -1,5 +1,7 @@
 package fr.pinguet62.meetall.provider.tinder;
 
+import fr.pinguet62.meetall.provider.tinder.dto.TinderAuthLoginFacebookRequestDto;
+import fr.pinguet62.meetall.provider.tinder.dto.TinderAuthLoginFacebookResponseDto;
 import fr.pinguet62.meetall.provider.tinder.dto.TinderGetConversationResponseDto;
 import fr.pinguet62.meetall.provider.tinder.dto.TinderGetMessagesResponseDto;
 import fr.pinguet62.meetall.provider.tinder.dto.TinderGetMetaResponseDto;
@@ -32,6 +34,13 @@ class TinderClient {
     // testing
     TinderClient(WebClient.Builder webClientBuilder, String baseUrl) {
         webClient = webClientBuilder.baseUrl(baseUrl).build();
+    }
+
+    Mono<TinderAuthLoginFacebookResponseDto> authLoginFacebook(String facebookToken) {
+        return webClient.post()
+                .uri("/v2/auth/login/facebook")
+                .body(fromValue(new TinderAuthLoginFacebookRequestDto(facebookToken)))
+                .retrieve().bodyToMono(TinderAuthLoginFacebookResponseDto.class);
     }
 
     Mono<TinderGetRecommendationsResponseDto> getRecommendations(String authToken) {

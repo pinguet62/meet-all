@@ -12,6 +12,11 @@ public interface ProviderService {
 
     Provider getId();
 
+    /**
+     * @return The credential.
+     */
+    Mono<String> loginWithFacebook(String facebookToken);
+
     default Mono<Boolean> checkCredential(String credential) {
         return getConversations(credential)
                 .collectList().map(it -> true)

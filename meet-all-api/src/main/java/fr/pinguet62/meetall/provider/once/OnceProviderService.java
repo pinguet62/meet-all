@@ -6,6 +6,7 @@ import fr.pinguet62.meetall.provider.model.ConversationDto;
 import fr.pinguet62.meetall.provider.model.MessageDto;
 import fr.pinguet62.meetall.provider.model.ProfileDto;
 import fr.pinguet62.meetall.provider.model.ProposalDto;
+import fr.pinguet62.meetall.provider.once.dto.OnceAuthenticateFacebookResponseDto;
 import fr.pinguet62.meetall.provider.once.dto.OnceConversationsResponseDto;
 import fr.pinguet62.meetall.provider.once.dto.OnceMatchAllResponseDto;
 import fr.pinguet62.meetall.provider.once.dto.OnceMatchByIdResponseDto;
@@ -36,6 +37,12 @@ public class OnceProviderService implements ProviderService {
     @Override
     public Provider getId() {
         return ONCE;
+    }
+
+    @Override
+    public Mono<String> loginWithFacebook(String facebookToken) {
+        return client.authenticateFacebook(facebookToken)
+                .map(OnceAuthenticateFacebookResponseDto::getToken);
     }
 
     @Override

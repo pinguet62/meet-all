@@ -22,6 +22,7 @@ import reactor.core.publisher.Mono;
 import static fr.pinguet62.meetall.config.OpenApiConfig.BEARER;
 import static java.util.Optional.ofNullable;
 import static org.springframework.http.HttpStatus.CREATED;
+import static org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE;
 
 @Tag(name = "Credentials")
 @SecurityRequirement(name = BEARER)
@@ -29,14 +30,14 @@ import static org.springframework.http.HttpStatus.CREATED;
 @RestController
 class CredentialController {
 
-    private final CredentialService loginService;
+    private final CredentialService credentialService;
 
     @Operation(summary = "List all credentials")
     @GetMapping("/credential")
     public Flux<RegisteredCredentialDto> getRegisteredCredentials() {
         return ApplicationReactiveSecurityContextHolder.getAuthentication()
                 .map(ApplicationAuthentication::getUserId)
-                .flatMapMany(loginService::getRegisteredCredentials);
+                .flatMapMany(credentialService::getRegisteredCredentials);
     }
 
     /**
@@ -45,7 +46,7 @@ class CredentialController {
      * @param label      {@link Credential#getLabel()}
      */
     @Operation(summary = "Register a new credential")
-    @PostMapping("/credential")
+    @PostMapping(value = "/credential", consumes = MULTIPART_FORM_DATA_VALUE)
     @ResponseStatus(CREATED)
     public Mono<RegisteredCredentialDto> registerCredential(
             @RequestPart @Parameter(/*FIXME*/ required = true) Provider provider,
@@ -53,7 +54,7 @@ class CredentialController {
             @RequestPart @Parameter(/*FIXME*/ required = true, description = "UI information") String label) {
         return ApplicationReactiveSecurityContextHolder.getAuthentication()
                 .map(ApplicationAuthentication::getUserId)
-                .flatMap(userId -> loginService.registerCredential(userId, provider, credential, label));
+                .flatMap(userId -> credentialService.registerCredential(userId, provider, credential, label));
     }
 
     /**
@@ -62,14 +63,14 @@ class CredentialController {
      * @param label      {@link Credential#getLabel()}
      */
     @Operation(summary = "Update an existing credential")
-    @PutMapping("/credential/{id}")
+    @PutMapping(value = "/credential/{id}", consumes = MULTIPART_FORM_DATA_VALUE)
     public Mono<RegisteredCredentialDto> updateCredential(
             @PathVariable String id,
             @RequestPart(required = false) @Parameter(/*FIXME*/ required = true) String credential,
             @RequestPart(required = false) @Parameter(/*FIXME*/ required = true, description = "UI information") String label) {
         return ApplicationReactiveSecurityContextHolder.getAuthentication()
                 .map(ApplicationAuthentication::getUserId)
-                .flatMap(userId -> loginService.updateCredential(userId, id, ofNullable(credential), ofNullable(label)));
+                .flatMap(userId -> credentialService.updateCredential(userId, id, ofNullable(credential), ofNullable(label)));
     }
 
     /**
@@ -80,7 +81,7 @@ class CredentialController {
     public Mono<RegisteredCredentialDto> deleteCredential(@PathVariable String id) {
         return ApplicationReactiveSecurityContextHolder.getAuthentication()
                 .map(ApplicationAuthentication::getUserId)
-                .flatMap(userId -> loginService.deleteCredential(userId, id));
+                .flatMap(userId -> credentialService.deleteCredential(userId, id));
     }
 
 }

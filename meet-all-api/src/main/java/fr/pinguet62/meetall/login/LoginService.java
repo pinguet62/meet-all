@@ -16,11 +16,11 @@ class LoginService {
     private final JwtTokenGenerator jwtTokenGenerator;
 
     /**
-     * @param accessToken Facebook {@code access_token}
+     * @param facebookToken Facebook {@code access_token}.
      * @return The JWT token.
      */
-    public Mono<String> login(String accessToken) {
-        return facebookApi.getMe(accessToken)
+    public Mono<String> login(String facebookToken) {
+        return facebookApi.getMe(facebookToken)
                 .map(FacebookApi.MeResponseDto::getId)
                 .map(jwtTokenGenerator::generateToken);
     }

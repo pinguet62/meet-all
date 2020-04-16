@@ -22,7 +22,7 @@ class LoginController {
     private final LoginService loginService;
 
     /**
-     * @param accessToken Facebook {@code access_token}.
+     * @param facebookToken Facebook {@code access_token}.
      * @return The JWT token.
      */
     @PostMapping("/login")
@@ -30,8 +30,8 @@ class LoginController {
             responses = @ApiResponse(
                     description = "Application JWT for secured routes",
                     content = @Content(schema = @Schema(example = "xxx.yyyyy.zzzz"))))
-    public Mono<String> login(@RequestParam("access_token") @Parameter(description = "Facebook OAuth token") String accessToken) {
-        return loginService.login(accessToken);
+    public Mono<String> login(@RequestParam("facebook_token") @Parameter(description = "Facebook OAuth token") String facebookToken) {
+        return loginService.login(facebookToken);
     }
 
 }

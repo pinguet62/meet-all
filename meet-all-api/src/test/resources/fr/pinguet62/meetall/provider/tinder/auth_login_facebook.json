@@ -1,0 +1,11 @@
+{
+  "meta": {
+    "status": 200
+  },
+  "data": {
+    "_id": "5b486956f408df634d26de3b",
+    "api_token": "7689631f-c20b-406d-925c-ff0c89fdca3d",
+    "refresh_token": "eyJhbGciOiJIUzI1NiJ9.MTg2OTU5ODAzMzA4NjE0OA.QUV-CgWHOSr5dOpJmL3E1JzRmB2SLqL00QVjwUWupqk",
+    "is_new_user": false
+  }
+}

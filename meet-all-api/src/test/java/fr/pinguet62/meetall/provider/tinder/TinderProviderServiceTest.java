@@ -38,6 +38,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 public class TinderProviderServiceTest {
 
+    private final String facebookToken = "facebookToken";
     private final String authToken = "authToken";
 
     private MockWebServer server;
@@ -52,6 +53,17 @@ public class TinderProviderServiceTest {
     @After
     public void stopServer() throws IOException {
         server.shutdown();
+    }
+
+    @Test
+    public void login() {
+        server.enqueue(new MockResponse()
+                .setHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
+                .setBody(readResource("/fr/pinguet62/meetall/provider/tinder/auth_login_facebook.json")));
+
+        String authToken = tinderProvider.loginWithFacebook(facebookToken).block();
+
+        assertThat(authToken, is("7689631f-c20b-406d-925c-ff0c89fdca3d"));
     }
 
     @Test

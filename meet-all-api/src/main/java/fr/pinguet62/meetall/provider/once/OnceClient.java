@@ -1,5 +1,7 @@
 package fr.pinguet62.meetall.provider.once;
 
+import fr.pinguet62.meetall.provider.once.dto.OnceAuthenticateFacebookRequestDto;
+import fr.pinguet62.meetall.provider.once.dto.OnceAuthenticateFacebookResponseDto;
 import fr.pinguet62.meetall.provider.once.dto.OnceConversationsResponseDto;
 import fr.pinguet62.meetall.provider.once.dto.OnceMatchAllResponseDto;
 import fr.pinguet62.meetall.provider.once.dto.OnceMatchByIdResponseDto;
@@ -30,6 +32,13 @@ class OnceClient {
     // testing
     OnceClient(WebClient.Builder webClientBuilder, String baseUrl) {
         webClient = webClientBuilder.baseUrl(baseUrl).build();
+    }
+
+    public Mono<OnceAuthenticateFacebookResponseDto> authenticateFacebook(String facebookToken) {
+        return webClient.post()
+                .uri("/v2/authenticate/facebook")
+                .body(fromValue(new OnceAuthenticateFacebookRequestDto(facebookToken)))
+                .retrieve().bodyToMono(OnceAuthenticateFacebookResponseDto.class);
     }
 
     public Mono<OnceMatchAllResponseDto> getMatchs(String authorization) {

@@ -14,7 +14,7 @@ import static java.util.Objects.requireNonNull;
 @ToString
 @EqualsAndHashCode
 @Getter
-class RegisteredCredentialDto {
+public class RegisteredCredentialDto {
 
     @Schema(required = true, description = "Internal ID")
     private final String id;

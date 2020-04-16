@@ -6,6 +6,8 @@ import fr.pinguet62.meetall.provider.happn.dto.HappnMessageDto;
 import fr.pinguet62.meetall.provider.happn.dto.HappnMessagesResponseDto;
 import fr.pinguet62.meetall.provider.happn.dto.HappnNotificationDto;
 import fr.pinguet62.meetall.provider.happn.dto.HappnNotificationsResponseDto;
+import fr.pinguet62.meetall.provider.happn.dto.HappnOauthRequestDto;
+import fr.pinguet62.meetall.provider.happn.dto.HappnOauthResponseDto;
 import fr.pinguet62.meetall.provider.happn.dto.HappnSendMessageRequestDto;
 import fr.pinguet62.meetall.provider.happn.dto.HappnSendMessageResponseDto;
 import fr.pinguet62.meetall.provider.happn.dto.HappnUserAcceptedResponseDto;
@@ -29,7 +31,7 @@ class HappnClient {
 
     @Autowired
     public HappnClient(WebClient.Builder webClientBuilder) {
-        this(webClientBuilder, "https://api.happn.fr/api");
+        this(webClientBuilder, "https://api.happn.fr");
     }
 
     // testing
@@ -37,10 +39,27 @@ class HappnClient {
         webClient = webClientBuilder.baseUrl(baseUrl).build();
     }
 
+    public Mono<HappnOauthResponseDto> connectOauthToken(String facebookToken) {
+        return webClient
+                .post()
+                .uri(uriBuilder -> uriBuilder
+                        .path("/connect/oauth/token")
+                        .build())
+                .body(fromValue(
+                        new HappnOauthRequestDto(
+                                "assertion",
+                                "FUE-idSEP-f7AqCyuMcPr2K-1iCIU_YlvK-M-im3c",
+                                "brGoHSwZsPjJ-lBk0HqEXVtb3UFu-y5l_JcOjD-Ekv",
+                                "facebook_access_token",
+                                facebookToken)))
+                .retrieve()
+                .bodyToMono(HappnOauthResponseDto.class);
+    }
+
     public Mono<HappnNotificationsResponseDto> getNotifications(String authToken) {
         return webClient.get()
                 .uri(uriBuilder -> uriBuilder
-                        .path("/users/me/notifications")
+                        .path("/api/users/me/notifications")
                         .queryParam("types", 468)
                         .queryParam("fields", parseGraph(HappnNotificationDto.class))
                         .queryParam("limit", 9999)
@@ -59,7 +78,7 @@ class HappnClient {
 
     private Mono<HappnUserAcceptedResponseDto> acceptOrRejectUser(String authToken, String userId, String acceptOrReject) {
         return webClient.post()
-                .uri(uriBuilder -> uriBuilder.path("/users/me").pathSegment(acceptOrReject).pathSegment(userId).build())
+                .uri(uriBuilder -> uriBuilder.path("/api/users/me").pathSegment(acceptOrReject).pathSegment(userId).build())
                 .header(HEADER, "OAuth=\"" + authToken + "\"")
                 .retrieve().bodyToMono(HappnUserAcceptedResponseDto.class);
     }
@@ -67,7 +86,7 @@ class HappnClient {
     public Mono<HappnConversationsResponseDto> getConversations(String authToken) {
         return webClient.get()
                 .uri(uriBuilder -> uriBuilder
-                        .path("/users/me/conversations")
+                        .path("/api/users/me/conversations")
                         .queryParam("limit", 99999999)
                         .queryParam("fields", parseGraph(HappnConversationDto.class))
                         .build())
@@ -78,7 +97,7 @@ class HappnClient {
     public Mono<HappnMessagesResponseDto> getMessagesForConversation(String authToken, String conversationId) {
         return webClient.get()
                 .uri(uriBuilder -> uriBuilder
-                        .pathSegment("conversations").pathSegment(conversationId).pathSegment("messages")
+                        .path("/api/conversations").pathSegment(conversationId).pathSegment("messages")
                         .queryParam("fields", parseGraph(HappnMessageDto.class))
                         .build())
                 .header(HEADER, "OAuth=\"" + authToken + "\"")
@@ -88,7 +107,7 @@ class HappnClient {
     public Mono<HappnSendMessageResponseDto> sendMessagesToConversation(String authToken, String conversationId, String text) {
         return webClient.post()
                 .uri(uriBuilder -> uriBuilder
-                        .pathSegment("conversations").pathSegment(conversationId).pathSegment("messages")
+                        .path("/api/conversations").pathSegment(conversationId).pathSegment("messages")
                         .queryParam("fields", parseGraph(HappnMessageDto.class))
                         .build())
                 .body(fromValue(new HappnSendMessageRequestDto(text)))
@@ -99,7 +118,7 @@ class HappnClient {
     public Mono<HappnUserResponseDto> getUser(String authToken, String userId) {
         return webClient.get()
                 .uri(uriBuilder -> uriBuilder
-                        .pathSegment("users").pathSegment(userId)
+                        .path("/api/users").pathSegment(userId)
                         .queryParam("fields", parseGraph(HappnUserDto.class))
                         .build())
                 .header(HEADER, "OAuth=\"" + authToken + "\"")

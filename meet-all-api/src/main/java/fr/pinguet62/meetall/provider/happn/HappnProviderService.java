@@ -6,6 +6,7 @@ import fr.pinguet62.meetall.provider.ProviderService;
 import fr.pinguet62.meetall.provider.happn.dto.HappnConversationsResponseDto;
 import fr.pinguet62.meetall.provider.happn.dto.HappnMessagesResponseDto;
 import fr.pinguet62.meetall.provider.happn.dto.HappnNotificationsResponseDto;
+import fr.pinguet62.meetall.provider.happn.dto.HappnOauthResponseDto;
 import fr.pinguet62.meetall.provider.happn.dto.HappnSendMessageResponseDto;
 import fr.pinguet62.meetall.provider.happn.dto.HappnUserAcceptedResponseDto;
 import fr.pinguet62.meetall.provider.happn.dto.HappnUserResponseDto;
@@ -40,6 +41,13 @@ public class HappnProviderService implements ProviderService {
     @Override
     public Provider getId() {
         return HAPPN;
+    }
+
+    @Override
+    public Mono<String> loginWithFacebook(String facebookToken) {
+        return client
+                .connectOauthToken(facebookToken)
+                .map(HappnOauthResponseDto::getAccessToken);
     }
 
     @Override

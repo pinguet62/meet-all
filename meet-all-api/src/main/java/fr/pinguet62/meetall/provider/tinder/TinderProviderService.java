@@ -7,6 +7,8 @@ import fr.pinguet62.meetall.provider.model.ConversationDto;
 import fr.pinguet62.meetall.provider.model.MessageDto;
 import fr.pinguet62.meetall.provider.model.ProfileDto;
 import fr.pinguet62.meetall.provider.model.ProposalDto;
+import fr.pinguet62.meetall.provider.tinder.dto.TinderAuthLoginFacebookResponseDataDto;
+import fr.pinguet62.meetall.provider.tinder.dto.TinderAuthLoginFacebookResponseDto;
 import fr.pinguet62.meetall.provider.tinder.dto.TinderGetConversationResponseDto;
 import fr.pinguet62.meetall.provider.tinder.dto.TinderGetConversationResponseDto.TinderGetConversationDataResponseDto;
 import fr.pinguet62.meetall.provider.tinder.dto.TinderGetMessagesResponseDto;
@@ -35,7 +37,7 @@ import static reactor.core.publisher.Mono.empty;
  * Get Facebook token:
  * <ol>
  * <li>https://www.facebook.com/v2.6/dialog/oauth?redirect_uri=fb464891386855067%3A%2F%2Fauthorize%2F&scope=user_birthday,user_photos,user_education_history,email,user_relationship_details,user_friends,user_work_history,user_likes&response_type=token%2Csigned_request&client_id=464891386855067</li>
- * <li>Get {@code access_token} value from response https://www.facebook.com/v2.8/dialog/oauth/confirm?dpr=1</li>
+ * <li>Get {@code access_token} value from response https://www.facebook.com/v2.12/dialog/oauth/confirm?dpr=1</li>
  * </ol>
  * </li>
  *
@@ -57,6 +59,13 @@ public class TinderProviderService implements ProviderService {
     @Override
     public Provider getId() {
         return TINDER;
+    }
+
+    @Override
+    public Mono<String> loginWithFacebook(String facebookAccessToken) {
+        return client.authLoginFacebook(facebookAccessToken)
+                .map(TinderAuthLoginFacebookResponseDto::getData)
+                .map(TinderAuthLoginFacebookResponseDataDto::getApiToken);
     }
 
     /**

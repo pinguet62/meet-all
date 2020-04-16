@@ -26,7 +26,7 @@ export class LoginService {
     }
 
     public login(facebookAccessToken: string): Observable<any> {
-        return this.http.post(environment.apiUrl + '/login', null, {params: {access_token: facebookAccessToken}, responseType: 'text'})
+        return this.http.post(environment.apiUrl + '/login', null, {params: {facebook_token: facebookAccessToken}, responseType: 'text'})
             .pipe(tap(it => this.securityService.token = it));
     }
 

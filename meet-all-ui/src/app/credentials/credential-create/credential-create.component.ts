@@ -25,11 +25,6 @@ import {CredentialService, Provider} from '../credential.service';
         <ion-content>
             <form #form="ngForm">
                 <ion-item>
-                    <ion-label>Label</ion-label>
-                    <ion-input type="text" [(ngModel)]="label" name="label" clearInput required></ion-input>
-                </ion-item>
-
-                <ion-item>
                     <ion-label>Provider</ion-label>
                     <ion-select [(ngModel)]="provider" name="provider" required placeholder="Select one">
                         <ion-select-option *ngFor="let provider of providers" [value]="provider">{{provider}}</ion-select-option>
@@ -37,8 +32,17 @@ import {CredentialService, Provider} from '../credential.service';
                 </ion-item>
 
                 <ion-item>
-                    <ion-label>Credential</ion-label>
-                    <ion-input type="text" [(ngModel)]="credential" name="credential" clearInput required></ion-input>
+                    <ion-label>Facebook email</ion-label>
+                    <ion-input type="text" [(ngModel)]="facebookEmail" name="facebookEmail" clearInput required></ion-input>
+                </ion-item>
+                <ion-item>
+                    <ion-label>Facebook password</ion-label>
+                    <ion-input type="password" [(ngModel)]="facebookPassword" name="facebookPassword" clearInput required></ion-input>
+                </ion-item>
+
+                <ion-item>
+                    <ion-label>Label</ion-label>
+                    <ion-input type="text" [(ngModel)]="label" name="label" clearInput required></ion-input>
                 </ion-item>
             </form>
         </ion-content>
@@ -48,9 +52,10 @@ export class CredentialCreateComponent {
 
     readonly providers = Object.keys(Provider);
 
-    label = '';
     provider: Provider;
-    credential = '';
+    facebookEmail = '';
+    facebookPassword = '';
+    label = '';
 
     constructor(
         private loadingController: LoadingController,
@@ -61,7 +66,7 @@ export class CredentialCreateComponent {
 
     onCreate() {
         processLoading(this.loadingController,
-            this.service.registerCredential(this.provider, this.credential, this.label)
+            this.service.registerFacebookCredential(this.provider, this.facebookEmail, this.facebookPassword, this.label)
                 .pipe(tap(() => this.navController.back()))
         ).subscribe();
     }

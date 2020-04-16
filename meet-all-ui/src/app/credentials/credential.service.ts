@@ -27,12 +27,13 @@ export class CredentialService {
         return this.http.get<RegisteredCredential[]>(environment.apiUrl + '/credential');
     }
 
-    public registerCredential(provider: Provider, credential: string, label: string): Observable<RegisteredCredential> {
+    public registerFacebookCredential(provider: Provider, facebookEmail: string, facebookPassword: string, label: string): Observable<RegisteredCredential> {
         const formData = new FormData();
         formData.append('provider', provider);
-        formData.append('credential', credential);
+        formData.append('email', facebookEmail);
+        formData.append('password', facebookPassword);
         formData.append('label', label);
-        return this.http.post<RegisteredCredential>(environment.apiUrl + '/credential', formData);
+        return this.http.post<RegisteredCredential>(environment.apiUrl + '/credential/facebook', formData);
     }
 
     public deleteCredential(credentialId: number): Observable<RegisteredCredential> {
