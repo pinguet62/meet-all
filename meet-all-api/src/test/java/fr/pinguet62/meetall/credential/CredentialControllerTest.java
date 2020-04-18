@@ -14,8 +14,8 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
+import java.util.Map;
 
-import static fr.pinguet62.meetall.Utils.mapOf;
 import static fr.pinguet62.meetall.credential.CredentialControllerTest.currentUserId;
 import static fr.pinguet62.meetall.provider.Provider.HAPPN;
 import static fr.pinguet62.meetall.provider.Provider.TINDER;
@@ -81,7 +81,7 @@ public class CredentialControllerTest {
         webTestClient.mutateWith(csrf())
                 .post()
                 .uri("/credential")
-                .body(fromMultipartData(new LinkedMultiValueMap<>(mapOf(
+                .body(fromMultipartData(new LinkedMultiValueMap<>(Map.of(
                         "provider", List.of(provider),
                         "credential", List.of(credential),
                         "label", List.of(label)))))
@@ -111,7 +111,7 @@ public class CredentialControllerTest {
                 .put()
                 .uri(uriBuilder -> uriBuilder.path("/credential").pathSegment(valueOf(id)).build())
                 .contentType(MULTIPART_FORM_DATA)
-                .body(fromMultipartData(new LinkedMultiValueMap<>(mapOf(
+                .body(fromMultipartData(new LinkedMultiValueMap<>(Map.of(
                         "credential", List.of(credential),
                         "label", List.of(label)))))
                 .exchange()

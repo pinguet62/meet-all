@@ -14,8 +14,8 @@ import org.springframework.util.LinkedMultiValueMap;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
+import java.util.Map;
 
-import static fr.pinguet62.meetall.Utils.mapOf;
 import static fr.pinguet62.meetall.facebookcredential.FacebookCredentialControllerTest.currentUserId;
 import static fr.pinguet62.meetall.provider.Provider.TINDER;
 import static org.mockito.Mockito.when;
@@ -56,7 +56,7 @@ public class FacebookCredentialControllerTest {
         webTestClient.mutateWith(csrf())
                 .post()
                 .uri("/credential/facebook")
-                .body(fromMultipartData(new LinkedMultiValueMap<>(mapOf(
+                .body(fromMultipartData(new LinkedMultiValueMap<>(Map.of(
                         "provider", List.of(TINDER),
                         "email", List.of(email),
                         "password", List.of(password),
