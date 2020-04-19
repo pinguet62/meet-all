@@ -40,7 +40,8 @@ public class RobotCredentialExtractor {
         WebDriverManager.chromedriver().version("80.0.3987.106").setup(); // System.setProperty("webdriver.chrome.driver", "...");
         // Driver configuration
         ChromeOptions options = new ChromeOptions();
-        options.addArguments("headless");
+        options.addArguments("--headless");
+        options.addArguments("--no-sandbox");
         WebDriver driver = new ChromeDriver(options);
 
         // Facebook login page

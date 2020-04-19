@@ -29,6 +29,6 @@ exports.config = {
 
 if (process.env.CI) {
   exports.config.capabilities.chromeOptions = {
-    args: ['--no-sandbox', '--headless']
+    args: ['--headless', '--no-sandbox']
   };
 }
