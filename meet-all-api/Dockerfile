@@ -1,4 +1,4 @@
-FROM adoptopenjdk/openjdk14
+FROM openjdk:14-slim
 
 RUN apt-get update \
  && apt-get install -y wget gnupg gnupg2 gnupg1 \

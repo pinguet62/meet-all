@@ -1,17 +1,30 @@
 package fr.pinguet62.meetall.facebookcredential;
 
 import io.github.bonigarcia.wdm.WebDriverManager;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.utils.URLEncodedUtils;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
 import org.openqa.selenium.By;
+import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.stereotype.Component;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.util.UriComponentsBuilder;
 import reactor.core.publisher.Mono;
 
+import java.net.URI;
+import java.time.Duration;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+
+import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfAllElementsLocatedBy;
+import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElementLocated;
+import static org.springframework.http.HttpStatus.LOCKED;
 
 @Component
 public class RobotCredentialExtractor {
@@ -44,26 +57,63 @@ public class RobotCredentialExtractor {
         options.addArguments("--no-sandbox");
         WebDriver driver = new ChromeDriver(options);
 
-        // Facebook login page
-        driver.get(facebookOauthUrl);
-        driver.findElement(By.id("email")).sendKeys(email);
-        driver.findElement(By.id("pass")).sendKeys(password);
-        driver.findElement(By.cssSelector("[type=submit]")).click();
+        try {
+            // Facebook login page
+            driver.get(facebookOauthUrl);
+            driver.findElement(By.id("email")).sendKeys(email);
+            driver.findElement(By.id("pass")).sendKeys(password);
+            driver.findElement(By.cssSelector("[type=submit]")).click();
 
-        // Authorization page
-        driver.findElement(By.id("platformDialogForm")).findElement(By.name("__CONFIRM__")).click();
+            checkVerificationNotPresentOrThrowError(driver);
+
+            // Authorization page
+            driver.findElement(By.id("platformDialogForm")).findElement(By.name("__CONFIRM__")).click();
+        } catch (WebDriverException e) {
+            throw new PageSourceWebDriverException(driver.getPageSource(), e);
+        }
+
         // Authorized page
         String html = driver.getPageSource();
 
-        // parse HTML & extract query parameter from redirect URL
-        final String before = "access_token=";
-        final String after = "&data_access_expiration_time=";
-        Matcher matcher = Pattern.compile(before + ".*" + after).matcher(html);
-        matcher.find();
-        String urlPart = matcher.group();
-        String token = urlPart.replace(before, "").replace(after, "");
+        return Mono.just(parseHtml(html));
+    }
 
-        return Mono.just(token);
+    private void checkVerificationNotPresentOrThrowError(WebDriver driver) {
+        try {
+            // step 1: "Veuillez confirmer votre identité"
+            new WebDriverWait(driver, Duration.ofSeconds(1).toSeconds()).until(presenceOfElementLocated(By.id("checkpointBottomBar")));
+        } catch (TimeoutException e) {
+            return;
+        }
+
+        driver.findElement(By.id("checkpointSubmitButton")).click();
+        // step 2: "Choisissez un contrôle de sécurité"
+        new WebDriverWait(driver, Duration.ofSeconds(5).toSeconds()).until(presenceOfAllElementsLocatedBy(By.className("uiInputLabelInput")));
+        driver.findElements(By.className("uiInputLabelInput")) // <input> not clickable
+                .get(0) // "Approuvez votre connexion sur un autre téléphone ou un autre ordinateur"
+                .click();
+        driver.findElement(By.id("checkpointSubmitButton")).click();
+        // step 3
+        new WebDriverWait(driver, Duration.ofSeconds(5).toSeconds()).until(presenceOfElementLocated(By.id("checkpointFooterButton")));
+        driver.findElement(By.id("checkpointSubmitButton")).click();
+
+        throw new ResponseStatusException(LOCKED, "Unauthorized IP: please accept it on your Facebook account");
+    }
+
+    static String parseHtml(String html) {
+        Document document = Jsoup.parse(html);
+        String script = document.select("html > head > script:first-child").html();
+
+        String redirectUrl = script.replace("window.location.href=\"", "").replaceFirst("\";$", "")
+                .replace("\\/", "/");
+        URI uri = URI.create(redirectUrl);
+
+        List<NameValuePair> fragments = URLEncodedUtils.parse(uri.getFragment(), UTF_8);
+        return fragments.stream()
+                .filter(it -> it.getName().equals("access_token"))
+                .findAny()
+                .orElseThrow()
+                .getValue();
     }
 
 }
