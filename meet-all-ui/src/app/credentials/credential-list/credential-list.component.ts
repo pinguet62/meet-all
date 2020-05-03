@@ -10,12 +10,12 @@ import {CredentialService, RegisteredCredential} from '../credential.service';
     template: `
         <ion-header>
             <ion-toolbar>
-                <ion-title>Credentials</ion-title>
+                <ion-title i18n="@@credentials.title">Credentials</ion-title>
             </ion-toolbar>
         </ion-header>
 
         <ion-content>
-            <ion-refresher slot="fixed" (ionRefresh)="onRefresh($event)" refreshingSpinner="circles" refreshingText="Refreshing...">
+            <ion-refresher slot="fixed" (ionRefresh)="onRefresh($event)" refreshingSpinner="circles" i18n-refreshingText="@@common.refreshing" refreshingText="Refreshing...">
                 <ion-refresher-content></ion-refresher-content>
             </ion-refresher>
             <ion-list>
@@ -28,7 +28,7 @@ import {CredentialService, RegisteredCredential} from '../credential.service';
                         <ion-icon [name]="credential.ok ? 'checkmark' : 'close-circle'"></ion-icon>
                     </ion-item>
                     <ion-item-options>
-                        <ion-item-option color="danger" (click)="onDelete(credential)">Delete</ion-item-option>
+                        <ion-item-option color="danger" (click)="onDelete(credential)" i18n="@@credentials.delete.button">Delete</ion-item-option>
                     </ion-item-options>
                 </ion-item-sliding>
             </ion-list>

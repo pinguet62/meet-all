@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+  <file source-language="en" datatype="plaintext" original="ng2.template">
+    <body>
+      <trans-unit id="conversations.title" datatype="html">
+        <source>Conversations</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/conversations/conversation-list/conversation-list.component.ts</context>
+          <context context-type="linenumber">4</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/tabs/tabs.component.ts</context>
+          <context context-type="linenumber">13</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="common.refreshing" datatype="html">
+        <source>Refreshing...</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/conversations/conversation-list/conversation-list.component.ts</context>
+          <context context-type="linenumber">9</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/credentials/credential-list/credential-list.component.ts</context>
+          <context context-type="linenumber">9</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/proposals/proposals.component.ts</context>
+          <context context-type="linenumber">9</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="conversations.messages" datatype="html">
+        <source>Messages</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/conversations/conversation-list/conversation-list.component.ts</context>
+          <context context-type="linenumber">14</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="conversations.input.placeholder" datatype="html">
+        <source>Message...</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/conversations/conversation-messages/conversation-messages.component.ts</context>
+          <context context-type="linenumber">31</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="credentials.title" datatype="html">
+        <source>Credentials</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/credentials/credential-create/credential-create.component.ts</context>
+          <context context-type="linenumber">7</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/credentials/credential-list/credential-list.component.ts</context>
+          <context context-type="linenumber">4</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="credentials.create.button" datatype="html">
+        <source>
+                        Create
+                        <x id="START_TAG_ION-ICON" ctype="x-ion-icon" equiv-text="&lt;ion-icon&gt;"/><x id="CLOSE_TAG_ION-ICON" ctype="x-ion-icon" equiv-text="&lt;/ion-icon&gt;"/>
+                    </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/credentials/credential-create/credential-create.component.ts</context>
+          <context context-type="linenumber">9</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="common.model.provider" datatype="html">
+        <source>Provider</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/credentials/credential-create/credential-create.component.ts</context>
+          <context context-type="linenumber">20</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="credentials.model.email" datatype="html">
+        <source>Facebook email</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/credentials/credential-create/credential-create.component.ts</context>
+          <context context-type="linenumber">27</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="credentials.model.password" datatype="html">
+        <source>Facebook password</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/credentials/credential-create/credential-create.component.ts</context>
+          <context context-type="linenumber">31</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="credentials.model.label" datatype="html">
+        <source>Label</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/credentials/credential-create/credential-create.component.ts</context>
+          <context context-type="linenumber">36</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="credentials.delete.button" datatype="html">
+        <source>Delete</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/credentials/credential-list/credential-list.component.ts</context>
+          <context context-type="linenumber">22</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="login.title" datatype="html">
+        <source>Login</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/login/login.component.ts</context>
+          <context context-type="linenumber">4</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="login.facebook.button" datatype="html">
+        <source>
+                    <x id="START_TAG_ION-ICON" ctype="x-ion-icon" equiv-text="&lt;ion-icon&gt;"/><x id="CLOSE_TAG_ION-ICON" ctype="x-ion-icon" equiv-text="&lt;/ion-icon&gt;"/>
+                    Continue with Facebook
+                </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/login/login.component.ts</context>
+          <context context-type="linenumber">10</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="proposal.title" datatype="html">
+        <source>Proposals</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/proposals/proposals.component.ts</context>
+          <context context-type="linenumber">4</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/tabs/tabs.component.ts</context>
+          <context context-type="linenumber">8</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="proposal.noData" datatype="html">
+        <source>No proposal for this moment...</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/proposals/proposals.component.ts</context>
+          <context context-type="linenumber">12</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="proposal.model.age" datatype="html">
+        <source>{VAR_PLURAL, plural, =1 {1 year old} other {<x id="INTERPOLATION" equiv-text="{{currentProposal.profile.age}}"/> years old} }</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/proposals/proposals.component.ts</context>
+          <context context-type="linenumber">20</context>
+        </context-group>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

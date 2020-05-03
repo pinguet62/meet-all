@@ -37,7 +37,8 @@ import {ConversationsService, Message, Profile} from '../conversations.service';
 
         <ion-footer>
             <ion-item>
-                <ion-input [(ngModel)]="text" type="text" [disabled]="sendingMessage" required placeholder="Message..."></ion-input>
+                <ion-input [(ngModel)]="text" type="text" [disabled]="sendingMessage" required i18n-placeholder="@@conversations.input.placeholder"
+                           placeholder="Message..."></ion-input>
                 <ion-button [disabled]="text === ''" (click)="sendMessage()">
                     <ion-icon *ngIf="!sendingMessage" name="send"></ion-icon>
                     <ion-spinner *ngIf="sendingMessage"></ion-spinner>
@@ -45,22 +46,20 @@ import {ConversationsService, Message, Profile} from '../conversations.service';
             </ion-item>
         </ion-footer>
     `,
-    styles: [
-            `
-            .message {
-                max-width: 75%;
-                white-space: pre-wrap;
-            }
+    styles: [`
+        .message {
+            max-width: 75%;
+            white-space: pre-wrap;
+        }
 
-            .sent {
-                background-color: rgb(0, 162, 216)
-            }
+        .sent {
+            background-color: rgb(0, 162, 216)
+        }
 
-            .received {
-                background-color: rgb(225, 225, 225);
-            }
-        `
-    ]
+        .received {
+            background-color: rgb(225, 225, 225);
+        }
+    `]
 })
 export class ConversationMessagesComponent {
 

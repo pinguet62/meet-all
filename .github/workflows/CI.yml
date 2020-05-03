@@ -48,7 +48,7 @@ jobs:
           CI: true
         run: npm run e2e
       - working-directory: ./meet-all-ui
-        run: npm run build -- --prod
+        run: npm run build
       - working-directory: ./meet-all-ui
         run: docker build . -t pinguet62/meet-all-ui
       - if: github.ref == 'refs/heads/master'

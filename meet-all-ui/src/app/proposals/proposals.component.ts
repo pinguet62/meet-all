@@ -6,18 +6,19 @@ import {processLoading} from '../loading-controller.utils';
 import {Proposal, ProposalsService} from './proposals.service';
 
 @Component({
+    selector: 'app-proposals',
     template: `
         <ion-header>
             <ion-toolbar>
-                <ion-title>Proposals</ion-title>
+                <ion-title i18n="@@proposal.title">Proposals</ion-title>
             </ion-toolbar>
         </ion-header>
 
         <ion-content *ngIf="proposals != null && proposals.length === 0">
-            <ion-refresher slot="fixed" (ionRefresh)="onRefresh($event)" refreshingSpinner="circles" refreshingText="Refreshing...">
+            <ion-refresher slot="fixed" (ionRefresh)="onRefresh($event)" refreshingSpinner="circles" i18n-refreshingText="@@common.refreshing" refreshingText="Refreshing...">
                 <ion-refresher-content></ion-refresher-content>
             </ion-refresher>
-            <h1>No proposal for this moment...</h1>
+            <h1 i18n="@@proposal.noData">No proposal for this moment...</h1>
         </ion-content>
 
         <ion-content *ngIf="proposals != null && proposals.length !== 0">
@@ -25,7 +26,7 @@ import {Proposal, ProposalsService} from './proposals.service';
                 <ion-img [appProxifiedSrc]="currentProposal.profile.avatars[0]" style="height: 100%;"></ion-img>
                 <ion-card-header>
                     <ion-card-title>{{currentProposal.profile.name}}</ion-card-title>
-                    <ion-card-subtitle>{{currentProposal.profile.age}} ans</ion-card-subtitle>
+                    <ion-card-subtitle i18n="@@proposal.model.age">{currentProposal.profile.age, plural, =1 {1 year old} other {{{currentProposal.profile.age}} years old}}</ion-card-subtitle>
                 </ion-card-header>
             </ion-card>
 

@@ -9,13 +9,15 @@
     "test": "ng test  --code-coverage=true",
     "e2e": "ng e2e",
     "start": "ng serve --ssl true",
-    "build": "ng build"
+    "xi18n": "ng xi18n --out-file src/locale/messages.xlf && ng xi18n --out-file src/locale/messages.fr.xlf --i18n-locale fr",
+    "build": "ng build --prod"
   },
   "private": false,
   "dependencies": {
     "@angular/common": "~8.2.14",
     "@angular/core": "~8.2.14",
     "@angular/forms": "~8.2.14",
+    "@angular/localize": "^9.1.6",
     "@angular/platform-browser": "~8.2.14",
     "@angular/platform-browser-dynamic": "~8.2.14",
     "@angular/pwa": "^0.901.0",

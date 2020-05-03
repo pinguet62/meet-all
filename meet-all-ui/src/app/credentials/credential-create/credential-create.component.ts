@@ -12,9 +12,9 @@ import {CredentialService, Provider} from '../credential.service';
                 <ion-buttons slot="start">
                     <ion-back-button></ion-back-button>
                 </ion-buttons>
-                <ion-title>Credentials</ion-title>
+                <ion-title i18n="@@credentials.title">Credentials</ion-title>
                 <ion-buttons slot="primary">
-                    <ion-button (click)="onCreate()" [disabled]="!form.valid">
+                    <ion-button (click)="onCreate()" [disabled]="!form.valid" i18n="@@credentials.create.button">
                         Create
                         <ion-icon name="checkmark"></ion-icon>
                     </ion-button>
@@ -25,23 +25,23 @@ import {CredentialService, Provider} from '../credential.service';
         <ion-content>
             <form #form="ngForm">
                 <ion-item>
-                    <ion-label>Provider</ion-label>
+                    <ion-label i18n="@@common.model.provider">Provider</ion-label>
                     <ion-select [(ngModel)]="provider" name="provider" required placeholder="Select one">
                         <ion-select-option *ngFor="let provider of providers" [value]="provider">{{provider}}</ion-select-option>
                     </ion-select>
                 </ion-item>
 
                 <ion-item>
-                    <ion-label>Facebook email</ion-label>
+                    <ion-label i18n="@@credentials.model.email">Facebook email</ion-label>
                     <ion-input type="text" [(ngModel)]="facebookEmail" name="facebookEmail" clearInput required></ion-input>
                 </ion-item>
                 <ion-item>
-                    <ion-label>Facebook password</ion-label>
+                    <ion-label i18n="@@credentials.model.password">Facebook password</ion-label>
                     <ion-input type="password" [(ngModel)]="facebookPassword" name="facebookPassword" clearInput required></ion-input>
                 </ion-item>
 
                 <ion-item>
-                    <ion-label>Label</ion-label>
+                    <ion-label i18n="@@credentials.model.label">Label</ion-label>
                     <ion-input type="text" [(ngModel)]="label" name="label" clearInput required></ion-input>
                 </ion-item>
             </form>

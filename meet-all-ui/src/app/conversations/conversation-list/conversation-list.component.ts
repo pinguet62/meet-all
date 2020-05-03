@@ -10,17 +10,17 @@ import {Conversation, ConversationsService} from '../conversations.service';
     template: `
         <ion-header>
             <ion-toolbar>
-                <ion-title>Conversations</ion-title>
+                <ion-title i18n="@@conversations.title">Conversations</ion-title>
             </ion-toolbar>
         </ion-header>
 
         <ion-content>
-            <ion-refresher slot="fixed" (ionRefresh)="onRefresh($event)" refreshingSpinner="circles" refreshingText="Refreshing...">
+            <ion-refresher slot="fixed" (ionRefresh)="onRefresh($event)" refreshingSpinner="circles" i18n-refreshingText="@@common.refreshing" refreshingText="Refreshing...">
                 <ion-refresher-content></ion-refresher-content>
             </ion-refresher>
             <ion-list>
                 <ion-list-header>
-                    <ion-label>Messages</ion-label>
+                    <ion-label i18n="@@conversations.messages">Messages</ion-label>
                 </ion-list-header>
                 <ion-item *ngFor="let conversation of conversations"
                           [routerLink]="['/tabs/conversations/', conversation.id, conversation.profile.id]">
