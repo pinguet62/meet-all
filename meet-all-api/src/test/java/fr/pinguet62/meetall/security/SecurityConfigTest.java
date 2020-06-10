@@ -6,9 +6,13 @@ import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springdoc.core.SpringDocConfigProperties;
+import org.springdoc.core.SpringDocConfiguration;
+import org.springdoc.core.SwaggerUiConfigProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -33,6 +37,8 @@ import static org.springframework.http.HttpStatus.UNAUTHORIZED;
         properties = {
                 // "spring.security.oauth2.resourceserver.jwt.key-value = ",
         })
+// spring.factories: org.springframework.boot.autoconfigure.EnableAutoConfiguration
+@Import({SpringDocConfiguration.class, SpringDocConfigProperties.class, SwaggerUiConfigProperties.class})
 @AutoConfigureWebTestClient
 public class SecurityConfigTest {
 
@@ -72,7 +78,7 @@ public class SecurityConfigTest {
         final String jwtToken = null;
 
         webTestClient.get().uri("/userId")
-                //.header(AUTHORIZATION, null)
+                //.header(AUTHORIZATION, "Bearer " + jwtToken)
                 .exchange()
                 .expectStatus().isUnauthorized();
     }

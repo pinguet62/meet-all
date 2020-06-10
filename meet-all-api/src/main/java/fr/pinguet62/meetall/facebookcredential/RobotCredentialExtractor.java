@@ -1,8 +1,8 @@
 package fr.pinguet62.meetall.facebookcredential;
 
 import io.github.bonigarcia.wdm.WebDriverManager;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.utils.URLEncodedUtils;
+import org.apache.hc.core5.http.NameValuePair;
+import org.apache.hc.core5.net.URLEncodedUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.openqa.selenium.By;
@@ -50,7 +50,7 @@ public class RobotCredentialExtractor {
                 .toUriString();
 
         // chromedriver config
-        WebDriverManager.chromedriver().version("80.0.3987.106").setup(); // System.setProperty("webdriver.chrome.driver", "...");
+        WebDriverManager.chromedriver().driverVersion("83.0.4103.14").setup(); // System.setProperty("webdriver.chrome.driver", "...");
         // Driver configuration
         ChromeOptions options = new ChromeOptions();
         options.addArguments("--headless");
