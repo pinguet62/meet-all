@@ -9,18 +9,20 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.util.UriComponentsBuilder;
-import reactor.core.publisher.Mono;
 
 import java.net.URI;
 import java.time.Duration;
 import java.util.List;
 
+import static com.google.common.collect.Iterators.getLast;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfAllElementsLocatedBy;
 import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElementLocated;
@@ -29,20 +31,32 @@ import static org.springframework.http.HttpStatus.LOCKED;
 @Component
 public class RobotCredentialExtractor {
 
-    public Mono<String> getHappnFacebookToken(String email, String password) {
+    private final String oauthServerUrl;
+
+    @Autowired
+    public RobotCredentialExtractor() {
+        this("https://www.facebook.com");
+    }
+
+    RobotCredentialExtractor(String oauthServerUrl) {
+        this.oauthServerUrl = oauthServerUrl;
+    }
+
+    public String getHappnFacebookToken(String email, String password) {
         return process(247294518656661L, List.of("email", "user_birthday", "user_photos", "user_friends", "public_profile", "user_likes"), email, password);
     }
 
-    public Mono<String> getOnceFacebookToken(String email, String password) {
+    public String getOnceFacebookToken(String email, String password) {
         return process(629771890475899L, List.of("email", "user_birthday", "user_photos"), email, password);
     }
 
-    public Mono<String> getTinderFacebookToken(String email, String password) {
+    public String getTinderFacebookToken(String email, String password) {
         return process(464891386855067L, List.of("email", "user_birthday", "user_photos", "user_education_history", "user_relationship_details", "user_friends", "user_work_history", "user_likes"), email, password);
     }
 
-    private Mono<String> process(long clientId, List<String> scopes, String email, String password) {
-        String facebookOauthUrl = UriComponentsBuilder.fromUriString("https://www.facebook.com/dialog/oauth")
+    private String process(long clientId, List<String> scopes, String email, String password) {
+        String facebookOauthUrl = UriComponentsBuilder.fromUriString(oauthServerUrl)
+                .path("/dialog/oauth")
                 .queryParam("client_id", clientId)
                 .queryParam("response_type", "token")
                 .queryParam("redirect_uri", "fb" + clientId + "://authorize/")
@@ -64,10 +78,12 @@ public class RobotCredentialExtractor {
             driver.findElement(By.id("pass")).sendKeys(password);
             driver.findElement(By.cssSelector("[type=submit]")).click();
 
-            checkVerificationNotPresentOrThrowError(driver);
+            verifyVerificationAbsentOrProcessAndThrowError(driver);
 
             // Authorization page
-            driver.findElement(By.id("platformDialogForm")).findElement(By.name("__CONFIRM__")).click();
+            List<WebElement> forms = driver.findElements(By.id("platformDialogForm"));
+            forms.get(forms.size() - 1)
+                    .findElement(By.name("__CONFIRM__")).click();
         } catch (WebDriverException e) {
             throw new PageSourceWebDriverException(driver.getPageSource(), e);
         }
@@ -75,10 +91,10 @@ public class RobotCredentialExtractor {
         // Authorized page
         String html = driver.getPageSource();
 
-        return Mono.just(parseHtml(html));
+        return parseHtml(html);
     }
 
-    private void checkVerificationNotPresentOrThrowError(WebDriver driver) {
+    private void verifyVerificationAbsentOrProcessAndThrowError(WebDriver driver) {
         try {
             // step 1: "Veuillez confirmer votre identité"
             new WebDriverWait(driver, Duration.ofSeconds(1).toSeconds()).until(presenceOfElementLocated(By.id("checkpointBottomBar")));

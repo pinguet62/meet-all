@@ -18,19 +18,19 @@ public class RobotCredentialExtractorITTest {
     @Ignore("TODO IT-test")
     @Test
     public void test_getHappnFacebookToken() {
-        assertThat(robotCredentialExtractor.getHappnFacebookToken(EMAIL, PASSWORD).block(), is(notNullValue()));
+        assertThat(robotCredentialExtractor.getHappnFacebookToken(EMAIL, PASSWORD), is(notNullValue()));
     }
 
     @Ignore("TODO IT-test")
     @Test
     public void test_getOnceFacebookToken() {
-        assertThat(robotCredentialExtractor.getOnceFacebookToken(EMAIL, PASSWORD).block(), is(notNullValue()));
+        assertThat(robotCredentialExtractor.getOnceFacebookToken(EMAIL, PASSWORD), is(notNullValue()));
     }
 
     @Ignore("TODO IT-test")
     @Test
     public void test_getTinderFacebookToken() {
-        assertThat(robotCredentialExtractor.getTinderFacebookToken(EMAIL, PASSWORD).block(), is(notNullValue()));
+        assertThat(robotCredentialExtractor.getTinderFacebookToken(EMAIL, PASSWORD), is(notNullValue()));
     }
 
     @Test

@@ -30,13 +30,13 @@ public class FacebookCredentialService {
 
     public Mono<RegisteredCredentialDto> register(String userId, Provider provider, String email, String password, String label) {
         return switch (provider) {
-            case HAPPN -> robotCredentialExtractor.getHappnFacebookToken(email, password)
+            case HAPPN -> Mono.just(robotCredentialExtractor.getHappnFacebookToken(email, password))
                     .flatMap(happnProviderService::loginWithFacebook)
                     .flatMap(credential -> credentialService.registerCredential(userId, provider, credential, label));
-            case ONCE -> robotCredentialExtractor.getOnceFacebookToken(email, password)
+            case ONCE -> Mono.just(robotCredentialExtractor.getOnceFacebookToken(email, password))
                     .flatMap(onceProviderService::loginWithFacebook)
                     .flatMap(credential -> credentialService.registerCredential(userId, provider, credential, label));
-            case TINDER -> robotCredentialExtractor.getTinderFacebookToken(email, password)
+            case TINDER -> Mono.just(robotCredentialExtractor.getTinderFacebookToken(email, password))
                     .flatMap(tinderProviderService::loginWithFacebook)
                     .flatMap(credential -> credentialService.registerCredential(userId, provider, credential, label));
             default -> throw new NoProviderFoundException("Unexpected value: " + provider);
