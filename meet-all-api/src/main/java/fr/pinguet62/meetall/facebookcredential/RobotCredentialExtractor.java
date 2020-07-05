@@ -15,18 +15,15 @@ import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
 import java.time.Duration;
 import java.util.List;
 
-import static com.google.common.collect.Iterators.getLast;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfAllElementsLocatedBy;
 import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElementLocated;
-import static org.springframework.http.HttpStatus.LOCKED;
 
 @Component
 public class RobotCredentialExtractor {
@@ -113,7 +110,7 @@ public class RobotCredentialExtractor {
         new WebDriverWait(driver, Duration.ofSeconds(5).toSeconds()).until(presenceOfElementLocated(By.id("checkpointFooterButton")));
         driver.findElement(By.id("checkpointSubmitButton")).click();
 
-        throw new ResponseStatusException(LOCKED, "Unauthorized IP: please accept it on your Facebook account");
+        throw new FacebookAccountLockedException();
     }
 
     static String parseHtml(String html) {

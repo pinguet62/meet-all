@@ -11,6 +11,8 @@ spring:
           key-value: pXjg7MSyU2biZtVj52K4lJPT9eXe4fmejgVUYfaFJPI=
 server:
   port: ${PORT:8080} # Heroku dynamic port
+  error:
+    include-message: always
 
 management:
   endpoint:

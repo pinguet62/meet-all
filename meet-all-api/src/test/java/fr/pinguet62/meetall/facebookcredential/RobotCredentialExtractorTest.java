@@ -8,7 +8,6 @@ import org.apache.commons.io.IOUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
@@ -92,7 +91,7 @@ public class RobotCredentialExtractorTest {
                                 .withBody(getHtml("verification/step3 - checkpoint.html")))
                         .willSetStateTo("step4"));
 
-        assertThrows(ResponseStatusException.class, () -> robotCredentialExtractor.getTinderFacebookToken("test@pinguet62.fr", "AzErTy"));
+        assertThrows(FacebookAccountLockedException.class, () -> robotCredentialExtractor.getTinderFacebookToken("test@pinguet62.fr", "AzErTy"));
     }
 
     private String getHtml(String filename) {
