@@ -1,4 +1,4 @@
-import {Type} from '@angular/core';
+import {Injectable, Type} from '@angular/core';
 import {LoadingController} from '@ionic/angular';
 import {LoadingOptions} from '@ionic/core';
 
@@ -15,6 +15,14 @@ function createHTMLIonLoadingElement(): HTMLIonLoadingElement {
     } as any as HTMLIonLoadingElement;
 }
 
+export function createHTMLIonToastElement(): HTMLIonToastElement {
+    return {
+        present: () => Promise.resolve(),
+        dismiss: () => Promise.resolve(),
+    } as any as HTMLIonToastElement;
+}
+
+@Injectable()
 export class LoadingControllerFake extends LoadingController {
 
     create(opts?: LoadingOptions): Promise<HTMLIonLoadingElement> {

@@ -1,8 +1,11 @@
+import {HttpErrorResponse} from '@angular/common/http';
 import {Component} from '@angular/core';
-import {LoadingController, NavController} from '@ionic/angular';
-import {tap} from 'rxjs/operators';
+import {LoadingController, NavController, ToastController} from '@ionic/angular';
+import {from, throwError} from 'rxjs';
+import {catchError, flatMap, map, tap} from 'rxjs/operators';
 import {processLoading} from '../../loading-controller.utils';
 import {CredentialService, Provider} from '../credential.service';
+import {ApiError, noOp} from '../../utils';
 
 @Component({
     selector: 'app-credential-create',
@@ -60,15 +63,27 @@ export class CredentialCreateComponent {
     constructor(
         private loadingController: LoadingController,
         private navController: NavController,
-        private service: CredentialService,
+        private toastController: ToastController,
+        private credentialService: CredentialService,
     ) {
     }
 
     onCreate() {
         processLoading(this.loadingController,
-            this.service.registerFacebookCredential(this.provider, this.facebookEmail, this.facebookPassword, this.label)
-                .pipe(tap(() => this.navController.back()))
-        ).subscribe();
+            this.credentialService.registerFacebookCredential(this.provider, this.facebookEmail, this.facebookPassword, this.label).pipe(
+                tap(() => this.navController.back()),
+                catchError((error: HttpErrorResponse) =>
+                    from(this.toastController.create({
+                        color: 'danger',
+                        message: (error.error as ApiError).message,
+                        buttons: [
+                            {text: 'Ok', role: 'cancel'}
+                        ],
+                        position: 'bottom'
+                    })).pipe(
+                        map((toast: HTMLIonToastElement) => toast.present()),
+                        flatMap(() => throwError(error))))))
+            .subscribe(noOp, noOp);
     }
 
 }

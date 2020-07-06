@@ -9,7 +9,6 @@ import {ConversationMessagesComponent} from './conversation-messages.component';
 import {ConversationsService, Message, Profile} from '../conversations.service';
 
 xdescribe('conversation-messages.page', () => {
-    // service dependencies
     let activatedRoute: ActivatedRoute;
     let conversationsService: jasmine.SpyObj<ConversationsService>;
     beforeEach(() => {
@@ -24,7 +23,6 @@ xdescribe('conversation-messages.page', () => {
         conversationsService = jasmine.createSpyObj<ConversationsService>(ConversationsService.name, allMethodNames(ConversationsService));
     });
 
-    // build component
     beforeEach(async(() => {
         TestBed.configureTestingModule({
             declarations: [ConversationMessagesComponent],
