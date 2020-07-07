@@ -14,6 +14,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import static fr.pinguet62.meetall.facebookcredential.FacebookCredentialControllerTest.currentUserId;
@@ -21,6 +22,7 @@ import static fr.pinguet62.meetall.provider.Provider.TINDER;
 import static org.hamcrest.Matchers.containsString;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
+import static org.springframework.http.HttpHeaders.ACCEPT_LANGUAGE;
 import static org.springframework.http.HttpStatus.LOCKED;
 import static org.springframework.security.test.web.reactive.server.SecurityMockServerConfigurers.csrf;
 import static org.springframework.web.reactive.function.BodyInserters.fromMultipartData;
@@ -42,7 +44,7 @@ public class FacebookCredentialControllerTest {
     private FacebookCredentialService facebookCredentialService;
 
     /**
-     * @see FacebookCredentialController#register(Provider, String, String, String)
+     * @see FacebookCredentialController#register(Locale, Provider, String, String, String)
      */
     @Test
     public void register_success() {
@@ -74,7 +76,7 @@ public class FacebookCredentialControllerTest {
     }
 
     /**
-     * @see FacebookCredentialController#register(Provider, String, String, String)
+     * @see FacebookCredentialController#register(Locale, Provider, String, String, String)
      */
     @Test
     public void register_FacebookAccountLockedException() {
@@ -84,6 +86,7 @@ public class FacebookCredentialControllerTest {
         webTestClient.mutateWith(csrf())
                 .post()
                 .uri("/credential/facebook")
+                .header(ACCEPT_LANGUAGE, "fr")
                 .body(fromMultipartData(new LinkedMultiValueMap<>(Map.of(
                         "provider", List.of(TINDER),
                         "email", List.of("example@test.org"),
@@ -91,6 +94,6 @@ public class FacebookCredentialControllerTest {
                         "label", List.of("Sample")))))
                 .exchange()
                 .expectStatus().isEqualTo(LOCKED)
-                .expectBody().jsonPath("$.message").value(containsString("Facebook locked your account"));
+                .expectBody().jsonPath("$.message").value(containsString("Facebook a bloqué"));
     }
 }

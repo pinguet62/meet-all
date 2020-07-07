@@ -4,6 +4,8 @@ spring:
   data:
     mongodb:
       uri: ${MONGODB_URI:}
+  messages:
+    fallback-to-system-locale: false # use un-suffixed file
   security:
     oauth2:
       resourceserver:
