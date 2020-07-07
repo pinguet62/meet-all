@@ -5,8 +5,8 @@ import org.junit.Test;
 import java.util.List;
 
 import static fr.pinguet62.meetall.provider.happn.GraphQLUtils.parseGraph;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
 
 public class GraphQLUtilsTest {
 

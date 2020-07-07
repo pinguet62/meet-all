@@ -21,8 +21,8 @@ import java.net.URL;
 import static fr.pinguet62.meetall.MatcherUtils.takingRequest;
 import static fr.pinguet62.meetall.MatcherUtils.url;
 import static fr.pinguet62.meetall.MatcherUtils.with;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
 import static org.springframework.http.HttpStatus.ACCEPTED;
 
 @RunWith(SpringRunner.class)

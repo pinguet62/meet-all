@@ -27,10 +27,10 @@ import static java.time.Duration.ofNanos;
 import static java.time.Duration.ofSeconds;
 import static java.time.ZoneOffset.UTC;
 import static java.util.Collections.emptyList;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 

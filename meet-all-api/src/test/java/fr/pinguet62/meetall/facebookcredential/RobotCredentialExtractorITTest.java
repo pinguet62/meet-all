@@ -4,9 +4,9 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import static fr.pinguet62.meetall.facebookcredential.RobotCredentialExtractor.parseHtml;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
-import static org.junit.Assert.assertThat;
 
 public class RobotCredentialExtractorITTest {
 

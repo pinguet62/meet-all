@@ -17,11 +17,12 @@ describe('utils', () => {
             new Observable(sourceNext)
                 .pipe(finalize(action))
                 .subscribe(next => {
-                    expect(next).toEqual('source');
-                    expect(observerNext).toHaveBeenCalled();
-                    expect(callOrder).toEqual(['source', 'finalize']);
-                    done();
-                });
+                        expect(next).toEqual('source');
+                        expect(observerNext).toHaveBeenCalled();
+                        expect(callOrder).toEqual(['source', 'finalize']);
+                        done();
+                    },
+                    error => done.fail(error));
         });
 
         it('error: should execute action and throw original error', done => {

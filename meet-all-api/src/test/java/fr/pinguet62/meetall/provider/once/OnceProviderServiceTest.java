@@ -24,6 +24,7 @@ import static fr.pinguet62.meetall.MatcherUtils.with;
 import static fr.pinguet62.meetall.TestUtils.readResource;
 import static fr.pinguet62.meetall.provider.once.OnceClient.HEADER;
 import static java.time.ZoneOffset.UTC;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.containsString;
@@ -31,7 +32,6 @@ import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
-import static org.junit.Assert.assertThat;
 import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 

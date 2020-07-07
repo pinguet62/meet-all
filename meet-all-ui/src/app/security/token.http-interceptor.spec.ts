@@ -27,11 +27,12 @@ describe('token.http-interceptor', () => {
         const result = httpInterceptor.intercept(req, next);
 
         result.subscribe(it => {
-            expect(router.navigate).not.toHaveBeenCalled();
-            expect(securityService.token).not.toBeNull();
-            expect(it).toBe(event);
-            done();
-        });
+                expect(router.navigate).not.toHaveBeenCalled();
+                expect(securityService.token).not.toBeNull();
+                expect(it).toBe(event);
+                done();
+            },
+            error => done.fail(error));
     });
 
     it('When error: clean token + redirect to login page', done => {
