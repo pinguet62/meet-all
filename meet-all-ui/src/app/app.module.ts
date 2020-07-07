@@ -8,6 +8,7 @@ import {StatusBar} from '@ionic-native/status-bar/ngx';
 import {environment} from '../environments/environment';
 import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
+import {I18nModule} from './i18n';
 import {SecurityModule} from './security';
 
 @NgModule({
@@ -19,6 +20,7 @@ import {SecurityModule} from './security';
         // app
         ServiceWorkerModule.register('ngsw-worker.js', {enabled: environment.production}),
         AppRoutingModule,
+        I18nModule,
         SecurityModule.forRoot(),
     ],
     providers: [
