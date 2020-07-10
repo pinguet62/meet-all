@@ -6,6 +6,7 @@ import {SecurityGuard} from './security';
     imports: [
         RouterModule.forRoot([
             {path: 'login', loadChildren: './login/login.module#LoginModule'},
+            {path: 'profile/:profileId', loadChildren: './profile/profile.module#ProfileModule'},
             {path: '', loadChildren: './tabs/tabs.module#TabsPageModule', canActivate: [SecurityGuard]},
             {path: 'tabs/conversations/:conversationId/:profileId', loadChildren: './conversations/conversation-messages/conversation-messages.module#ConversationMessagesModule'},
             {path: 'tabs/credentials/create', loadChildren: './credentials/credential-create/credential-create.module#CredentialCreateModule'},

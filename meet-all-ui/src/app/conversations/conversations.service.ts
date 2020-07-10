@@ -3,6 +3,7 @@ import {Injectable} from '@angular/core';
 import {Observable} from 'rxjs';
 import {environment} from '../../environments/environment';
 
+// TODO move to shared module
 export interface Profile {
     id: string;
     name: string;
@@ -45,6 +46,7 @@ export class ConversationsService {
             text);
     }
 
+    // TODO move to shared module
     public getProfile(profileId: string): Observable<Profile> {
         return this.http.get<Profile>(environment.apiUrl + `/profile/${encodeURIComponent(profileId)}`);
     }

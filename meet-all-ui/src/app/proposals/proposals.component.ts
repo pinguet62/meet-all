@@ -23,10 +23,10 @@ import {Proposal, ProposalsService} from './proposals.service';
 
         <ion-content *ngIf="proposals != null && proposals.length !== 0">
             <ion-card>
-                <ion-img [appProxifiedSrc]="currentProposal.profile.avatars[0]" style="height: 100%;"></ion-img>
+                <ion-img [appProxifiedSrc]="currentProposal.profile.avatars[0]" [routerLink]="['/profile/', currentProposal.profile.id]" style="height: 100%;"></ion-img>
                 <ion-card-header>
                     <ion-card-title>{{currentProposal.profile.name}}</ion-card-title>
-                    <ion-card-subtitle i18n="@@proposal.model.age">{currentProposal.profile.age, plural, =1 {1 year old} other {{{currentProposal.profile.age}} years old}}</ion-card-subtitle>
+                    <ion-card-subtitle i18n="@@profile.model.age">{currentProposal.profile.age, plural, =1 {1 year old} other {{{currentProposal.profile.age}} years old}}</ion-card-subtitle>
                 </ion-card-header>
             </ion-card>
 

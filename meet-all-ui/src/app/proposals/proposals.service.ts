@@ -3,6 +3,7 @@ import {Injectable} from '@angular/core';
 import {Observable} from 'rxjs';
 import {environment} from '../../environments/environment';
 
+// TODO move to shared module
 export interface Profile {
     id: string;
     name: string;
