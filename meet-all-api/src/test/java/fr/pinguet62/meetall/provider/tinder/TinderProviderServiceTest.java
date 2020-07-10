@@ -15,6 +15,8 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import java.io.IOException;
 import java.net.URL;
+import java.time.Clock;
+import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.List;
@@ -26,6 +28,7 @@ import static fr.pinguet62.meetall.MatcherUtils.url;
 import static fr.pinguet62.meetall.MatcherUtils.with;
 import static fr.pinguet62.meetall.TestUtils.readResource;
 import static fr.pinguet62.meetall.provider.tinder.TinderClient.HEADER;
+import static java.time.ZoneOffset.ofHoursMinutes;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.containsString;
@@ -38,16 +41,18 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 public class TinderProviderServiceTest {
 
-    private final String facebookToken = "facebookToken";
     private final String authToken = "authToken";
 
     private MockWebServer server;
+    private final Clock clock = Clock.fixed(
+            OffsetDateTime.of(2020, 7, 10, 21, 52, 43, 0, ofHoursMinutes(1, 30)).toInstant(),
+            ofHoursMinutes(1, 30));
     private TinderProviderService tinderProvider;
 
     @Before
     public void startServer() {
         server = new MockWebServer();
-        tinderProvider = new TinderProviderService(new TinderClient(WebClient.builder(), server.url("/").toString()));
+        tinderProvider = new TinderProviderService(clock, new TinderClient(WebClient.builder(), server.url("/").toString()));
     }
 
     @After
@@ -61,7 +66,7 @@ public class TinderProviderServiceTest {
                 .setHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
                 .setBody(readResource("/fr/pinguet62/meetall/provider/tinder/auth_login_facebook.json")));
 
-        String authToken = tinderProvider.loginWithFacebook(facebookToken).block();
+        String authToken = tinderProvider.loginWithFacebook("EAAGm0PX4Z").block();
 
         assertThat(authToken, is("7689631f-c20b-406d-925c-ff0c89fdca3d"));
     }

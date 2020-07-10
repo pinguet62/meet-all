@@ -27,6 +27,8 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.time.Clock;
+
 import static fr.pinguet62.meetall.provider.Provider.TINDER;
 import static fr.pinguet62.meetall.provider.tinder.TinderConverters.convert;
 import static reactor.core.publisher.Mono.empty;
@@ -54,6 +56,7 @@ import static reactor.core.publisher.Mono.empty;
 @Component
 public class TinderProviderService implements ProviderService {
 
+    private final Clock clock;
     private final TinderClient client;
 
     @Override
@@ -82,7 +85,7 @@ public class TinderProviderService implements ProviderService {
                         client.getRecommendations(authToken)
                                 .map(TinderGetRecommendationsResponseDto::getData)
                                 .flatMapIterable(TinderGetRecommendationsDataResponseDto::getResults)
-                                .map(TinderConverters::convert)
+                                .map(it -> TinderConverters.convert(it, clock))
                                 .take(limit));
     }
 
@@ -110,7 +113,7 @@ public class TinderProviderService implements ProviderService {
                         client.getMatches(authToken)
                                 .map(TinderGetConversationResponseDto::getData)
                                 .flatMapIterable(TinderGetConversationDataResponseDto::getMatches)
-                                .map(tinderMessageDto -> convert(tinderMessageDto, me.getId())));
+                                .map(tinderMessageDto -> convert(tinderMessageDto, me.getId(), clock)));
     }
 
     @Override
@@ -135,7 +138,7 @@ public class TinderProviderService implements ProviderService {
         return client.getUser(authToken, userId)
                 .onErrorMap(Unauthorized.class, ExpiredTokenException::new)
                 .map(TinderGetUserResponseDto::getResults)
-                .map(TinderConverters::convert);
+                .map(it -> TinderConverters.convert(it, clock));
     }
 
     private Mono<TinderUserDto> getMetaUser(String authToken) {

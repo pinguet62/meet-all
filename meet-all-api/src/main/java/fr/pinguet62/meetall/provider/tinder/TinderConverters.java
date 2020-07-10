@@ -12,6 +12,7 @@ import fr.pinguet62.meetall.provider.tinder.dto.TinderPhotoDto;
 import fr.pinguet62.meetall.provider.tinder.dto.TinderSendMessageResponseDto;
 import fr.pinguet62.meetall.provider.tinder.dto.TinderUserDto;
 
+import java.time.Clock;
 import java.time.temporal.ChronoUnit;
 
 import static java.time.ZonedDateTime.now;
@@ -19,28 +20,28 @@ import static java.util.stream.Collectors.toList;
 
 class TinderConverters {
 
-    public static ProposalDto convert(TinderRecommendationDto input) {
+    public static ProposalDto convert(TinderRecommendationDto input, Clock clock) {
         return new ProposalDto(
                 input.getUser().getId(),
-                convert(input.getUser()));
+                convert(input.getUser(), clock));
     }
 
     public static boolean convert(TinderLikeResponseDto input) {
         return !(input.getMatch() instanceof Boolean);
     }
 
-    public static ProfileDto convert(TinderUserDto input) {
+    public static ProfileDto convert(TinderUserDto input, Clock clock) {
         return new ProfileDto(
                 input.getId(),
                 input.getName(),
-                (int) ChronoUnit.YEARS.between(input.getBirth_date(), now()),
+                (int) ChronoUnit.YEARS.between(input.getBirth_date(), now(clock)),
                 input.getPhotos().stream().map(TinderPhotoDto::getUrl).collect(toList()));
     }
 
-    public static ConversationDto convert(TinderMatchDto input, String currentUserId) {
+    public static ConversationDto convert(TinderMatchDto input, String currentUserId, Clock clock) {
         return new ConversationDto(
                 input.getId(),
-                convert(input.getPerson()),
+                convert(input.getPerson(), clock),
                 input.getLastActivityDate(),
                 input.getMessages().isEmpty() ? null : convert(input.getMessages().get(0), currentUserId));
     }
