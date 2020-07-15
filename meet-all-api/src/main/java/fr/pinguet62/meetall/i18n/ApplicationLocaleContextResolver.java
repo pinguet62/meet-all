@@ -8,6 +8,7 @@ class ApplicationLocaleContextResolver extends AcceptHeaderLocaleContextResolver
 
     public ApplicationLocaleContextResolver() {
         setDefaultLocale(DEFAULT_LOCALE);
+        setSupportedLocales(LocaleUtils.getSupportedLocales());
     }
 
 }
