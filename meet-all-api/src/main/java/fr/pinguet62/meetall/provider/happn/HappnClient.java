@@ -6,7 +6,6 @@ import fr.pinguet62.meetall.provider.happn.dto.HappnMessageDto;
 import fr.pinguet62.meetall.provider.happn.dto.HappnMessagesResponseDto;
 import fr.pinguet62.meetall.provider.happn.dto.HappnNotificationDto;
 import fr.pinguet62.meetall.provider.happn.dto.HappnNotificationsResponseDto;
-import fr.pinguet62.meetall.provider.happn.dto.HappnOauthRequestDto;
 import fr.pinguet62.meetall.provider.happn.dto.HappnOauthResponseDto;
 import fr.pinguet62.meetall.provider.happn.dto.HappnOptionsDto;
 import fr.pinguet62.meetall.provider.happn.dto.HappnSendMessageRequestDto;
@@ -16,11 +15,17 @@ import fr.pinguet62.meetall.provider.happn.dto.HappnUserDto;
 import fr.pinguet62.meetall.provider.happn.dto.HappnUserResponseDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
+import java.util.List;
+import java.util.Map;
+
 import static fr.pinguet62.meetall.provider.happn.GraphQLUtils.parseGraph;
+import static java.util.Map.entry;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
+import static org.springframework.web.reactive.function.BodyInserters.fromFormData;
 import static org.springframework.web.reactive.function.BodyInserters.fromValue;
 
 @Component
@@ -53,13 +58,15 @@ class HappnClient {
                 .uri(uriBuilder -> uriBuilder
                         .path("/connect/oauth/token")
                         .build())
-                .body(fromValue(
-                        new HappnOauthRequestDto(
-                                "assertion",
-                                "FUE-idSEP-f7AqCyuMcPr2K-1iCIU_YlvK-M-im3c",
-                                "brGoHSwZsPjJ-lBk0HqEXVtb3UFu-y5l_JcOjD-Ekv",
-                                "facebook_access_token",
-                                facebookToken)))
+                .body(fromFormData(
+                        new LinkedMultiValueMap<>(Map.ofEntries(
+                                entry("scope", List.of("mobile_app")),
+                                entry("client_id", List.of("SqHSPqm6jyoFXS2sAhE6Ncc5Dvk9XQjx0mTwlwCKLt")),
+                                entry("client_secret", List.of("CpGueHHxwjd6idMFbv5YOrDYCibZAb0QqbtP6LTKA1")),
+                                entry("grant_type", List.of("assertion")),
+                                entry("assertion_type", List.of("facebook_access_token")),
+                                entry("assertion_version", List.of("6.0")),
+                                entry("assertion", List.of(facebookToken))))))
                 .retrieve()
                 .bodyToMono(HappnOauthResponseDto.class);
     }
