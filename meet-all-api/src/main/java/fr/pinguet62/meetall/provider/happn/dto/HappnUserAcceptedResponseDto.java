@@ -1,10 +1,10 @@
 package fr.pinguet62.meetall.provider.happn.dto;
 
-import lombok.Data;
+import lombok.NonNull;
+import lombok.Value;
 
-@Data
+@Value
 public class HappnUserAcceptedResponseDto {
-
-    private HappnUserAcceptedDataDto data;
-
+    @NonNull
+    HappnUserAcceptedDataDto data;
 }

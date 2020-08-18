@@ -1,20 +1,34 @@
 package fr.pinguet62.meetall.provider.happn.dto;
 
 import fr.pinguet62.meetall.provider.happn.GraphQLField;
-import lombok.Data;
+import lombok.NonNull;
+import lombok.Value;
 
+import javax.annotation.Nullable;
 import java.time.OffsetDateTime;
+import java.util.Optional;
 
-@Data
+import static java.util.Optional.ofNullable;
+
+@Value
 public class HappnMessageDto {
+    @NonNull
+    String id;
 
-    private String id;
-    private String message;
+    @NonNull
+    String message;
+
     /**
      * @example {@code 2018-11-26T10:05:52+00:00}
      */
-    private OffsetDateTime creation_date;
-    @GraphQLField
-    private HappnUserDto sender;
+    @NonNull
+    OffsetDateTime creation_date;
 
+    @Nullable
+    @GraphQLField
+    HappnUserDto sender;
+
+    public Optional<HappnUserDto> getSender() {
+        return ofNullable(sender);
+    }
 }

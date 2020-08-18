@@ -1,32 +1,25 @@
 package fr.pinguet62.meetall.provider.once.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Getter;
+import lombok.NonNull;
+import lombok.Value;
 
-import static java.util.Objects.requireNonNull;
-
-@Getter
+@Value
 public class OnceMessagesDto {
+    @NonNull
+    String id;
 
-    private final String id;
-    private final Integer number;
+    @NonNull
+    int number;
+
     /**
      * @see OnceUserDto#getId()
      */
-    private final String senderId;
-    private final String message;
-    private final Long createdAt;
+    @NonNull
+    String sender_id;
 
-    public OnceMessagesDto(
-            @JsonProperty(value = "id", required = true) String id,
-            @JsonProperty(value = "number", required = true) Integer number,
-            @JsonProperty(value = "sender_id", required = true) String senderId,
-            @JsonProperty(value = "message", required = true) String message,
-            @JsonProperty(value = "created_at", required = true) Long createdAt) {
-        this.id = requireNonNull(id);
-        this.number = requireNonNull(number);
-        this.senderId = requireNonNull(senderId);
-        this.message = requireNonNull(message);
-        this.createdAt = requireNonNull(createdAt);
-    }
+    @NonNull
+    String message;
+
+    @NonNull
+    long created_at;
 }

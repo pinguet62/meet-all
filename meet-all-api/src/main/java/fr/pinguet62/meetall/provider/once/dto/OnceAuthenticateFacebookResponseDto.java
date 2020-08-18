@@ -1,18 +1,10 @@
 package fr.pinguet62.meetall.provider.once.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Getter;
+import lombok.NonNull;
+import lombok.Value;
 
-import static java.util.Objects.requireNonNull;
-
-@Getter
+@Value
 public class OnceAuthenticateFacebookResponseDto {
-
-    private final String token;
-
-    public OnceAuthenticateFacebookResponseDto(
-            @JsonProperty(value = "token", required = true) String token) {
-        this.token = requireNonNull(token);
-    }
-
+    @NonNull
+    String token;
 }

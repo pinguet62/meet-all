@@ -1,26 +1,19 @@
 package fr.pinguet62.meetall.login;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Getter;
+import lombok.NonNull;
+import lombok.Value;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
-import static java.util.Objects.requireNonNull;
-
 @Component
 class FacebookApi {
 
-    @Getter
+    @Value
     public static class MeResponseDto {
-        private final String id;
-
-        @JsonCreator
-        public MeResponseDto(@JsonProperty(value = "id", required = true) String id) {
-            this.id = requireNonNull(id);
-        }
+        @NonNull
+        String id;
     }
 
     private final WebClient webClient;

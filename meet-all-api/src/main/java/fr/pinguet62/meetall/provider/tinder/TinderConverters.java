@@ -22,7 +22,7 @@ class TinderConverters {
 
     public static ProposalDto convert(TinderRecommendationDto input, Clock clock) {
         return new ProposalDto(
-                input.getUser().getId(),
+                input.getUser().get_id(),
                 convert(input.getUser(), clock));
     }
 
@@ -32,7 +32,7 @@ class TinderConverters {
 
     public static ProfileDto convert(TinderUserDto input, Clock clock) {
         return new ProfileDto(
-                input.getId(),
+                input.get_id(),
                 input.getName(),
                 (int) ChronoUnit.YEARS.between(input.getBirth_date(), now(clock)),
                 input.getPhotos().stream().map(TinderPhotoDto::getUrl).collect(toList()));
@@ -40,15 +40,15 @@ class TinderConverters {
 
     public static ConversationDto convert(TinderMatchDto input, String currentUserId, Clock clock) {
         return new ConversationDto(
-                input.getId(),
+                input.get_id(),
                 convert(input.getPerson(), clock),
-                input.getLastActivityDate(),
+                input.getLast_activity_date(),
                 input.getMessages().isEmpty() ? null : convert(input.getMessages().get(0), currentUserId));
     }
 
     public static MessageDto convert(TinderMessageDto input, String currentUserId) {
         return new MessageDto(
-                input.getId(),
+                input.get_id(),
                 input.getSent_date(),
                 input.getFrom().equals(currentUserId),
                 input.getMessage());
@@ -56,8 +56,8 @@ class TinderConverters {
 
     public static MessageDto convert(TinderSendMessageResponseDto input) {
         return new MessageDto(
-                input.getId(),
-                input.getSentDate(),
+                input.get_id(),
+                input.getSent_date(),
                 true,
                 input.getMessage());
     }

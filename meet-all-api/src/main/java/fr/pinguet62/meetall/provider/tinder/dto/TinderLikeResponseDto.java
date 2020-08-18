@@ -1,14 +1,14 @@
 package fr.pinguet62.meetall.provider.tinder.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Getter;
+import lombok.NonNull;
+import lombok.Value;
 
+import javax.annotation.Nullable;
 import java.util.Optional;
 
-import static java.util.Objects.requireNonNull;
 import static java.util.Optional.ofNullable;
 
-@Getter
+@Value
 public class TinderLikeResponseDto {
 
     /**
@@ -17,22 +17,16 @@ public class TinderLikeResponseDto {
      * <li>Matched: complex type</li>
      * </ul>
      */
-    private final Object match;
+    @NonNull
+    Object match;
 
     /***
      * When limit reached.
      */
-    private final Long rateLimitedUntil;
+    @Nullable
+    Long rate_limited_until;
 
-    public TinderLikeResponseDto(
-            @JsonProperty(value = "match", required = true) Object match,
-            @JsonProperty("rate_limited_until") Long rateLimitedUntil) {
-        this.match = requireNonNull(match);
-        this.rateLimitedUntil = rateLimitedUntil;
+    public Optional<Long> getRate_limited_until() {
+        return ofNullable(rate_limited_until);
     }
-
-    public Optional<Long> getRateLimitedUntil() {
-        return ofNullable(rateLimitedUntil);
-    }
-
 }

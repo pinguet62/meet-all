@@ -1,12 +1,16 @@
 package fr.pinguet62.meetall.provider.happn.dto;
 
-import lombok.Data;
+import lombok.NonNull;
+import lombok.Value;
 
-@Data
+@Value
 public class HappnOptionsDto {
+    @NonNull
+    boolean success;
 
-    private Integer status;
-    private Object data;
-    private Boolean success;
+    @NonNull
+    int status;
 
+    @NonNull
+    Object data;
 }

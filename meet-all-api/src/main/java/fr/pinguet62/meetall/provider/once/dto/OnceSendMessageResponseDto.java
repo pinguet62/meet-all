@@ -1,18 +1,10 @@
 package fr.pinguet62.meetall.provider.once.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Getter;
+import lombok.NonNull;
+import lombok.Value;
 
-import static java.util.Objects.requireNonNull;
-
-@Getter
+@Value
 public class OnceSendMessageResponseDto {
-
-    private final OnceMessagesDto result;
-
-    public OnceSendMessageResponseDto(
-            @JsonProperty(value = "result", required = true) OnceMessagesDto result) {
-        this.result = requireNonNull(result);
-    }
-
+    @NonNull
+    OnceMessagesDto result;
 }

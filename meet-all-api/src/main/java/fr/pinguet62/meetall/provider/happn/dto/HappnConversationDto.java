@@ -1,22 +1,28 @@
 package fr.pinguet62.meetall.provider.happn.dto;
 
 import fr.pinguet62.meetall.provider.happn.GraphQLField;
-import lombok.Data;
+import lombok.NonNull;
+import lombok.Value;
 
 import java.time.OffsetDateTime;
 import java.util.List;
 
-@Data
+@Value
 public class HappnConversationDto {
+    @NonNull
+    String id;
 
-    private String id;
+    @NonNull
     @GraphQLField
-    private List<HappnParticipantDto> participants;
+    List<HappnParticipantDto> participants;
+
+    @NonNull
     @GraphQLField
-    private List<HappnMessageDto> messages;
+    List<HappnMessageDto> messages;
+
     /**
      * @example {@code 2018-11-26T10:05:52+00:00}
      */
-    private OffsetDateTime modification_date;
-
+    @NonNull
+    OffsetDateTime modification_date;
 }

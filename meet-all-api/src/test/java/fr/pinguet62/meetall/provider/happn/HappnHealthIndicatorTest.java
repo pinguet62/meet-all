@@ -11,6 +11,8 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
+import java.util.Map;
+
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -23,7 +25,7 @@ public class HappnHealthIndicatorTest {
 
     @Test
     public void test_doHealthCheck_success() {
-        when(client.getOptions()).thenReturn(Mono.just(new HappnOptionsDto()));
+        when(client.getOptions()).thenReturn(Mono.just(new HappnOptionsDto(false, 410, Map.of("message", "The access token provided has expired."))));
         StepVerifier.create(healthIndicator.doHealthCheck(new Builder()))
                 .expectNext(new Builder().up().build())
                 .verifyComplete();

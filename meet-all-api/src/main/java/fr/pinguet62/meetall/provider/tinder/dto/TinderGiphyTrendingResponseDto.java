@@ -1,19 +1,12 @@
 package fr.pinguet62.meetall.provider.tinder.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Getter;
+import lombok.NonNull;
+import lombok.Value;
 
 import java.util.List;
 
-import static java.util.Objects.requireNonNull;
-
-@Getter
+@Value
 public class TinderGiphyTrendingResponseDto {
-
-    private final List<TinderGiphyTrendingDataResponseDto> data;
-
-    public TinderGiphyTrendingResponseDto(
-            @JsonProperty("data") List<TinderGiphyTrendingDataResponseDto> data) {
-        this.data = requireNonNull(data);
-    }
+    @NonNull
+    List<TinderGiphyTrendingDataResponseDto> data;
 }

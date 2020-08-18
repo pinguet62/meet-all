@@ -1,16 +1,10 @@
 package fr.pinguet62.meetall.provider.tinder.dto;
 
-import lombok.Getter;
+import lombok.NonNull;
+import lombok.Value;
 
-import static java.util.Objects.requireNonNull;
-
-@Getter
+@Value
 public class TinderSendMessageRequestDto {
-
-    private final String message;
-
-    public TinderSendMessageRequestDto(String message) {
-        this.message = requireNonNull(message);
-    }
-
+    @NonNull
+    String message;
 }

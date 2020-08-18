@@ -23,7 +23,7 @@ class HappnConverters {
     public static ProfileDto convert(HappnUserDto input) {
         return new ProfileDto(
                 input.getId(),
-                input.getDisplay_name(),
+                input.getDisplay_name().orElse(""),
                 input.getAge(),
                 input.getProfiles().stream().map(HappnProfileDto::getUrl).collect(toList()));
     }
@@ -40,7 +40,7 @@ class HappnConverters {
         return new MessageDto(
                 input.getId(),
                 input.getCreation_date().toZonedDateTime(),
-                input.getSender().getBirth_date() != null,
+                input.getSender().flatMap(HappnUserDto::getBirth_date).isPresent(),
                 input.getMessage());
     }
 

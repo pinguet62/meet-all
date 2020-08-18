@@ -47,7 +47,7 @@ public class HappnProviderService implements ProviderService {
     public Mono<String> loginWithFacebook(String facebookToken) {
         return client
                 .connectOauthToken(facebookToken)
-                .map(HappnOauthResponseDto::getAccessToken);
+                .map(HappnOauthResponseDto::getAccess_token);
     }
 
     @Override
@@ -55,7 +55,7 @@ public class HappnProviderService implements ProviderService {
         return client.getNotifications(authToken)
                 .onErrorMap(WebClientResponseException.Gone.class, ExpiredTokenException::new)
                 .flatMapIterable(HappnNotificationsResponseDto::getData)
-                .filter(it -> it.getNotifier().getMy_relation().equals(NEW_RELATION))
+                .filter(it -> it.getNotifier().getMy_relation().map(myRelation -> myRelation.equals(NEW_RELATION)).orElse(false))
                 .map(HappnConverters::convert);
     }
 
@@ -65,7 +65,7 @@ public class HappnProviderService implements ProviderService {
         return acceptOrReject
                 .onErrorMap(WebClientResponseException.Gone.class, ExpiredTokenException::new)
                 .map(HappnUserAcceptedResponseDto::getData)
-                .flatMap(it -> likeOrUnlike ? Mono.just(it.getHas_crushed()) : Mono.empty());
+                .flatMap(it -> likeOrUnlike ? Mono.just(it.isHas_crushed()) : Mono.empty());
     }
 
     /**

@@ -1,17 +1,10 @@
 package fr.pinguet62.meetall.provider.tinder.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Getter;
+import lombok.NonNull;
+import lombok.Value;
 
-import static java.util.Objects.requireNonNull;
-
-@Getter
+@Value
 public class TinderGetUserResponseDto {
-
-    private final TinderUserDto results;
-
-    public TinderGetUserResponseDto(
-            @JsonProperty(value = "results", required = true) TinderUserDto results) {
-        this.results = requireNonNull(results);
-    }
+    @NonNull
+    TinderUserDto results;
 }

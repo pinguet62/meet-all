@@ -1,7 +1,7 @@
 package fr.pinguet62.meetall.i18n;
 
 import fr.pinguet62.meetall.security.utils.DisableWebFluxSecurity;
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
 import org.springframework.test.context.ContextConfiguration;

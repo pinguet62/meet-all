@@ -1,12 +1,12 @@
 package fr.pinguet62.meetall.provider.happn.dto;
 
-import lombok.Data;
+import lombok.NonNull;
+import lombok.Value;
 
 import java.util.List;
 
-@Data
+@Value
 public class HappnNotificationsResponseDto {
-
-    private List<HappnNotificationDto> data;
-
+    @NonNull
+    List<HappnNotificationDto> data;
 }

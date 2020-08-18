@@ -1,7 +1,7 @@
 package fr.pinguet62.meetall.provider.tinder.dto;
 
-import lombok.Getter;
+import lombok.Value;
 
-@Getter
+@Value
 public class TinderUnlikeResponseDto {
 }

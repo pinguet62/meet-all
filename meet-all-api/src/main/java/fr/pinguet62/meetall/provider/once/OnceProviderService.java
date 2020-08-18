@@ -53,7 +53,7 @@ public class OnceProviderService implements ProviderService {
                         .filter(match -> !match.isViewed())
                         .map(match -> new ProposalDto(
                                 match.getId(),
-                                convert(match.getId(), match.getUser(), result.getBaseUrl()))));
+                                convert(match.getId(), match.getUser(), result.getBase_url()))));
     }
 
     @Override
@@ -70,7 +70,7 @@ public class OnceProviderService implements ProviderService {
     public Flux<ConversationDto> getConversations(String authorization) {
         return client.getConnections(authorization)
                 .map(OnceConversationsResponseDto::getResult)
-                .flatMapIterable(result -> result.getConnections().stream().map(x -> convert(x, result.getBaseUrl())).collect(toList()));
+                .flatMapIterable(result -> result.getConnections().stream().map(x -> convert(x, result.getBase_url())).collect(toList()));
     }
 
     /**
@@ -97,7 +97,7 @@ public class OnceProviderService implements ProviderService {
     public Mono<ProfileDto> getProfile(String authorization, String matchId) {
         return client.getMatch(authorization, matchId)
                 .map(OnceMatchByIdResponseDto::getResult)
-                .map(it -> convert(it.getMatch().getId(), it.getMatch().getUser(), it.getBaseUrl()));
+                .map(it -> convert(it.getMatch().getId(), it.getMatch().getUser(), it.getBase_url()));
     }
 
 }

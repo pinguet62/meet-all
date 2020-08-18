@@ -1,12 +1,12 @@
 package fr.pinguet62.meetall.provider.happn.dto;
 
 import fr.pinguet62.meetall.provider.happn.GraphQLField;
-import lombok.Data;
+import lombok.NonNull;
+import lombok.Value;
 
-@Data
+@Value
 public class HappnNotificationDto {
-
+    @NonNull
     @GraphQLField
-    private HappnUserDto notifier;
-
+    HappnUserDto notifier;
 }
