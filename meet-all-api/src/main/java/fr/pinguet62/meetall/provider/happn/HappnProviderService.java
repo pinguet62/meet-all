@@ -15,7 +15,7 @@ import fr.pinguet62.meetall.provider.model.MessageDto;
 import fr.pinguet62.meetall.provider.model.ProfileDto;
 import fr.pinguet62.meetall.provider.model.ProposalDto;
 import org.springframework.stereotype.Component;
-import org.springframework.web.reactive.function.client.WebClientResponseException;
+import org.springframework.web.reactive.function.client.WebClientResponseException.Gone;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -53,7 +53,7 @@ public class HappnProviderService implements ProviderService {
     @Override
     public Flux<ProposalDto> getProposals(String authToken) {
         return client.getNotifications(authToken)
-                .onErrorMap(WebClientResponseException.Gone.class, ExpiredTokenException::new)
+                .onErrorMap(Gone.class, ExpiredTokenException::new)
                 .flatMapIterable(HappnNotificationsResponseDto::getData)
                 .filter(it -> it.getNotifier().getMy_relation().map(myRelation -> myRelation.equals(NEW_RELATION)).orElse(false))
                 .map(HappnConverters::convert);
@@ -63,7 +63,7 @@ public class HappnProviderService implements ProviderService {
     public Mono<Boolean> likeOrUnlikeProposal(String authToken, String userId, boolean likeOrUnlike) {
         Mono<HappnUserAcceptedResponseDto> acceptOrReject = likeOrUnlike ? client.acceptUser(authToken, userId) : client.rejectUser(authToken, userId);
         return acceptOrReject
-                .onErrorMap(WebClientResponseException.Gone.class, ExpiredTokenException::new)
+                .onErrorMap(Gone.class, ExpiredTokenException::new)
                 .map(HappnUserAcceptedResponseDto::getData)
                 .flatMap(it -> likeOrUnlike ? Mono.just(it.isHas_crushed()) : Mono.empty());
     }
@@ -76,7 +76,7 @@ public class HappnProviderService implements ProviderService {
     @Override
     public Flux<ConversationDto> getConversations(String authToken) {
         return client.getConversations(authToken)
-                .onErrorMap(WebClientResponseException.Gone.class, ExpiredTokenException::new)
+                .onErrorMap(Gone.class, ExpiredTokenException::new)
                 .flatMapIterable(HappnConversationsResponseDto::getData)
                 .filter(it -> it.getParticipants().stream().noneMatch(x -> x.getUser().getId().equals("11843")))
                 .filter(it -> it.getParticipants().stream().noneMatch(x -> x.getUser().getType().equals("sponsor")))
@@ -89,7 +89,7 @@ public class HappnProviderService implements ProviderService {
     @Override
     public Flux<MessageDto> getMessages(String authToken, String conversationId) {
         return client.getMessagesForConversation(authToken, conversationId)
-                .onErrorMap(WebClientResponseException.Gone.class, ExpiredTokenException::new)
+                .onErrorMap(Gone.class, ExpiredTokenException::new)
                 .flatMapIterable(HappnMessagesResponseDto::getData)
                 .map(HappnConverters::convert);
     }
@@ -97,7 +97,7 @@ public class HappnProviderService implements ProviderService {
     @Override
     public Mono<MessageDto> sendMessage(String authToken, String conversationId, String text) {
         return client.sendMessagesToConversation(authToken, conversationId, text)
-                .onErrorMap(WebClientResponseException.Gone.class, ExpiredTokenException::new)
+                .onErrorMap(Gone.class, ExpiredTokenException::new)
                 .map(HappnSendMessageResponseDto::getData)
                 .map(HappnConverters::convert);
     }
@@ -105,7 +105,7 @@ public class HappnProviderService implements ProviderService {
     @Override
     public Mono<ProfileDto> getProfile(String authToken, String userId) {
         return client.getUser(authToken, userId)
-                .onErrorMap(WebClientResponseException.Gone.class, ExpiredTokenException::new)
+                .onErrorMap(Gone.class, ExpiredTokenException::new)
                 .map(HappnUserResponseDto::getData)
                 .map(HappnConverters::convert);
     }

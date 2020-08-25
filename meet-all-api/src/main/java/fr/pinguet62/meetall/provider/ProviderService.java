@@ -18,7 +18,7 @@ public interface ProviderService {
     Mono<String> loginWithFacebook(String facebookToken);
 
     default Mono<Boolean> checkCredential(String credential) {
-        return getConversations(credential)
+        return getConversations(credential) // any call
                 .collectList().map(it -> true)
                 .onErrorReturn(ExpiredTokenException.class, false);
     }

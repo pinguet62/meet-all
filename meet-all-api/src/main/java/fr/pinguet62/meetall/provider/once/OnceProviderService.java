@@ -1,5 +1,6 @@
 package fr.pinguet62.meetall.provider.once;
 
+import fr.pinguet62.meetall.ExpiredTokenException;
 import fr.pinguet62.meetall.provider.Provider;
 import fr.pinguet62.meetall.provider.ProviderService;
 import fr.pinguet62.meetall.provider.model.ConversationDto;
@@ -16,6 +17,8 @@ import fr.pinguet62.meetall.provider.once.dto.OnceMessagesResponseDto;
 import fr.pinguet62.meetall.provider.once.dto.OnceSendMessageResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
+import org.springframework.web.reactive.function.client.WebClientResponseException.Unauthorized;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -48,6 +51,7 @@ public class OnceProviderService implements ProviderService {
     @Override
     public Flux<ProposalDto> getProposals(String authorization) {
         return client.getMatchs(authorization)
+                .onErrorMap(Unauthorized.class, ExpiredTokenException::new)
                 .map(OnceMatchAllResponseDto::getResult)
                 .flatMapMany(result -> fromIterable(result.getMatches())
                         .filter(match -> !match.isViewed())
@@ -60,15 +64,18 @@ public class OnceProviderService implements ProviderService {
     public Mono<Boolean> likeOrUnlikeProposal(String authorization, String matchId, boolean likeOrUnlike) {
         return likeOrUnlike ?
                 client.likeMatch(authorization, matchId)
+                        .onErrorMap(Unauthorized.class, ExpiredTokenException::new)
                         .map(OnceMatchLikeResponseDto::getResult)
                         .map(OnceMatchLikeResultDto::isConnected) :
                 client.passMatch(authorization, matchId)
+                        .onErrorMap(Unauthorized.class, ExpiredTokenException::new)
                         .map(it -> null);
     }
 
     @Override
     public Flux<ConversationDto> getConversations(String authorization) {
         return client.getConnections(authorization)
+                .onErrorMap(Unauthorized.class, ExpiredTokenException::new)
                 .map(OnceConversationsResponseDto::getResult)
                 .flatMapIterable(result -> result.getConnections().stream().map(x -> convert(x, result.getBase_url())).collect(toList()));
     }
@@ -80,6 +87,7 @@ public class OnceProviderService implements ProviderService {
     @Override
     public Flux<MessageDto> getMessages(String authorization, String matchId) {
         return client.getMessagesForMatch(authorization, matchId)
+                .onErrorMap(Unauthorized.class, ExpiredTokenException::new)
                 .map(OnceMessagesResponseDto::getResult)
                 .flatMapMany(result -> fromIterable(result.getMessages())
                         .filter(it -> it.getNumber() != 1)
@@ -89,6 +97,7 @@ public class OnceProviderService implements ProviderService {
     @Override
     public Mono<MessageDto> sendMessage(String authorization, String matchId, String text) {
         return client.sendMessageToMatch(authorization, matchId, text)
+                .onErrorMap(Unauthorized.class, ExpiredTokenException::new)
                 .map(OnceSendMessageResponseDto::getResult)
                 .map(OnceConverters::convertSentMessage);
     }
@@ -96,6 +105,7 @@ public class OnceProviderService implements ProviderService {
     @Override
     public Mono<ProfileDto> getProfile(String authorization, String matchId) {
         return client.getMatch(authorization, matchId)
+                .onErrorMap(Unauthorized.class, ExpiredTokenException::new)
                 .map(OnceMatchByIdResponseDto::getResult)
                 .map(it -> convert(it.getMatch().getId(), it.getMatch().getUser(), it.getBase_url()));
     }
