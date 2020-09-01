@@ -34,7 +34,7 @@ import {CredentialService, RegisteredCredential} from '../credential.service';
             </ion-list>
 
             <ion-fab vertical="bottom" horizontal="end" slot="fixed">
-                <ion-fab-button routerLink="/tabs/credentials/create">
+                <ion-fab-button routerLink="./create">
                     <ion-icon name="add"></ion-icon>
                 </ion-fab-button>
             </ion-fab>
@@ -50,7 +50,7 @@ export class CredentialListComponent {
         private service: CredentialService
     ) {
         processLoading(this.loadingController,
-            this.service.getRegisteredCredential()
+            this.service.getRegisteredCredentials()
                 .pipe(tap(it => this.credentials = it))
         ).subscribe();
     }
@@ -63,7 +63,7 @@ export class CredentialListComponent {
     }
 
     onRefresh(event: CustomEvent<RefresherEventDetail>) {
-        this.service.getRegisteredCredential()
+        this.service.getRegisteredCredentials()
             .pipe(tap(it => this.credentials = it))
             .pipe(tap(event.detail.complete))
             .subscribe();

@@ -5,7 +5,7 @@ import {FormsModule} from '@angular/forms';
 import {RouterModule} from '@angular/router';
 import {IonicModule} from '@ionic/angular';
 import {SecurityModule} from '../../security';
-import {CredentialService} from '../credential.service';
+import {CredentialModule} from '../credential.module';
 import {CredentialListComponent} from './credential-list.component';
 
 @NgModule({
@@ -17,13 +17,11 @@ import {CredentialListComponent} from './credential-list.component';
         FormsModule,
         // app
         SecurityModule,
+        CredentialModule,
         RouterModule.forChild([{path: '', component: CredentialListComponent}]),
     ],
     declarations: [
         CredentialListComponent,
-    ],
-    providers: [
-        CredentialService,
     ],
 })
 export class CredentialListModule {
