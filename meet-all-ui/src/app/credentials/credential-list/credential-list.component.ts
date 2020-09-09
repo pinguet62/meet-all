@@ -4,6 +4,7 @@ import {RefresherEventDetail} from '@ionic/core';
 import {tap} from 'rxjs/operators';
 import {processLoading} from '../../loading-controller.utils';
 import {CredentialService, RegisteredCredential} from '../credential.service';
+import {noOp} from '../../utils';
 
 @Component({
     selector: 'app-credential-list',
@@ -50,23 +51,22 @@ export class CredentialListComponent {
         private service: CredentialService
     ) {
         processLoading(this.loadingController,
-            this.service.getRegisteredCredentials()
-                .pipe(tap(it => this.credentials = it))
-        ).subscribe();
+            this.service.registeredCredentials()
+                .pipe(tap(it => this.credentials = it)))
+            .subscribe(noOp);
     }
 
     onDelete(registeredCredential: RegisteredCredential) {
         processLoading(this.loadingController,
             this.service.deleteCredential(registeredCredential.id)
-                .pipe(tap(it => this.credentials.splice(this.credentials.findIndex(x => x.id === it.id), 1)))
-        ).subscribe();
+                .pipe(tap(it => this.credentials.splice(this.credentials.findIndex(x => x.id === it.id), 1))))
+            .subscribe(noOp);
     }
 
     onRefresh(event: CustomEvent<RefresherEventDetail>) {
-        this.service.getRegisteredCredentials()
-            .pipe(tap(it => this.credentials = it))
+        this.service.refreshRegisteredCredentials()
             .pipe(tap(event.detail.complete))
-            .subscribe();
+            .subscribe(noOp);
     }
 
 }
