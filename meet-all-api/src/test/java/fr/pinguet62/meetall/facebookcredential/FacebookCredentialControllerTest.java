@@ -23,6 +23,7 @@ import static org.hamcrest.Matchers.containsString;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.HttpHeaders.ACCEPT_LANGUAGE;
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.LOCKED;
 import static org.springframework.security.test.web.reactive.server.SecurityMockServerConfigurers.csrf;
 import static org.springframework.web.reactive.function.BodyInserters.fromMultipartData;
@@ -73,6 +74,29 @@ public class FacebookCredentialControllerTest {
                 .jsonPath("$.label").isEqualTo(label)
                 .jsonPath("$.provider").isEqualTo(provider.name())
                 .jsonPath("$.ok").isEqualTo(ok);
+    }
+
+    /**
+     * @see FacebookCredentialController#register(Locale, Provider, String, String, String)
+     */
+    @Test
+    public void register_InvalidCredentialsException() {
+        String message = "L’e-mail entré ne correspond à aucun compte.";
+        when(facebookCredentialService.register(any(), any(), any(), any(), any()))
+                .thenReturn(Mono.error(new InvalidCredentialsException(message)));
+
+        webTestClient.mutateWith(csrf())
+                .post()
+                .uri("/credential/facebook")
+                .header(ACCEPT_LANGUAGE, "fr")
+                .body(fromMultipartData(new LinkedMultiValueMap<>(Map.of(
+                        "provider", List.of(TINDER),
+                        "email", List.of("unknown@test.org"),
+                        "password", List.of("bad"),
+                        "label", List.of("Sample")))))
+                .exchange()
+                .expectStatus().isEqualTo(BAD_REQUEST)
+                .expectBody().jsonPath("$.message").value(containsString(message));
     }
 
     /**

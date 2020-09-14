@@ -12,6 +12,7 @@ import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -74,8 +75,11 @@ public class RobotCredentialExtractor {
             driver.findElement(By.id("email")).sendKeys(email);
             driver.findElement(By.id("pass")).sendKeys(password);
             driver.findElement(By.cssSelector("[type=submit]")).click();
+            new WebDriverWait(driver, Duration.ofSeconds(1).toSeconds()).until(ExpectedConditions.invisibilityOfElementLocated(By.cssSelector("body.hasCookieBanner")));
 
-            verifyVerificationAbsentOrProcessAndThrowError(driver);
+            verifyCredentials(driver);
+
+            verifyAbsentOrProcessAndThrowError(driver);
 
             // Authorization page
             List<WebElement> forms = driver.findElements(By.id("platformDialogForm"));
@@ -91,7 +95,19 @@ public class RobotCredentialExtractor {
         return parseHtml(html);
     }
 
-    private void verifyVerificationAbsentOrProcessAndThrowError(WebDriver driver) {
+    /**
+     * @throws InvalidCredentialsException L’e-mail entré ne correspond à aucun compte.
+     * @throws InvalidCredentialsException Le mot de passe entré est incorrect. Vous l’avez oublié ?
+     */
+    private void verifyCredentials(WebDriver driver) {
+        try {
+            WebElement element = new WebDriverWait(driver, Duration.ofSeconds(1).toSeconds()).until(presenceOfElementLocated(By.cssSelector("div[role='alert']")));
+            throw new InvalidCredentialsException(element.getText());
+        } catch (TimeoutException e) {
+        }
+    }
+
+    private void verifyAbsentOrProcessAndThrowError(WebDriver driver) {
         try {
             // step 1: "Veuillez confirmer votre identité"
             new WebDriverWait(driver, Duration.ofSeconds(1).toSeconds()).until(presenceOfElementLocated(By.id("checkpointBottomBar")));

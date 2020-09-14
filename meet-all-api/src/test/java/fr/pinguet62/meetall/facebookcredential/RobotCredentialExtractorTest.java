@@ -63,24 +63,58 @@ public class RobotCredentialExtractorTest {
     }
 
     @Test
-    public void test_verifyVerificationAbsentOrProcessAndThrowError() {
+    public void test_verifyCredentials_email() {
         facebookWireMockServer
                 .stubFor(get(new UrlPattern(new ContainsPattern("/dialog/oauth"), false))
                         .willReturn(aResponse()
                                 .withStatus(200)
-                                .withBody(getHtml("verification/step0 - dialog_oauth.html"))));
+                                .withBody(getHtml("verifyCredentials/step0 - dialog_oauth.html"))));
         facebookWireMockServer
                 .stubFor(post(new UrlPattern(new ContainsPattern("/login/device-based/regular/login"), false))
                         .willReturn(aResponse()
                                 .withStatus(200)
-                                .withBody(getHtml("verification/step1 - login_device-based_regular_login.html"))));
+                                .withBody(getHtml("verifyCredentials/step1.1 - unknown email.html"))));
+
+        InvalidCredentialsException exception = assertThrows(InvalidCredentialsException.class, () -> robotCredentialExtractor.getTinderFacebookToken("unknown@pinguet62.fr", "anything"));
+        assertThat(exception.getMessage(), is("L’e-mail entré ne correspond à aucun compte. Veuillez créer un compte."));
+    }
+
+    @Test
+    public void test_verifyCredentials_password() {
+        facebookWireMockServer
+                .stubFor(get(new UrlPattern(new ContainsPattern("/dialog/oauth"), false))
+                        .willReturn(aResponse()
+                                .withStatus(200)
+                                .withBody(getHtml("verifyCredentials/step0 - dialog_oauth.html"))));
+        facebookWireMockServer
+                .stubFor(post(new UrlPattern(new ContainsPattern("/login/device-based/regular/login"), false))
+                        .willReturn(aResponse()
+                                .withStatus(200)
+                                .withBody(getHtml("verifyCredentials/step1.2 - bad password.html"))));
+
+        InvalidCredentialsException exception = assertThrows(InvalidCredentialsException.class, () -> robotCredentialExtractor.getTinderFacebookToken("test@pinguet62.fr", "bad"));
+        assertThat(exception.getMessage(), is("Le mot de passe entré est incorrect. Vous l’avez oublié ?"));
+    }
+
+    @Test
+    public void test_verifyAbsentOrProcessAndThrowError() {
+        facebookWireMockServer
+                .stubFor(get(new UrlPattern(new ContainsPattern("/dialog/oauth"), false))
+                        .willReturn(aResponse()
+                                .withStatus(200)
+                                .withBody(getHtml("verifyAbsentOrProcessAndThrowError/step0 - dialog_oauth.html"))));
+        facebookWireMockServer
+                .stubFor(post(new UrlPattern(new ContainsPattern("/login/device-based/regular/login"), false))
+                        .willReturn(aResponse()
+                                .withStatus(200)
+                                .withBody(getHtml("verifyAbsentOrProcessAndThrowError/step1 - login_device-based_regular_login.html"))));
         facebookWireMockServer
                 .stubFor(post(new UrlPattern(new ContainsPattern("/checkpoint"), false))
                         .inScenario("process")
                         .whenScenarioStateIs(STARTED)
                         .willReturn(aResponse()
                                 .withStatus(200)
-                                .withBody(getHtml("verification/step2 - checkpoint.html")))
+                                .withBody(getHtml("verifyAbsentOrProcessAndThrowError/step2 - checkpoint.html")))
                         .willSetStateTo("step3"));
         facebookWireMockServer
                 .stubFor(post(new UrlPattern(new ContainsPattern("/checkpoint"), false))
@@ -88,7 +122,7 @@ public class RobotCredentialExtractorTest {
                         .whenScenarioStateIs("step3")
                         .willReturn(aResponse()
                                 .withStatus(200)
-                                .withBody(getHtml("verification/step3 - checkpoint.html")))
+                                .withBody(getHtml("verifyAbsentOrProcessAndThrowError/step3 - checkpoint.html")))
                         .willSetStateTo("step4"));
 
         assertThrows(FacebookAccountLockedException.class, () -> robotCredentialExtractor.getTinderFacebookToken("test@pinguet62.fr", "AzErTy"));

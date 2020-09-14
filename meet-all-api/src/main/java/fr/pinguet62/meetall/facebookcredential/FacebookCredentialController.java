@@ -22,6 +22,7 @@ import reactor.core.publisher.Mono;
 import java.util.Locale;
 
 import static fr.pinguet62.meetall.config.OpenApiConfig.BEARER;
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.LOCKED;
 import static org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE;
@@ -58,6 +59,8 @@ class FacebookCredentialController {
         return ApplicationReactiveSecurityContextHolder.getAuthentication()
                 .map(ApplicationAuthentication::getUserId)
                 .flatMap(userId -> facebookCredentialService.register(userId, provider, email, password, label))
+                .onErrorMap(InvalidCredentialsException.class,
+                        e -> new ResponseStatusException(BAD_REQUEST, e.getMessage()))
                 .onErrorMap(FacebookAccountLockedException.class,
                         e -> new ResponseStatusException(LOCKED, messageSource.getMessage("facebookcredential.lockedAccount", null, locale)));
     }
