@@ -19,9 +19,11 @@ import {ProfileService} from './profile.service';
         </ion-header>
 
         <ion-content *ngIf="profile !== null">
-            <ion-slides>
+            <ion-slides style="height: 80%;">
                 <ion-slide *ngFor="let avatar of profile.avatars">
-                    <ion-img [appProxifiedSrc]="avatar"></ion-img>
+                    <a [href]="'https://meet-all-api.herokuapp.com/photo/' + avatar">
+                        <ion-img [appProxifiedSrc]="avatar"></ion-img>
+                    </a>
                 </ion-slide>
             </ion-slides>
             <ion-card-header>
