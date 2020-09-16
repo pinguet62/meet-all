@@ -1,7 +1,6 @@
 import {CommonModule} from '@angular/common';
 import {HttpClientModule} from '@angular/common/http';
 import {NgModule} from '@angular/core';
-import {RouterModule} from '@angular/router';
 import {IonicModule} from '@ionic/angular';
 import {ProfileComponent} from './profile.component';
 import {ProxifiedSrcModule} from '../shared/proxifiedSrc';
@@ -16,7 +15,6 @@ import {ProfileService} from './profile.service';
         HttpClientModule,
         // app
         ProxifiedSrcModule,
-        RouterModule.forChild([{path: '', component: ProfileComponent}]),
         SecurityModule,
     ],
     declarations: [

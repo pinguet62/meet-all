@@ -8,6 +8,8 @@ import {ProposalsComponent} from './proposals.component';
 import {ProposalsService} from './proposals.service';
 import {SecurityModule} from '../security';
 import {ProxifiedSrcModule} from '../shared/proxifiedSrc';
+import {ProfileComponent} from '../profile/profile.component';
+import {ProfileModule} from '../profile/profile.module';
 
 @NgModule({
     imports: [
@@ -17,8 +19,11 @@ import {ProxifiedSrcModule} from '../shared/proxifiedSrc';
         HttpClientModule,
         FormsModule,
         // app
+        ProfileModule,
         ProxifiedSrcModule,
-        RouterModule.forChild([{path: '', component: ProposalsComponent}]),
+        RouterModule.forChild([
+            {path: '', component: ProposalsComponent},
+            {path: ':proposalId/profile/:profileId', component: ProfileComponent}]),
         SecurityModule,
     ],
     declarations: [

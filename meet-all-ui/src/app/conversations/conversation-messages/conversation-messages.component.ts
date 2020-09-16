@@ -16,7 +16,7 @@ import {ConversationsService, Message, Profile} from '../conversations.service';
                 </ion-buttons>
                 <div style="display: flex;">
                     <ion-avatar>
-                        <img *ngIf="profile != null" [appProxifiedSrc]="profile.avatars[0]" [routerLink]="['/profile/', profile.id]">
+                        <img *ngIf="profile != null" [appProxifiedSrc]="profile.avatars[0]" [routerLink]="[conversationId, 'profile', profile.id]">
                     </ion-avatar>
                     <ion-title *ngIf="profile != null">{{profile.name}}</ion-title>
                 </div>

@@ -8,6 +8,8 @@ import {SecurityModule} from '../../security';
 import {ConversationsService} from '../conversations.service';
 import {ConversationMessagesComponent} from './conversation-messages.component';
 import {ProxifiedSrcModule} from '../../shared/proxifiedSrc';
+import {ProfileModule} from '../../profile/profile.module';
+import {ProfileComponent} from '../../profile/profile.component';
 
 @NgModule({
     imports: [
@@ -17,8 +19,11 @@ import {ProxifiedSrcModule} from '../../shared/proxifiedSrc';
         HttpClientModule,
         FormsModule,
         // app
+        ProfileModule,
         ProxifiedSrcModule,
-        RouterModule.forChild([{path: '', component: ConversationMessagesComponent}]),
+        RouterModule.forChild([
+            {path: '', component: ConversationMessagesComponent},
+            {path: ':conversationId/profile/:profileId', component: ProfileComponent}]),
         SecurityModule,
     ],
     declarations: [
