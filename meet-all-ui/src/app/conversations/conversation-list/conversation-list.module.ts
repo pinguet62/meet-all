@@ -20,7 +20,9 @@ import {ProxifiedSrcModule} from '../../shared/proxifiedSrc';
         // app
         BadgeIconModule,
         ProxifiedSrcModule,
-        RouterModule.forChild([{path: '', component: ConversationListComponent}]),
+        RouterModule.forChild([
+            {path: '', component: ConversationListComponent},
+            {path: ':conversationId/:profileId', loadChildren: '../conversation-messages/conversation-messages.module#ConversationMessagesModule'}]),
         SecurityModule,
     ],
     declarations: [

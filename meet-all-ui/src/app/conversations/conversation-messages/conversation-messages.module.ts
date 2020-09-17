@@ -23,7 +23,7 @@ import {ProfileComponent} from '../../profile/profile.component';
         ProxifiedSrcModule,
         RouterModule.forChild([
             {path: '', component: ConversationMessagesComponent},
-            {path: ':conversationId/profile/:profileId', component: ProfileComponent}]),
+            {path: 'profile', component: ProfileComponent}]),
         SecurityModule,
     ],
     declarations: [
