@@ -19,7 +19,7 @@ import {TokenHttpInterceptor} from './token.http-interceptor';
 })
 export class SecurityModule {
 
-    static forRoot(): ModuleWithProviders {
+    static forRoot(): ModuleWithProviders<SecurityModule> {
         return {
             ngModule: SecurityModule,
             providers: [

@@ -42,6 +42,17 @@
           <context context-type="linenumber">31</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="profile.model.age" datatype="html">
+        <source>{VAR_PLURAL, plural, =1 {1 year old} other {<x id="INTERPOLATION" equiv-text="{{profile.age}}"/> years old} }</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/profile/profile.component.ts</context>
+          <context context-type="linenumber">21</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/proposals/proposals.component.ts</context>
+          <context context-type="linenumber">20</context>
+        </context-group>
+      </trans-unit>
       <trans-unit id="credentials.title" datatype="html">
         <source>Credentials</source>
         <context-group purpose="location">
@@ -117,17 +128,6 @@
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/login/login.component.ts</context>
           <context context-type="linenumber">10</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="profile.model.age" datatype="html">
-        <source>{VAR_PLURAL, plural, =1 {1 year old} other {<x id="INTERPOLATION" equiv-text="{{profile.age}}"/> years old} }</source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/profile/profile.component.ts</context>
-          <context context-type="linenumber">19</context>
-        </context-group>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/proposals/proposals.component.ts</context>
-          <context context-type="linenumber">20</context>
         </context-group>
       </trans-unit>
       <trans-unit id="proposal.title" datatype="html">

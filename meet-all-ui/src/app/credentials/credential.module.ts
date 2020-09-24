@@ -14,7 +14,7 @@ import {CredentialClient, CredentialService} from './credential.service';
 })
 export class CredentialModule {
 
-    static forRoot(): ModuleWithProviders {
+    static forRoot(): ModuleWithProviders<CredentialModule> {
         return {
             ngModule: CredentialModule,
             providers: [

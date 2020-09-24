@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springdoc.core.SpringDocConfigProperties;
+import org.springdoc.core.SwaggerUiConfigParameters;
 import org.springdoc.core.SwaggerUiConfigProperties;
 import org.springdoc.ui.AbstractSwaggerWelcome;
 import org.springframework.stereotype.Component;
@@ -23,12 +24,13 @@ public class OpenApiConfig {
 
     private final SpringDocConfigProperties springDocConfigProperties;
     private final SwaggerUiConfigProperties swaggerUiConfigProperties;
+    private final SwaggerUiConfigParameters swaggerUiConfigParameters;
 
     public String[] getPublicRoutesPathMatchers() {
         return new String[]{
                 springDocConfigProperties.getApiDocs().getPath(), // default: "/v3/api-docs"
                 springDocConfigProperties.getWebjars().getPrefix() + "/**", // default: "/webjars"
-                swaggerUiConfigProperties.getPath(), // default: "/swagger-ui.html"
+                swaggerUiConfigParameters.getPath(), // default: "/swagger-ui.html"
                 swaggerUiConfigPropertiesConfigUrl()}; // default: "/v3/api-docs/swagger-config"
     }
 

@@ -8,6 +8,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springdoc.core.SpringDocConfigProperties;
 import org.springdoc.core.SpringDocConfiguration;
+import org.springdoc.core.SwaggerUiConfigParameters;
 import org.springdoc.core.SwaggerUiConfigProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
@@ -38,7 +39,7 @@ import static org.springframework.http.HttpStatus.UNAUTHORIZED;
                 // "spring.security.oauth2.resourceserver.jwt.key-value = ",
         })
 // spring.factories: org.springframework.boot.autoconfigure.EnableAutoConfiguration
-@Import({SpringDocConfiguration.class, SpringDocConfigProperties.class, SwaggerUiConfigProperties.class})
+@Import({SpringDocConfiguration.class, SpringDocConfigProperties.class, SwaggerUiConfigProperties.class, SwaggerUiConfigParameters.class})
 @AutoConfigureWebTestClient
 public class SecurityConfigTest {
 
