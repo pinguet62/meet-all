@@ -11,9 +11,10 @@ import {AppComponent} from './app.component';
 import {CredentialModule} from './credentials/credential.module';
 import {I18nModule} from './i18n';
 import {SecurityModule} from './security';
+import {VersionComponent} from './version/version.component';
 
 @NgModule({
-    declarations: [AppComponent],
+    bootstrap: [AppComponent],
     imports: [
         // libs
         BrowserModule,
@@ -32,7 +33,10 @@ import {SecurityModule} from './security';
         {provide: RouteReuseStrategy, useClass: IonicRouteStrategy},
         // app
     ],
-    bootstrap: [AppComponent],
+    declarations: [
+        AppComponent,
+        VersionComponent,
+    ],
 })
 export class AppModule {
 }

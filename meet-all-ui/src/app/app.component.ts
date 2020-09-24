@@ -8,8 +8,8 @@ import {StatusBar} from '@ionic-native/status-bar/ngx';
     template: `
         <ion-app>
             <ion-router-outlet></ion-router-outlet>
-        </ion-app>
-    `,
+            <app-version></app-version>
+        </ion-app>`,
 })
 export class AppComponent {
     constructor(
