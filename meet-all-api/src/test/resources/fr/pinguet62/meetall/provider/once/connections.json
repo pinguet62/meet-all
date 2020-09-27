@@ -1,12 +1,41 @@
 {
   "status": "ok",
   "result": {
-    "chat_requests": [],
+    "chat_requests": [
+      {
+        "user": {
+          "id": "EA9271329",
+          "first_name": "Tufaa",
+          "last_name": null,
+          "age": 32,
+          "gender": "w",
+          "pictures": [
+            {
+              "original": "39178136_original.jpg",
+              "cropped": "39178136_cropped.jpg",
+              "id": "39178136",
+              "tmp": false,
+              "p60": "39178136_60.jpg",
+              "p120": "39178136_120.jpg",
+              "p300": "39178136_300.jpg",
+              "p600": "39178136_600.jpg"
+            }
+          ],
+          "location_name": "Saint-Aventin",
+          "occupation": {},
+          "education": []
+        },
+        "free": false,
+        "condition": {},
+        "distance": {
+          "km": 890,
+          "estimate": "far"
+        },
+        "expires": 1601232281
+      }
+    ],
     "like_messages": [],
     "deleted": [
-      "MEA309198513",
-      "MEA307306927",
-      "MEA311137421",
       "MEA310854319",
       "MEA312462299",
       "MEA313376327",
@@ -23,9 +52,63 @@
       "MEA337317369",
       "MEA339040450",
       "MEA340758226",
-      "MEA343472451"
+      "MEA343472451",
+      "MEA358066374"
     ],
     "connections": [
+      {
+        "user": {
+          "id": "EA7640585",
+          "first_name": "Marine",
+          "last_name": null,
+          "age": 27,
+          "gender": "w",
+          "pictures": [
+            {
+              "original": "34002662_original.jpg",
+              "cropped": "34002662_cropped.jpg",
+              "id": "34002662",
+              "tmp": false,
+              "p60": "34002662_60.jpg",
+              "p120": "34002662_120.jpg",
+              "p300": "34002662_300.jpg",
+              "p600": "34002662_600.jpg"
+            }
+          ],
+          "location_name": "Marcq-en-Barœul",
+          "occupation": {
+            "employer": "Ingénieur",
+            "position": "Dans l'informatique"
+          },
+          "education": [
+            {
+              "school_type": "s0",
+              "school_name": "Lille 1"
+            }
+          ],
+          "flags": [
+            "auto-validated"
+          ],
+          "email_verified": false,
+          "email_bounced": false
+        },
+        "can_talk": true,
+        "sender_id": "EA7640585",
+        "receiver_id": "EA601448",
+        "match_id": "MEA356404742",
+        "last_message": "Vous avez été connectés",
+        "last_message_id": 0,
+        "message_sent_at": 1546896266,
+        "read": true,
+        "opened": {
+          "EA601448": 1546896290,
+          "EA7640585": 1546929949
+        },
+        "is_my_vid_accepted": false,
+        "is_other_vid_accepted": false,
+        "is_me_cat_protected": true,
+        "is_other_cat_protected": true
+      },
       {
         "user": {
           "id": "EA7464845",
@@ -66,14 +149,17 @@
           "EA7464845": 1543066613,
           "EA601448": 1543084638
         },
-        "allowed_to_review": false
+        "is_my_vid_accepted": false,
+        "is_other_vid_accepted": false,
+        "is_me_cat_protected": true,
+        "is_other_cat_protected": true
       }
     ],
-    "query_id": "MzAtMzAtMTU0MzU5NzI5OA==",
+    "query_id": "MzAtMzAtMTYwMTIyODAzNA==",
     "base_url": "https://d110abryny6tab.cloudfront.net/pictures",
     "dm_feature_activated": false,
     "remaining_connections": 0,
-    "total": 1,
-    "timestamp": 1543595498
+    "total": 2,
+    "timestamp": 1601226234
   }
 }

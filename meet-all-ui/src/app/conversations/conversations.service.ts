@@ -21,7 +21,7 @@ export interface Message {
 export interface Conversation {
     id: string;
     profile: Profile;
-    lastMessage: Message;
+    lastMessage: Message | null;
 }
 
 @Injectable()

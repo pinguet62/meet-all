@@ -23,7 +23,7 @@ class OnceConverters {
                 input.getMatch_id(),
                 convert(input.getMatch_id(), input.getUser(), baseUrl),
                 Instant.ofEpochSecond(input.getMessage_sent_at()).atZone(ZONE_ID),
-                new MessageDto(
+                input.getLast_message_id().equals("0") ? null : new MessageDto(
                         input.getMatch_id() + "::" + input.getLast_message_id(),
                         Instant.ofEpochSecond(input.getMessage_sent_at()).atZone(ZONE_ID),
                         !input.getSender_id().equals(input.getUser().getId()),

@@ -165,6 +165,15 @@ public class OnceProviderServiceTest {
                 header(HEADER, authToken))));
         assertThat(conversations, contains(
                 new ConversationDto(
+                        "MEA356404742",
+                        new ProfileDto(
+                                "MEA356404742",
+                                "Marine",
+                                27,
+                                List.of("https://d110abryny6tab.cloudfront.net/pictures/EA7640585/34002662_original.jpg")),
+                        ZonedDateTime.of(2019, 1, 7, 21, 24, 26, 0, UTC),
+                        null),
+                new ConversationDto(
                         "MEA346007886",
                         new ProfileDto(
                                 "MEA346007886",

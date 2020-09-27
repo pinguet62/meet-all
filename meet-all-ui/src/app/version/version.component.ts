@@ -4,8 +4,7 @@ import {AlertController} from '@ionic/angular';
 
 @Component({
     selector: 'app-version',
-    template: `
-        <span>Hello world!</span>`,
+    template: ``,
 })
 export class VersionComponent {
     constructor(updates: SwUpdate, alertController: AlertController) {
