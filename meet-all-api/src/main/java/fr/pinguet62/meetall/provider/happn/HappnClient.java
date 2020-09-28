@@ -2,6 +2,7 @@ package fr.pinguet62.meetall.provider.happn;
 
 import fr.pinguet62.meetall.provider.happn.dto.HappnConversationDto;
 import fr.pinguet62.meetall.provider.happn.dto.HappnConversationsResponseDto;
+import fr.pinguet62.meetall.provider.happn.dto.HappnDevicesResponseDto;
 import fr.pinguet62.meetall.provider.happn.dto.HappnMessageDto;
 import fr.pinguet62.meetall.provider.happn.dto.HappnMessagesResponseDto;
 import fr.pinguet62.meetall.provider.happn.dto.HappnNotificationDto;
@@ -138,6 +139,32 @@ class HappnClient {
                         .build())
                 .header(HEADER, "OAuth=\"" + authToken + "\"")
                 .retrieve().bodyToMono(HappnUserResponseDto.class);
+    }
+
+    public Mono<HappnUserResponseDto> getUserMe(String authToken) {
+        return getUser(authToken, "me");
+    }
+
+    public Mono<HappnDevicesResponseDto> getUserDevices(String authToken, String userId) {
+        return webClient.get()
+                .uri(uriBuilder -> uriBuilder
+                        .path("/api/users").pathSegment(userId).pathSegment("devices")
+                        .build())
+                .header(HEADER, "OAuth=\"" + authToken + "\"")
+                .retrieve().bodyToMono(HappnDevicesResponseDto.class);
+    }
+
+    public Mono<String> setUserMePosition(String authToken, String userId, String deviceId, double latitude, double longitude, double altitude) {
+        return webClient.put()
+                .uri(uriBuilder -> uriBuilder
+                        .path("/api/users").pathSegment(userId).pathSegment("devices").pathSegment(deviceId)
+                        .build())
+                .bodyValue(Map.ofEntries(
+                        Map.entry("latitude", latitude),
+                        Map.entry("longitude", longitude),
+                        Map.entry("alt", altitude)))
+                .header(HEADER, "OAuth=\"" + authToken + "\"")
+                .retrieve().bodyToMono(String.class);
     }
 
 }

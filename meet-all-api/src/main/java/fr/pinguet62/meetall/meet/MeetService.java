@@ -139,4 +139,14 @@ class MeetService {
                                         .withAvatars(it.getAvatars().stream().map(PhotoProxyEncoder::encode).collect(toList()))));
     }
 
+    /**
+     * @param userId       {@link Credential#getUserId()}
+     */
+    public Mono<Void> setPosition(String userId, double latitude, double longitude, double altitude) {
+        return credentialService.findByUserId(userId)
+                .flatMap(providerCredential -> providerFactory.getProviderService(providerCredential.getProvider())
+                        .setPosition(providerCredential.getCredential(), latitude, longitude, altitude)
+                        .onErrorResume(ExpiredTokenException.class, e -> Mono.empty()))
+                .then();
+    }
 }

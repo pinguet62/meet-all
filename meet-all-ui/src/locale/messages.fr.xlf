@@ -14,6 +14,20 @@
           <context context-type="linenumber">23</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="configuration.sendPosition" datatype="html">
+        <source>
+                <x id="START_TAG_ION-ICON" ctype="x-ion-icon" equiv-text="&lt;ion-icon&gt;"/><x id="CLOSE_TAG_ION-ICON" ctype="x-ion-icon" equiv-text="&lt;/ion-icon&gt;"/>
+                Send position
+            </source>
+        <target>
+                <x id="START_TAG_ION-ICON" ctype="x-ion-icon" equiv-text="&lt;ion-icon&gt;"/><x id="CLOSE_TAG_ION-ICON" ctype="x-ion-icon" equiv-text="&lt;/ion-icon&gt;"/>
+                Envoyer position
+            </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/configuration/configuration.component.ts</context>
+          <context context-type="linenumber">9</context>
+        </context-group>
+      </trans-unit>
       <trans-unit id="conversations.title" datatype="html">
         <source>Conversations</source>
         <target>Conversations</target>

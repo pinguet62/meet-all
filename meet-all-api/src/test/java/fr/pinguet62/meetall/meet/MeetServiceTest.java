@@ -225,4 +225,28 @@ public class MeetServiceTest {
         assertThat(profile.block(), is(new ProfileDto(42 + "#" + "profTinder", "profile name", 1, List.of(encode("https://google.fr/favicon.png")))));
     }
 
+    @Test
+    public void setPosition() {
+        double latitude = 48.8534;
+        double longitude = 2.3488;
+        double altitude = 35.1;
+
+        when(credentialService.findByUserId("userId")).thenReturn(Flux.just(
+                new Credential("91", "userId", TINDER, "tinderCredential_91", "label 91"),
+                new Credential("92", "userId", HAPPN, "happnCredential_92", "label 92")));
+        when(providerFactory.getProviderService(TINDER)).thenAnswer(a -> {
+            ProviderService providerService = mock(ProviderService.class);
+            when(providerService.setPosition("tinderCredential_91", latitude, longitude, altitude)).thenReturn(Mono.empty());
+            return providerService;
+        });
+        when(providerFactory.getProviderService(HAPPN)).thenAnswer(a -> {
+            ProviderService providerService = mock(ProviderService.class);
+            when(providerService.setPosition("happnCredential_92", latitude, longitude, altitude)).thenReturn(Mono.empty());
+            return providerService;
+        });
+
+        StepVerifier.create(service.setPosition("userId", latitude, longitude, altitude))
+                .verifyComplete();
+    }
+
 }

@@ -1,0 +1,36 @@
+{
+  "success": true,
+  "status": 200,
+  "error": null,
+  "data": [
+    {
+      "id": "87fbaa4f-2cef-4c60-bac3-08348cdf32e5",
+      "owner": {
+        "role": "CLIENT",
+        "type": "client",
+        "birth_date": "1989-06-14",
+        "id": "db17fecb-6332-4bb2-a5ad-2ad3317d4af3",
+        "name": "Jul"
+      },
+      "type": "ANDROID",
+      "app_build": "25.11.1",
+      "os_build": "26",
+      "status": 0,
+      "language": "fr",
+      "language_id": "fr",
+      "country": "FR",
+      "country_id": "FR",
+      "modification_date": "2020-09-29T13:32:17+00:00",
+      "position": {
+        "latitude": 46.22764,
+        "longitude": 2.213749,
+        "location_accuracy": null,
+        "alt": 20,
+        "circle_size": null,
+        "hacc": 2,
+        "vacc": 16.971
+      }
+    }
+  ],
+  "error_code": 0
+}

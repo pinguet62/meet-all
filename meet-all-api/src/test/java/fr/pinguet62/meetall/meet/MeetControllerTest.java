@@ -8,6 +8,7 @@ import fr.pinguet62.meetall.provider.model.ProposalDto;
 import fr.pinguet62.meetall.security.utils.WithMockUserId;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentMatchers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -21,6 +22,7 @@ import java.util.List;
 import static fr.pinguet62.meetall.meet.MeetControllerTest.currentUserId;
 import static java.time.ZonedDateTime.now;
 import static java.util.Collections.emptyList;
+import static org.mockito.AdditionalMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.HttpStatus.PARTIAL_CONTENT;
@@ -49,7 +51,8 @@ public class MeetControllerTest {
                 new ProposalDto("proposal-1", new ProfileDto("profile-id-1", "profile-name-1", 1, emptyList())),
                 new ProposalDto("proposal-2", new ProfileDto("profile-id-2", "profile-name-2", 2, emptyList()))))));
 
-        webTestClient.get()
+        webTestClient
+                .get()
                 .uri("/proposals")
                 .exchange()
                 .expectStatus().isOk()
@@ -62,7 +65,8 @@ public class MeetControllerTest {
     public void getProposals_partial() {
         when(meetService.getProposalsForUser(currentUserId)).thenReturn(Mono.just(new PartialArrayList<>(emptyList(), true)));
 
-        webTestClient.get()
+        webTestClient
+                .get()
                 .uri("/proposals")
                 .exchange()
                 .expectStatus().isEqualTo(PARTIAL_CONTENT);
@@ -110,7 +114,8 @@ public class MeetControllerTest {
                 new ConversationDto("conversation-1", new ProfileDto("profile-id-1", "profile-name-1", 1, emptyList()), now(), new MessageDto("message-1", now(), true, "message-text-1")),
                 new ConversationDto("conversation-2", new ProfileDto("profile-id-2", "profile-name-2", 2, emptyList()), now(), new MessageDto("message-2", now(), false, "message-text-2"))), false)));
 
-        webTestClient.get()
+        webTestClient
+                .get()
                 .uri("/conversations")
                 .exchange()
                 .expectStatus().isOk()
@@ -123,7 +128,8 @@ public class MeetControllerTest {
     public void getConversations_partial() {
         when(meetService.getConversationsForUser(currentUserId)).thenReturn(Mono.just(new PartialArrayList<>(emptyList(), true)));
 
-        webTestClient.get()
+        webTestClient
+                .get()
                 .uri("/conversations")
                 .exchange()
                 .expectStatus().isEqualTo(PARTIAL_CONTENT);
@@ -139,7 +145,8 @@ public class MeetControllerTest {
                 new MessageDto("message-2", now(), false, "message-text-2"))));
 
         String transformedId = TransformedId.format(credentialId, id);
-        webTestClient.get()
+        webTestClient
+                .get()
                 .uri(uriBuilder -> uriBuilder.path("/conversations").pathSegment(transformedId).pathSegment("messages").build())
                 .exchange()
                 .expectStatus().isOk()
@@ -178,7 +185,8 @@ public class MeetControllerTest {
         when(meetService.getProfileForUser(currentUserId, credentialId, id)).thenReturn(Mono.just(new ProfileDto("profile-id", "profile-name", 29, emptyList())));
 
         String transformedId = TransformedId.format(credentialId, id);
-        webTestClient.get()
+        webTestClient
+                .get()
                 .uri(uriBuilder -> uriBuilder.path("/profile").pathSegment(transformedId).build())
                 .exchange()
                 .expectStatus().isOk()
@@ -187,6 +195,18 @@ public class MeetControllerTest {
                 .jsonPath("$.name").isEqualTo("profile-name")
                 .jsonPath("$.age").isEqualTo("29")
                 .jsonPath("$.avatars").isEmpty();
+    }
+
+    @Test
+    public void setPosition() {
+        when(meetService.setPosition(ArgumentMatchers.eq(currentUserId), eq(48.8534, 0.0001), eq(2.3488, 0.0001), eq(35.1, 0.0001))).thenReturn(Mono.empty());
+
+        webTestClient.mutateWith(csrf())
+                .post()
+                .uri("/position?latitude=48.8534&longitude=2.3488&altitude=35.1")
+                .exchange()
+                .expectStatus().isNoContent()
+                .expectBody().isEmpty();
     }
 
 }

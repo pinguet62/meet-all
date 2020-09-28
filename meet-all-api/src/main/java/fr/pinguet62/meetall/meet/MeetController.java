@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Flux;
@@ -26,6 +27,7 @@ import java.util.List;
 
 import static fr.pinguet62.meetall.config.OpenApiConfig.BEARER;
 import static org.springframework.http.HttpStatus.CREATED;
+import static org.springframework.http.HttpStatus.NO_CONTENT;
 import static org.springframework.http.HttpStatus.PARTIAL_CONTENT;
 
 @Tag(name = "Meet")
@@ -106,4 +108,14 @@ class MeetController {
                 .flatMap(userId -> meetService.getProfileForUser(userId, transformedId.getCredentialId(), transformedId.getValueId()));
     }
 
+    @PostMapping("/position")
+    @ResponseStatus(NO_CONTENT)
+    public Mono<Void> setPosition(
+            @Parameter(example = "48.8534") @RequestParam float latitude,
+            @Parameter(example = "2.3488") @RequestParam float longitude,
+            @Parameter(example = "35.1") @RequestParam float altitude) {
+        return ApplicationReactiveSecurityContextHolder.getAuthentication()
+                .map(ApplicationAuthentication::getUserId)
+                .flatMap(userId -> meetService.setPosition(userId, latitude, longitude, altitude));
+    }
 }

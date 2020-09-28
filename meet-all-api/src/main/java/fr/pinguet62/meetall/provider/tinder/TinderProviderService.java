@@ -147,4 +147,9 @@ public class TinderProviderService implements ProviderService {
                 .map(TinderGetMetaResponseDto::getUser);
     }
 
+    @Override
+    public Mono<Void> setPosition(String authToken, double latitude, double longitude, double altitude) {
+        return client.ping(authToken, latitude, longitude)
+                .then();
+    }
 }

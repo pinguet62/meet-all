@@ -35,4 +35,11 @@ public interface ProviderService {
 
     Mono<ProfileDto> getProfile(String credential, String profileId);
 
+    /**
+     * @return {@link Mono#empty()} when not supported or success.
+     */
+    default Mono<Void> setPosition(String credential, double latitude, double longitude, double altitude) {
+        return Mono.empty();
+    }
+
 }

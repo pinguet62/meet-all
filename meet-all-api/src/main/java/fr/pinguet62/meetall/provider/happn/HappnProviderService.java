@@ -4,6 +4,7 @@ import fr.pinguet62.meetall.ExpiredTokenException;
 import fr.pinguet62.meetall.provider.Provider;
 import fr.pinguet62.meetall.provider.ProviderService;
 import fr.pinguet62.meetall.provider.happn.dto.HappnConversationsResponseDto;
+import fr.pinguet62.meetall.provider.happn.dto.HappnDevicesDto;
 import fr.pinguet62.meetall.provider.happn.dto.HappnMessagesResponseDto;
 import fr.pinguet62.meetall.provider.happn.dto.HappnNotificationsResponseDto;
 import fr.pinguet62.meetall.provider.happn.dto.HappnOauthResponseDto;
@@ -18,6 +19,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClientResponseException.Gone;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+
+import java.util.List;
 
 import static fr.pinguet62.meetall.provider.Provider.HAPPN;
 import static fr.pinguet62.meetall.provider.happn.dto.HappnRelation.NEW_RELATION;
@@ -110,4 +113,14 @@ public class HappnProviderService implements ProviderService {
                 .map(HappnConverters::convert);
     }
 
+    @Override
+    public Mono<Void> setPosition(String authToken, double latitude, double longitude, double altitude) {
+        return client.getUserMe(authToken)
+                .map(it -> it.getData().getId())
+                .flatMapMany(meId -> client.getUserDevices(authToken, meId)
+                        .flatMapIterable(it -> it.getData().orElseGet(List::of))
+                        .map(HappnDevicesDto::getId)
+                        .flatMap(deviceId -> client.setUserMePosition(authToken, meId, deviceId, latitude, longitude, altitude)))
+                .then();
+    }
 }

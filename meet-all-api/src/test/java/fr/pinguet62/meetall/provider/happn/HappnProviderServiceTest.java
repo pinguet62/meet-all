@@ -11,7 +11,9 @@ import okhttp3.mockwebserver.MockWebServer;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.springframework.http.HttpMethod;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.test.StepVerifier;
 
 import java.io.IOException;
 import java.net.URL;
@@ -22,6 +24,7 @@ import static fr.pinguet62.meetall.MatcherUtils.header;
 import static fr.pinguet62.meetall.MatcherUtils.takingRequest;
 import static fr.pinguet62.meetall.MatcherUtils.throwing;
 import static fr.pinguet62.meetall.MatcherUtils.url;
+import static fr.pinguet62.meetall.MatcherUtils.method;
 import static fr.pinguet62.meetall.MatcherUtils.with;
 import static fr.pinguet62.meetall.TestUtils.readResource;
 import static fr.pinguet62.meetall.provider.happn.HappnClient.HEADER;
@@ -34,6 +37,8 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
 import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
+import static org.springframework.http.HttpMethod.POST;
+import static org.springframework.http.HttpMethod.PUT;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 public class HappnProviderServiceTest {
@@ -343,4 +348,30 @@ public class HappnProviderServiceTest {
         assertThat(() -> happnProvider.getProfile(authToken, userId).block(), throwing(ExpiredTokenException.class));
     }
 
+    @Test
+    public void setPosition() {
+        server.enqueue(new MockResponse()
+                .setHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
+                .setBody(readResource("/fr/pinguet62/meetall/provider/happn/users_me.json")));
+        server.enqueue(new MockResponse()
+                .setHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
+                .setBody(readResource("/fr/pinguet62/meetall/provider/happn/users_me_devices.json")));
+        server.enqueue(new MockResponse()
+                .setHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
+                .setBody(""));
+
+        StepVerifier.create(happnProvider.setPosition(authToken, 48.8534, 2.3488, 35.1))
+                .verifyComplete();
+
+        assertThat(server, takingRequest(allOf(
+                url(with(HttpUrl::url, with(URL::toString, containsString("users/me")))),
+                header(HEADER, "OAuth=\"" + authToken + "\""))));
+        assertThat(server, takingRequest(allOf(
+                url(with(HttpUrl::url, with(URL::toString, containsString("users/db17fecb-6332-4bb2-a5ad-2ad3317d4af3/devices")))),
+                header(HEADER, "OAuth=\"" + authToken + "\""))));
+        assertThat(server, takingRequest(allOf(
+                method(is(PUT.name())),
+                url(with(HttpUrl::url, with(URL::toString, containsString("users/db17fecb-6332-4bb2-a5ad-2ad3317d4af3/devices/87fbaa4f-2cef-4c60-bac3-08348cdf32e5")))),
+                header(HEADER, "OAuth=\"" + authToken + "\""))));
+    }
 }

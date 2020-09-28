@@ -117,4 +117,21 @@ public class MatcherUtils {
         };
     }
 
+    public static Matcher<RecordedRequest> method(Matcher<String> matcher) {
+        return new TypeSafeMatcher<RecordedRequest>() {
+            private String actual;
+
+            @Override
+            public void describeTo(Description description) {
+                description.appendValue(actual).appendDescriptionOf(matcher);
+            }
+
+            @Override
+            protected boolean matchesSafely(RecordedRequest request) {
+                actual = request.getMethod();
+                return matcher.matches(actual);
+            }
+        };
+    }
+
 }

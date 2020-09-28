@@ -10,6 +10,7 @@ import fr.pinguet62.meetall.provider.tinder.dto.TinderGetUserResponseDto;
 import fr.pinguet62.meetall.provider.tinder.dto.TinderGiphyTrendingDataResponseDto;
 import fr.pinguet62.meetall.provider.tinder.dto.TinderGiphyTrendingResponseDto;
 import fr.pinguet62.meetall.provider.tinder.dto.TinderLikeResponseDto;
+import fr.pinguet62.meetall.provider.tinder.dto.TinderPingResponseDto;
 import fr.pinguet62.meetall.provider.tinder.dto.TinderProfileResponseDto;
 import fr.pinguet62.meetall.provider.tinder.dto.TinderSendMessageRequestDto;
 import fr.pinguet62.meetall.provider.tinder.dto.TinderSendMessageResponseDto;
@@ -19,6 +20,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+
+import java.util.Map;
 
 import static org.springframework.web.reactive.function.BodyInserters.fromValue;
 
@@ -111,6 +114,16 @@ class TinderClient {
                 .uri("/meta")
                 .header(HEADER, authToken)
                 .retrieve().bodyToMono(TinderGetMetaResponseDto.class);
+    }
+
+    Mono<TinderPingResponseDto> ping(String authToken, double lat, double lon) {
+        return webClient.post()
+                .uri("/user/ping")
+                .bodyValue(Map.ofEntries(
+                        Map.entry("lat", lat),
+                        Map.entry("lon", lon)))
+                .header(HEADER, authToken)
+                .retrieve().bodyToMono(TinderPingResponseDto.class);
     }
 
     Flux<TinderGiphyTrendingDataResponseDto> getGiphyTrending() {
