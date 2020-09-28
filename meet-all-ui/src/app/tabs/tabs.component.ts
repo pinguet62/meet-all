@@ -22,6 +22,11 @@ import {Component} from '@angular/core';
                     <ion-label i18n="@@credentials.title">Credentials</ion-label>
                 </ion-tab-button>
 
+                <ion-tab-button tab="configuration">
+                    <ion-icon name="settings"></ion-icon>
+                    <ion-label i18n="@@configuration.title">Configuration</ion-label>
+                </ion-tab-button>
+
             </ion-tab-bar>
 
         </ion-tabs>

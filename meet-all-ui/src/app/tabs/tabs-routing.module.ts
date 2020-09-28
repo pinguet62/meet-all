@@ -34,6 +34,13 @@ import {TabsComponent} from './tabs.component';
                         loadChildren: '../credentials/credential-list/credential-list.module#CredentialListModule',
                     }]
                 },
+                {
+                    path: 'configuration',
+                    children: [{
+                        path: '',
+                        loadChildren: '../configuration/configuration.module#ConfigurationModule',
+                    }]
+                },
             ],
         },
     ])],
