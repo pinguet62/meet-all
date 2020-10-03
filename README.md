@@ -2,7 +2,7 @@
 
 Dating application aggregator.
 
-[![https://github.com/pinguet62/meet-all/actions?workflow=CI](https://github.com/pinguet62/meet-all/workflows/CI/badge.svg)](https://github.com/pinguet62/meet-all/actions?query=workflow%3ACI+branch%3Amaster)
+[![https://github.com/pinguet62/meet-all/actions?workflow=CI](https://github.com/pinguet62/meet-all/workflows/CI/badge.svg)](https://github.com/pinguet62/meet-all/actions?query=workflow%3ACI+branch%3Amain)
 
 [![Heroku](http://heroku-badge.herokuapp.com/?app=meet-all-ui)](https://meet-all-ui.herokuapp.com)
 [![Heroku](http://heroku-badge.herokuapp.com/?app=meet-all-api)](https://meet-all-api.herokuapp.com/swagger-ui.html)
@@ -14,4 +14,4 @@ Dating application aggregator.
 
 This application **brings** together **all the accounts** of **all the applications** in a **single interface**!
 
-![Schema](https://raw.githubusercontent.com/pinguet62/meet-all/master/doc/schema.png)
+![Schema](https://raw.githubusercontent.com/pinguet62/meet-all/main/doc/schema.png)
