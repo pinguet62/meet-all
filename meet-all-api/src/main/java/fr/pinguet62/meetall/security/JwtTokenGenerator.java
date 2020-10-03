@@ -1,5 +1,6 @@
 package fr.pinguet62.meetall.security;
 
+import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.JWSAlgorithm;
 import com.nimbusds.jose.JWSHeader;
 import com.nimbusds.jose.JWSObject;
@@ -8,7 +9,6 @@ import com.nimbusds.jose.Payload;
 import com.nimbusds.jose.crypto.MACSigner;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.JWTClaimsSet.Builder;
-import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -33,7 +33,6 @@ public class JwtTokenGenerator {
     }
 
     // testing
-    @SneakyThrows
     String generateToken(String userId, JWSAlgorithm algorithm, SecretKey secret) {
         JWSHeader header = new JWSHeader(algorithm);
         JWTClaimsSet claims = new Builder()
@@ -41,8 +40,13 @@ public class JwtTokenGenerator {
                 .build();
         Payload payload = new Payload(claims.toJSONObject());
         JWSObject jwsObject = new JWSObject(header, payload);
-        JWSSigner signer = new MACSigner(secret);
-        jwsObject.sign(signer);
+        JWSSigner signer;
+        try {
+            signer = new MACSigner(secret);
+            jwsObject.sign(signer);
+        } catch (JOSEException e) {
+            throw new RuntimeException(e);
+        }
         return jwsObject.serialize();
     }
 

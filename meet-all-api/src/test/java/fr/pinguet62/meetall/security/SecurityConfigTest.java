@@ -1,7 +1,6 @@
 package fr.pinguet62.meetall.security;
 
 import fr.pinguet62.meetall.config.OpenApiConfig;
-import lombok.SneakyThrows;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -23,6 +22,7 @@ import reactor.core.publisher.Mono;
 
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
+import java.security.NoSuchAlgorithmException;
 
 import static fr.pinguet62.meetall.security.JwtTokenGenerator.ALGORITHM;
 import static fr.pinguet62.meetall.security.SecurityConfigTest.TestController;
@@ -51,9 +51,13 @@ public class SecurityConfigTest {
         System.setProperty("spring.security.oauth2.resourceserver.jwt.key-value", SecretKeyUtils.toString(KEY));
     }
 
-    @SneakyThrows
     private static SecretKey generateRandomSecretKey() {
-        KeyGenerator keyGen = KeyGenerator.getInstance("AES");
+        KeyGenerator keyGen;
+        try {
+            keyGen = KeyGenerator.getInstance("AES");
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
+        }
         keyGen.init(256);
         return keyGen.generateKey();
     }

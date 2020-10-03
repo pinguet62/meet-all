@@ -1,9 +1,10 @@
 package fr.pinguet62.meetall.i18n;
 
-import lombok.SneakyThrows;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 
+import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
@@ -20,10 +21,14 @@ public class LocaleUtils {
         Locale.setDefault(DEFAULT_LOCALE);
     }
 
-    @SneakyThrows
     public static List<Locale> getSupportedLocales() {
         PathMatchingResourcePatternResolver resourceLoader = new PathMatchingResourcePatternResolver(LocaleUtils.class.getClassLoader());
-        Resource[] resources = resourceLoader.getResources("classpath*:/messages_*.properties");
+        Resource[] resources;
+        try {
+            resources = resourceLoader.getResources("classpath*:/messages_*.properties");
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
         return Stream.concat(
                 Stream.of(DEFAULT_LOCALE),
                 Arrays.stream(resources)

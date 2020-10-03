@@ -1,4 +1,4 @@
-FROM openjdk:14-slim
+FROM openjdk:15-slim
 
 RUN apt-get update \
  && apt-get install -y wget gnupg gnupg2 gnupg1 \
@@ -16,4 +16,4 @@ RUN apt-get update \
         libx11-dev
 
 COPY ./target/meet-all-api-1.0-SNAPSHOT.jar app.jar
-CMD ["java", "--enable-preview", "-jar", "app.jar"]
+CMD ["java", "-jar", "app.jar"]
