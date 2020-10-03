@@ -101,7 +101,7 @@ public class RobotCredentialExtractor {
      */
     private void verifyCredentials(WebDriver driver) {
         try {
-            WebElement element = new WebDriverWait(driver, Duration.ofSeconds(1).toSeconds()).until(presenceOfElementLocated(By.cssSelector("div[role='alert']")));
+            WebElement element = new WebDriverWait(driver, Duration.ofSeconds(1).toSeconds()).until(presenceOfElementLocated(By.cssSelector(".uiContextualLayer > div > div[role='alert']")));
             throw new InvalidCredentialsException(element.getText());
         } catch (TimeoutException e) {
         }
