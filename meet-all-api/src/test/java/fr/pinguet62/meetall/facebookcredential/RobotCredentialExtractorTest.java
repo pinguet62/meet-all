@@ -47,7 +47,7 @@ public class RobotCredentialExtractorTest {
                 .stubFor(get(new UrlPattern(new ContainsPattern("/dialog/oauth"), false))
                         .willReturn(aResponse()
                                 .withStatus(200)
-                                .withBody(getHtml("/fr/pinguet62/meetall/facebookcredential/ok/step0 - dialog_oauth.html"))));
+                                .withBody(getHtml("/fr/pinguet62/meetall/facebookcredential/step0 - dialog_oauth.html"))));
         facebookWireMockServer
                 .stubFor(post(new UrlPattern(new ContainsPattern("/login/device-based/regular/login"), false))
                         .willReturn(aResponse()
@@ -68,7 +68,7 @@ public class RobotCredentialExtractorTest {
                 .stubFor(get(new UrlPattern(new ContainsPattern("/dialog/oauth"), false))
                         .willReturn(aResponse()
                                 .withStatus(200)
-                                .withBody(getHtml("/fr/pinguet62/meetall/facebookcredential/verifyCredentials/step0 - dialog_oauth.html"))));
+                                .withBody(getHtml("/fr/pinguet62/meetall/facebookcredential/step0 - dialog_oauth.html"))));
         facebookWireMockServer
                 .stubFor(post(new UrlPattern(new ContainsPattern("/login/device-based/regular/login"), false))
                         .willReturn(aResponse()
@@ -85,7 +85,7 @@ public class RobotCredentialExtractorTest {
                 .stubFor(get(new UrlPattern(new ContainsPattern("/dialog/oauth"), false))
                         .willReturn(aResponse()
                                 .withStatus(200)
-                                .withBody(getHtml("/fr/pinguet62/meetall/facebookcredential/verifyCredentials/step0 - dialog_oauth.html"))));
+                                .withBody(getHtml("/fr/pinguet62/meetall/facebookcredential/step0 - dialog_oauth.html"))));
         facebookWireMockServer
                 .stubFor(post(new UrlPattern(new ContainsPattern("/login/device-based/regular/login"), false))
                         .willReturn(aResponse()
@@ -105,7 +105,7 @@ public class RobotCredentialExtractorTest {
                 .stubFor(get(new UrlPattern(new ContainsPattern("/dialog/oauth"), false))
                         .willReturn(aResponse()
                                 .withStatus(200)
-                                .withBody(getHtml("/fr/pinguet62/meetall/facebookcredential/ok/step0 - dialog_oauth.html"))));
+                                .withBody(getHtml("/fr/pinguet62/meetall/facebookcredential/step0 - dialog_oauth.html"))));
         facebookWireMockServer
                 .stubFor(post(new UrlPattern(new ContainsPattern("/login/device-based/regular/login"), false))
                         .willReturn(aResponse()
@@ -126,7 +126,7 @@ public class RobotCredentialExtractorTest {
                 .stubFor(get(new UrlPattern(new ContainsPattern("/dialog/oauth"), false))
                         .willReturn(aResponse()
                                 .withStatus(200)
-                                .withBody(getHtml("/fr/pinguet62/meetall/facebookcredential/verifyAbsentOrProcessAndThrowError/step0 - dialog_oauth.html"))));
+                                .withBody(getHtml("/fr/pinguet62/meetall/facebookcredential/step0 - dialog_oauth.html"))));
         facebookWireMockServer
                 .stubFor(post(new UrlPattern(new ContainsPattern("/login/device-based/regular/login"), false))
                         .willReturn(aResponse()
