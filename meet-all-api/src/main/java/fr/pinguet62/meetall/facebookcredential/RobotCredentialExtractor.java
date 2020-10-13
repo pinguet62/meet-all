@@ -6,6 +6,7 @@ import org.apache.hc.core5.net.URLEncodedUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.openqa.selenium.By;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
@@ -70,8 +71,15 @@ public class RobotCredentialExtractor {
         WebDriver driver = new ChromeDriver(options);
 
         try {
-            // Facebook login page
             driver.get(facebookOauthUrl);
+
+            // Accept cookies
+            try {
+                driver.findElement(By.cssSelector("[data-cookiebanner=\"accept_button\"]")).click();
+            } catch (NoSuchElementException e) {
+            }
+
+            // Facebook login page
             driver.findElement(By.id("email")).sendKeys(email);
             driver.findElement(By.id("pass")).sendKeys(password);
             driver.findElement(By.cssSelector("[type=submit]")).click();
