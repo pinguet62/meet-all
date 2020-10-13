@@ -11,6 +11,11 @@ import static com.fasterxml.jackson.annotation.JsonFormat.Shape.STRING;
 
 @Value
 public class TinderUserDto {
+    @Value
+    public static class TinderPhotoDto {
+        @NonNull
+        String url;
+    }
 
     @NonNull
     String _id;

@@ -11,7 +11,6 @@ import okhttp3.mockwebserver.MockWebServer;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.springframework.http.HttpMethod;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.test.StepVerifier;
 
@@ -21,10 +20,10 @@ import java.time.OffsetDateTime;
 import java.util.List;
 
 import static fr.pinguet62.meetall.MatcherUtils.header;
+import static fr.pinguet62.meetall.MatcherUtils.method;
 import static fr.pinguet62.meetall.MatcherUtils.takingRequest;
 import static fr.pinguet62.meetall.MatcherUtils.throwing;
 import static fr.pinguet62.meetall.MatcherUtils.url;
-import static fr.pinguet62.meetall.MatcherUtils.method;
 import static fr.pinguet62.meetall.MatcherUtils.with;
 import static fr.pinguet62.meetall.TestUtils.readResource;
 import static fr.pinguet62.meetall.provider.happn.HappnClient.HEADER;
@@ -37,7 +36,6 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
 import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
-import static org.springframework.http.HttpMethod.POST;
 import static org.springframework.http.HttpMethod.PUT;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
@@ -132,7 +130,7 @@ public class HappnProviderServiceTest {
         final String userId = "userId";
         server.enqueue(new MockResponse()
                 .setHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
-                .setBody(readResource("/fr/pinguet62/meetall/provider/happn/accepted_not-matched.json")));
+                .setBody(readResource("/fr/pinguet62/meetall/provider/happn/accepted_notMatched.json")));
 
         Boolean matched = happnProvider.likeOrUnlikeProposal(authToken, userId, true).block();
 

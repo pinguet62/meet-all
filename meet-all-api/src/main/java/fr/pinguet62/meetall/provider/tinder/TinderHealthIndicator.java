@@ -1,5 +1,6 @@
 package fr.pinguet62.meetall.provider.tinder;
 
+import fr.pinguet62.meetall.provider.tinder.dto.TinderGiphyTrendingResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.actuate.endpoint.annotation.Endpoint;
 import org.springframework.boot.actuate.health.AbstractReactiveHealthIndicator;
@@ -18,7 +19,10 @@ public class TinderHealthIndicator extends AbstractReactiveHealthIndicator {
 
     @Override
     protected Mono<Health> doHealthCheck(Builder builder) {
-        return tinderClient.getGiphyTrending().collectList()
+        return tinderClient
+                .getGiphyTrending()
+                .flatMapIterable(TinderGiphyTrendingResponseDto::getData)
+                .collectList()
                 .map(options -> builder.up().build())
                 .onErrorResume(WebClientResponseException.class, ex -> Mono.just(builder.down(ex).build()));
     }

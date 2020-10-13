@@ -1,5 +1,6 @@
 package fr.pinguet62.meetall.provider.once.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.NonNull;
 import lombok.Value;
 
@@ -8,7 +9,7 @@ public class OnceMessagesDto {
     @NonNull
     String id;
 
-    @NonNull
+    @JsonProperty(required = true)
     int number;
 
     /**
@@ -20,6 +21,6 @@ public class OnceMessagesDto {
     @NonNull
     String message;
 
-    @NonNull
+    @JsonProperty(required = true)
     long created_at;
 }

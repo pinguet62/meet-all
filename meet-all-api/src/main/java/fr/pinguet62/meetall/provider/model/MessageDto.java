@@ -25,7 +25,6 @@ public class MessageDto {
     ZonedDateTime date;
 
     @Schema(required = true, description = "If was sent, `false` otherwise.")
-    @NonNull
     boolean sent;
 
     @Schema(example = "Do you play football?")

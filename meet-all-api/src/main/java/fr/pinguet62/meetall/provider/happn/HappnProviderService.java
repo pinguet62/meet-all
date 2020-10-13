@@ -4,7 +4,7 @@ import fr.pinguet62.meetall.ExpiredTokenException;
 import fr.pinguet62.meetall.provider.Provider;
 import fr.pinguet62.meetall.provider.ProviderService;
 import fr.pinguet62.meetall.provider.happn.dto.HappnConversationsResponseDto;
-import fr.pinguet62.meetall.provider.happn.dto.HappnDevicesDto;
+import fr.pinguet62.meetall.provider.happn.dto.HappnDevicesResponseDto.HappnDevicesDto;
 import fr.pinguet62.meetall.provider.happn.dto.HappnMessagesResponseDto;
 import fr.pinguet62.meetall.provider.happn.dto.HappnNotificationsResponseDto;
 import fr.pinguet62.meetall.provider.happn.dto.HappnOauthResponseDto;
@@ -23,7 +23,7 @@ import reactor.core.publisher.Mono;
 import java.util.List;
 
 import static fr.pinguet62.meetall.provider.Provider.HAPPN;
-import static fr.pinguet62.meetall.provider.happn.dto.HappnRelation.NEW_RELATION;
+import static fr.pinguet62.meetall.provider.happn.dto.HappnUserDto.HappnRelation.NEW_RELATION;
 import static java.util.Objects.requireNonNull;
 
 /**

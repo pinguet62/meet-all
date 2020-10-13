@@ -10,7 +10,6 @@ import static com.fasterxml.jackson.annotation.JsonFormat.Shape.STRING;
 
 @Value
 public class TinderMessageDto {
-
     @NonNull
     String _id;
 

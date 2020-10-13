@@ -10,7 +10,6 @@ import static java.util.Optional.ofNullable;
 
 @Value
 public class TinderLikeResponseDto {
-
     /**
      * <ul>
      * <li>Not matched: {@code false}</li>

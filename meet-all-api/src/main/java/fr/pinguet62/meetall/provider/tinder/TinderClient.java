@@ -7,7 +7,6 @@ import fr.pinguet62.meetall.provider.tinder.dto.TinderGetMessagesResponseDto;
 import fr.pinguet62.meetall.provider.tinder.dto.TinderGetMetaResponseDto;
 import fr.pinguet62.meetall.provider.tinder.dto.TinderGetRecommendationsResponseDto;
 import fr.pinguet62.meetall.provider.tinder.dto.TinderGetUserResponseDto;
-import fr.pinguet62.meetall.provider.tinder.dto.TinderGiphyTrendingDataResponseDto;
 import fr.pinguet62.meetall.provider.tinder.dto.TinderGiphyTrendingResponseDto;
 import fr.pinguet62.meetall.provider.tinder.dto.TinderLikeResponseDto;
 import fr.pinguet62.meetall.provider.tinder.dto.TinderPingResponseDto;
@@ -18,7 +17,6 @@ import fr.pinguet62.meetall.provider.tinder.dto.TinderUnlikeResponseDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.Map;
@@ -126,12 +124,9 @@ class TinderClient {
                 .retrieve().bodyToMono(TinderPingResponseDto.class);
     }
 
-    Flux<TinderGiphyTrendingDataResponseDto> getGiphyTrending() {
+    Mono<TinderGiphyTrendingResponseDto> getGiphyTrending() {
         return webClient.get()
                 .uri("/giphy/trending")
-                .retrieve()
-                .bodyToMono(TinderGiphyTrendingResponseDto.class)
-                .flatMapIterable(TinderGiphyTrendingResponseDto::getData);
+                .retrieve().bodyToMono(TinderGiphyTrendingResponseDto.class);
     }
-
 }

@@ -7,7 +7,6 @@ import java.util.List;
 
 @Value
 public class TinderGetRecommendationsResponseDto {
-
     @Value
     public static class TinderGetRecommendationsDataResponseDto {
         @NonNull

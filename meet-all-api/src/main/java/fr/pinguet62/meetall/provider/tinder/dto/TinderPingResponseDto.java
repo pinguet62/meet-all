@@ -5,7 +5,6 @@ import lombok.Value;
 
 @Value
 public class TinderPingResponseDto {
-
     @NonNull
     String status;
 }

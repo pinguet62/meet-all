@@ -140,7 +140,7 @@ class MeetService {
     }
 
     /**
-     * @param userId       {@link Credential#getUserId()}
+     * @param userId {@link Credential#getUserId()}
      */
     public Mono<Void> setPosition(String userId, double latitude, double longitude, double altitude) {
         return credentialService.findByUserId(userId)

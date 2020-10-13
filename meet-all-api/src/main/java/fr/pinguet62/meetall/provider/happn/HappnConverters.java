@@ -1,10 +1,10 @@
 package fr.pinguet62.meetall.provider.happn;
 
-import fr.pinguet62.meetall.provider.happn.dto.HappnConversationDto;
+import fr.pinguet62.meetall.provider.happn.dto.HappnConversationsResponseDto.HappnConversationDto;
 import fr.pinguet62.meetall.provider.happn.dto.HappnMessageDto;
-import fr.pinguet62.meetall.provider.happn.dto.HappnNotificationDto;
-import fr.pinguet62.meetall.provider.happn.dto.HappnProfileDto;
+import fr.pinguet62.meetall.provider.happn.dto.HappnNotificationsResponseDto.HappnNotificationDto;
 import fr.pinguet62.meetall.provider.happn.dto.HappnUserDto;
+import fr.pinguet62.meetall.provider.happn.dto.HappnUserDto.HappnProfileDto;
 import fr.pinguet62.meetall.provider.model.ConversationDto;
 import fr.pinguet62.meetall.provider.model.MessageDto;
 import fr.pinguet62.meetall.provider.model.ProfileDto;

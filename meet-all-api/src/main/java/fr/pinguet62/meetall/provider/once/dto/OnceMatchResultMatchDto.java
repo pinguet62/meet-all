@@ -1,5 +1,6 @@
 package fr.pinguet62.meetall.provider.once.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.NonNull;
 import lombok.Value;
 
@@ -11,6 +12,6 @@ public class OnceMatchResultMatchDto {
     @NonNull
     OnceUserDto user;
 
-    @NonNull
+    @JsonProperty(required = true)
     boolean viewed;
 }

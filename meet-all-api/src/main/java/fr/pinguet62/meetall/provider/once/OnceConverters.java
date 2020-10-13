@@ -3,10 +3,10 @@ package fr.pinguet62.meetall.provider.once;
 import fr.pinguet62.meetall.provider.model.ConversationDto;
 import fr.pinguet62.meetall.provider.model.MessageDto;
 import fr.pinguet62.meetall.provider.model.ProfileDto;
-import fr.pinguet62.meetall.provider.once.dto.OnceConnectionDto;
+import fr.pinguet62.meetall.provider.once.dto.OnceConversationsResultDto.OnceConnectionDto;
 import fr.pinguet62.meetall.provider.once.dto.OnceMessagesDto;
-import fr.pinguet62.meetall.provider.once.dto.OncePictureDto;
 import fr.pinguet62.meetall.provider.once.dto.OnceUserDto;
+import fr.pinguet62.meetall.provider.once.dto.OnceUserDto.OncePictureDto;
 
 import java.time.Instant;
 import java.time.ZoneId;

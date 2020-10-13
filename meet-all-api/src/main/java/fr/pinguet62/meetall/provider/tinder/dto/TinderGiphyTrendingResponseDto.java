@@ -7,6 +7,12 @@ import java.util.List;
 
 @Value
 public class TinderGiphyTrendingResponseDto {
+    @Value
+    public static class TinderGiphyTrendingDataResponseDto {
+        @NonNull
+        String url;
+    }
+
     @NonNull
     List<TinderGiphyTrendingDataResponseDto> data;
 }

@@ -4,13 +4,13 @@ import fr.pinguet62.meetall.provider.model.ConversationDto;
 import fr.pinguet62.meetall.provider.model.MessageDto;
 import fr.pinguet62.meetall.provider.model.ProfileDto;
 import fr.pinguet62.meetall.provider.model.ProposalDto;
+import fr.pinguet62.meetall.provider.tinder.dto.TinderGetConversationResponseDto.TinderGetConversationDataResponseDto.TinderMatchDto;
 import fr.pinguet62.meetall.provider.tinder.dto.TinderGetRecommendationsResponseDto.TinderRecommendationDto;
 import fr.pinguet62.meetall.provider.tinder.dto.TinderLikeResponseDto;
-import fr.pinguet62.meetall.provider.tinder.dto.TinderMatchDto;
 import fr.pinguet62.meetall.provider.tinder.dto.TinderMessageDto;
-import fr.pinguet62.meetall.provider.tinder.dto.TinderPhotoDto;
 import fr.pinguet62.meetall.provider.tinder.dto.TinderSendMessageResponseDto;
 import fr.pinguet62.meetall.provider.tinder.dto.TinderUserDto;
+import fr.pinguet62.meetall.provider.tinder.dto.TinderUserDto.TinderPhotoDto;
 
 import java.time.Clock;
 import java.time.temporal.ChronoUnit;

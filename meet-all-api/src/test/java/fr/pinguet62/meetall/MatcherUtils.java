@@ -14,7 +14,7 @@ import static org.hamcrest.Matchers.is;
 public class MatcherUtils {
 
     public static Matcher<Runnable> throwing(Class<? extends Throwable> type) {
-        return new TypeSafeMatcher<Runnable>() {
+        return new TypeSafeMatcher<>() {
             @Override
             public void describeTo(Description description) {
                 description.appendText("throws " + type.getSimpleName());
@@ -26,10 +26,7 @@ public class MatcherUtils {
                     function.run();
                     return false;
                 } catch (Throwable throwable) {
-                    if (!(type.isAssignableFrom(throwable.getClass()))) {
-                        return false;
-                    }
-                    return true;
+                    return type.isAssignableFrom(throwable.getClass());
                 }
             }
         };
@@ -63,7 +60,7 @@ public class MatcherUtils {
      * because {@link MockWebServer#takeRequest()} pop 1 request by call.
      */
     public static Matcher<MockWebServer> takingRequest(Matcher<RecordedRequest> matcher) {
-        return new TypeSafeMatcher<MockWebServer>() {
+        return new TypeSafeMatcher<>() {
             @Override
             public void describeTo(Description description) {
                 description.appendDescriptionOf(matcher);
@@ -86,7 +83,7 @@ public class MatcherUtils {
     }
 
     public static Matcher<RecordedRequest> header(String key, Matcher<? super String> matcher) {
-        return new TypeSafeMatcher<RecordedRequest>() {
+        return new TypeSafeMatcher<>() {
             @Override
             public void describeTo(Description description) {
                 description.appendText("headers with key " + key + " ").appendDescriptionOf(matcher);
@@ -101,7 +98,7 @@ public class MatcherUtils {
     }
 
     public static Matcher<RecordedRequest> url(Matcher<? super HttpUrl> matcher) {
-        return new TypeSafeMatcher<RecordedRequest>() {
+        return new TypeSafeMatcher<>() {
             private HttpUrl actual;
 
             @Override
@@ -118,7 +115,7 @@ public class MatcherUtils {
     }
 
     public static Matcher<RecordedRequest> method(Matcher<String> matcher) {
-        return new TypeSafeMatcher<RecordedRequest>() {
+        return new TypeSafeMatcher<>() {
             private String actual;
 
             @Override

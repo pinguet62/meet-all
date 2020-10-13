@@ -28,7 +28,6 @@ public class ProfileDto {
     String name;
 
     @Schema(required = true, minimum = "0", example = "27")
-    @NonNull
     @PositiveOrZero
     int age;
 
