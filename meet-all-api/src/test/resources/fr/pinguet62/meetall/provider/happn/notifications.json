@@ -38,9 +38,9 @@
         "role": "CLIENT",
         "type": "CLIENT",
         "clickable_message_link": false,
-        "display_name": "Justine",
+        "display_name": "Pub",
         "my_relation": 1,
-        "age": 30,
+        "age": 0,
         "profiles": [],
         "nb_photos": 4,
         "birth_date": null
@@ -65,6 +65,33 @@
           }
         ],
         "nb_photos": 5,
+        "birth_date": null
+      }
+    },
+    {
+      "id": "6758b9e9-7691-4acb-8096-9a8c596098dc_895c50d5-ac5c-4625-877e-44375c0af158",
+      "notifier": {
+        "role": "CLIENT",
+        "type": "client",
+        "id": "895c50d5-ac5c-4625-877e-44375c0af158",
+        "display_name": "Chera",
+        "my_relation": 0,
+        "age": 32,
+        "profiles": [
+          {
+            "id": "42f041e0-0acc-11eb-8d03-eb8aa831a0b7",
+            "url": "https://images.happn.fr/resizing/895c50d5-ac5c-4625-877e-44375c0af158/42f041e0-0acc-11eb-8d03-eb8aa831a0b7.jpg?width=320&height=320&mode=0",
+            "width": 320,
+            "height": 320
+          },
+          {
+            "id": "43c740f0-0acc-11eb-ad13-ad9bf2f10c95",
+            "url": "https://images.happn.fr/resizing/895c50d5-ac5c-4625-877e-44375c0af158/43c740f0-0acc-11eb-ad13-ad9bf2f10c95.jpg?width=320&height=320&mode=0",
+            "width": 320,
+            "height": 320
+          }
+        ],
+        "nb_photos": 9,
         "birth_date": null
       }
     }

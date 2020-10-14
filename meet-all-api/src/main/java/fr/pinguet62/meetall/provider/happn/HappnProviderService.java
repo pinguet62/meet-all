@@ -10,6 +10,7 @@ import fr.pinguet62.meetall.provider.happn.dto.HappnNotificationsResponseDto;
 import fr.pinguet62.meetall.provider.happn.dto.HappnOauthResponseDto;
 import fr.pinguet62.meetall.provider.happn.dto.HappnSendMessageResponseDto;
 import fr.pinguet62.meetall.provider.happn.dto.HappnUserAcceptedResponseDto;
+import fr.pinguet62.meetall.provider.happn.dto.HappnUserDto;
 import fr.pinguet62.meetall.provider.happn.dto.HappnUserResponseDto;
 import fr.pinguet62.meetall.provider.model.ConversationDto;
 import fr.pinguet62.meetall.provider.model.MessageDto;
@@ -55,11 +56,17 @@ public class HappnProviderService implements ProviderService {
 
     @Override
     public Flux<ProposalDto> getProposals(String authToken) {
-        return client.getNotifications(authToken)
+        return client.getUserMe(authToken)
                 .onErrorMap(Gone.class, ExpiredTokenException::new)
-                .flatMapIterable(HappnNotificationsResponseDto::getData)
-                .filter(it -> it.getNotifier().getMy_relation().map(myRelation -> myRelation.equals(NEW_RELATION)).orElse(false))
-                .map(HappnConverters::convert);
+                .map(HappnUserResponseDto::getData)
+                .map(HappnUserDto::getRenewable_credits)
+                .flatMapMany(limit ->
+                        client.getNotifications(authToken)
+                                .onErrorMap(Gone.class, ExpiredTokenException::new)
+                                .flatMapIterable(HappnNotificationsResponseDto::getData)
+                                .filter(it -> it.getNotifier().getMy_relation().map(myRelation -> myRelation.equals(NEW_RELATION)).orElse(false))
+                                .map(HappnConverters::convert)
+                                .take(limit));
     }
 
     @Override

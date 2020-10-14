@@ -1,0 +1,12 @@
+{
+  "success": false,
+  "status": 412,
+  "error": "Not enough like credits",
+  "data": {
+    "renewable_likes_per_period": 100,
+    "cooldown_likes_period": 43200,
+    "renewable_likes": 0,
+    "cooldown_likes_time_left": 30557
+  },
+  "error_code": 4701
+}

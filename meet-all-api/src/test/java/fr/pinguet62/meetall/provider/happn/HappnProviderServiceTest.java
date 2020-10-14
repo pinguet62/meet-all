@@ -61,10 +61,16 @@ public class HappnProviderServiceTest {
     public void getProposals() {
         server.enqueue(new MockResponse()
                 .setHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
+                .setBody(readResource("/fr/pinguet62/meetall/provider/happn/users_me.json")));
+        server.enqueue(new MockResponse()
+                .setHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
                 .setBody(readResource("/fr/pinguet62/meetall/provider/happn/notifications.json")));
 
         List<ProposalDto> proposals = happnProvider.getProposals(authToken).collectList().block();
 
+        assertThat(server, takingRequest(allOf(
+                url(with(HttpUrl::url, with(URL::toString, containsString("users/me")))),
+                header(HEADER, "OAuth=\"" + authToken + "\""))));
         assertThat(server, takingRequest(allOf(
                 url(with(HttpUrl::url, with(URL::toString, containsString("users/me/notifications")))),
                 url(with(HttpUrl::url, with(URL::toString, containsString("types=468")))),
@@ -168,6 +174,17 @@ public class HappnProviderServiceTest {
                 .setBody(readResource("/fr/pinguet62/meetall/provider/happn/tokenExpired410.json")));
 
         assertThat(() -> happnProvider.likeOrUnlikeProposal(authToken, userId, true).block(), throwing(ExpiredTokenException.class));
+    }
+
+    @Test
+    public void likeOrUnlikeProposal_like_quotaExceeded() {
+        final String userId = "userId";
+        server.enqueue(new MockResponse()
+                .setResponseCode(412)
+                .setHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
+                .setBody(readResource("/fr/pinguet62/meetall/provider/happn/tokenExpired410.json")));
+
+        assertThat(() -> happnProvider.likeOrUnlikeProposal(authToken, userId, true).block(), throwing(Exception.class));
     }
 
     @Test
