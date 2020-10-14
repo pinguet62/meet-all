@@ -19,6 +19,7 @@ import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options
 import static com.github.tomakehurst.wiremock.stubbing.Scenario.STARTED;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThrows;
 
@@ -63,7 +64,7 @@ public class RobotCredentialExtractorTest {
     }
 
     @Test
-    public void test_verifyCredentials_email() {
+    public void test_verifyCredentials_unknownEmail() {
         facebookWireMockServer
                 .stubFor(get(new UrlPattern(new ContainsPattern("/dialog/oauth"), false))
                         .willReturn(aResponse()
@@ -80,7 +81,7 @@ public class RobotCredentialExtractorTest {
     }
 
     @Test
-    public void test_verifyCredentials_password() {
+    public void test_verifyCredentials_badPassword() {
         facebookWireMockServer
                 .stubFor(get(new UrlPattern(new ContainsPattern("/dialog/oauth"), false))
                         .willReturn(aResponse()
@@ -94,6 +95,23 @@ public class RobotCredentialExtractorTest {
 
         InvalidCredentialsException exception = assertThrows(InvalidCredentialsException.class, () -> robotCredentialExtractor.getTinderFacebookToken("test@pinguet62.fr", "bad"));
         assertThat(exception.getMessage(), is("Le mot de passe entré est incorrect. Vous l’avez oublié ?"));
+    }
+
+    @Test
+    public void test_verifyCredentials_oldPassword() {
+        facebookWireMockServer
+                .stubFor(get(new UrlPattern(new ContainsPattern("/dialog/oauth"), false))
+                        .willReturn(aResponse()
+                                .withStatus(200)
+                                .withBody(getHtml("/fr/pinguet62/meetall/facebookcredential/step0 - dialog_oauth.html"))));
+        facebookWireMockServer
+                .stubFor(post(new UrlPattern(new ContainsPattern("/login/device-based/regular/login"), false))
+                        .willReturn(aResponse()
+                                .withStatus(200)
+                                .withBody(getHtml("/fr/pinguet62/meetall/facebookcredential/verifyCredentials/step1.3 - old password.html"))));
+
+        InvalidCredentialsException exception = assertThrows(InvalidCredentialsException.class, () -> robotCredentialExtractor.getTinderFacebookToken("test@pinguet62.fr", "bad"));
+        assertThat(exception.getMessage(), containsString("Vous avez saisi un ancien mot de passe"));
     }
 
     /**

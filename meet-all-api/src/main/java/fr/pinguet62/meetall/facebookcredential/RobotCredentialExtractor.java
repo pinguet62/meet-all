@@ -113,6 +113,11 @@ public class RobotCredentialExtractor {
             throw new InvalidCredentialsException(element.getText());
         } catch (TimeoutException e) {
         }
+        try {
+            WebElement element = new WebDriverWait(driver, Duration.ofSeconds(1).toSeconds()).until(presenceOfElementLocated(By.cssSelector("#error_box > div:first-child")));
+            throw new InvalidCredentialsException(element.getText());
+        } catch (TimeoutException e) {
+        }
     }
 
     private void verifyAbsentOrProcessAndThrowError(WebDriver driver) {
