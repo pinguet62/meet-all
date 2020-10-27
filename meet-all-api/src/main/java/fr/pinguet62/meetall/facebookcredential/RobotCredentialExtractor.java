@@ -69,7 +69,6 @@ public class RobotCredentialExtractor {
         options.addArguments("--headless");
         options.addArguments("--no-sandbox");
         WebDriver driver = new ChromeDriver(options);
-
         try {
             driver.get(facebookOauthUrl);
 
@@ -93,14 +92,16 @@ public class RobotCredentialExtractor {
             List<WebElement> forms = driver.findElements(By.id("platformDialogForm"));
             forms.get(forms.size() - 1)
                     .findElement(By.name("__CONFIRM__")).click();
+
+            // Authorized page
+            String html = driver.getPageSource();
+
+            return parseHtml(html);
         } catch (WebDriverException e) {
             throw new PageSourceWebDriverException(driver.getPageSource(), e);
+        } finally {
+            driver.close();
         }
-
-        // Authorized page
-        String html = driver.getPageSource();
-
-        return parseHtml(html);
     }
 
     /**
