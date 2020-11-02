@@ -171,7 +171,7 @@ public class HappnProviderServiceTest {
         server.enqueue(new MockResponse()
                 .setResponseCode(410)
                 .setHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
-                .setBody(readResource("/fr/pinguet62/meetall/provider/happn/tokenExpired410.json")));
+                .setBody(readResource("/fr/pinguet62/meetall/provider/happn/accepted_quotaExceeded.json")));
 
         assertThat(() -> happnProvider.likeOrUnlikeProposal(authToken, userId, true).block(), throwing(ExpiredTokenException.class));
     }

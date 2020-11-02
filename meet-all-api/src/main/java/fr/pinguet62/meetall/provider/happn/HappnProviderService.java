@@ -59,7 +59,7 @@ public class HappnProviderService implements ProviderService {
         return client.getUserMe(authToken)
                 .onErrorMap(Gone.class, ExpiredTokenException::new)
                 .map(HappnUserResponseDto::getData)
-                .map(HappnUserDto::getRenewable_credits)
+                .map(HappnUserDto::getRenewable_likes)
                 .flatMapMany(limit ->
                         client.getNotifications(authToken)
                                 .onErrorMap(Gone.class, ExpiredTokenException::new)

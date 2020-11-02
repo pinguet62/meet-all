@@ -66,7 +66,7 @@ public class HappnUserDto {
 
     // TODO refactor model: can be null
     // @JsonProperty(required = true)
-    Integer renewable_credits;
+    Integer renewable_likes;
 
     // TODO refactor model: can be null
     // @JsonProperty(required = true)
