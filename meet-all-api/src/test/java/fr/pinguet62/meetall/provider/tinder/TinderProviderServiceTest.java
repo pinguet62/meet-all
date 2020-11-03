@@ -2,6 +2,8 @@ package fr.pinguet62.meetall.provider.tinder;
 
 import fr.pinguet62.meetall.ExpiredTokenException;
 import fr.pinguet62.meetall.provider.model.ConversationDto;
+import fr.pinguet62.meetall.provider.model.ConversationDto.LazyMessageDto;
+import fr.pinguet62.meetall.provider.model.ConversationDto.LazyProfileDto;
 import fr.pinguet62.meetall.provider.model.MessageDto;
 import fr.pinguet62.meetall.provider.model.ProfileDto;
 import fr.pinguet62.meetall.provider.model.ProposalDto;
@@ -236,28 +238,20 @@ class TinderProviderServiceTest {
             assertThat(conversations, contains(
                     new ConversationDto(
                             "52b4d9ed6c5685412c0002a15bcc1a0cf51fe1f73b780558",
-                            new ProfileDto(
+                            new LazyProfileDto(
                                     "5bcc1a0cf51fe1f73b780558",
                                     "Marie",
-                                    32,
-                                    null, // not filled
-                                    List.of(
-                                            "https://images-ssl.gotinder.com/5bcc1a0cf51fe1f73b780558/1080x1080_3ea65ee2-33e1-4a8d-8860-73a7cf2a0a7c.jpg",
-                                            "https://images-ssl.gotinder.com/5bcc1a0cf51fe1f73b780558/1080x1080_d699cc0f-0f82-4add-8da9-8da8df4b39ca.jpg")),
+                                    "https://images-ssl.gotinder.com/5bcc1a0cf51fe1f73b780558/1080x1080_3ea65ee2-33e1-4a8d-8860-73a7cf2a0a7c.jpg"),
                             ZonedDateTime.of(2018, 10, 29, 14, 44, 50, 422 * 1000000, ZoneId.of("UTC")),
                             null),
                     new ConversationDto(
                             "52b4d9ed6c5685412c0002a15aafa40957398e766afe7ed4",
-                            new ProfileDto(
+                            new LazyProfileDto(
                                     "5aafa40957398e766afe7ed4",
                                     "Alexandra",
-                                    31,
-                                    null, // not filled
-                                    List.of(
-                                            "https://images-ssl.gotinder.com/5aafa40957398e766afe7ed4/1080x1080_e13be39b-a619-427b-8359-7337e04250f3.jpg")),
+                                    "https://images-ssl.gotinder.com/5aafa40957398e766afe7ed4/1080x1080_e13be39b-a619-427b-8359-7337e04250f3.jpg"),
                             ZonedDateTime.of(2018, 10, 26, 10, 10, 8, 500 * 1000000, ZoneId.of("UTC")),
-                            new MessageDto(
-                                    "5bd2e800e46c4dd64d1a0866",
+                            new LazyMessageDto(
                                     ZonedDateTime.of(2018, 10, 26, 10, 10, 8, 500 * 1000000, ZoneId.of("UTC")),
                                     true,
                                     "Alors les entretiens RH sur Tinder, ça embuache ? 😋"))));

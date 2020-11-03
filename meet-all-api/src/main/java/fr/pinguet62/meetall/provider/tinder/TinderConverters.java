@@ -1,6 +1,8 @@
 package fr.pinguet62.meetall.provider.tinder;
 
 import fr.pinguet62.meetall.provider.model.ConversationDto;
+import fr.pinguet62.meetall.provider.model.ConversationDto.LazyMessageDto;
+import fr.pinguet62.meetall.provider.model.ConversationDto.LazyProfileDto;
 import fr.pinguet62.meetall.provider.model.MessageDto;
 import fr.pinguet62.meetall.provider.model.ProfileDto;
 import fr.pinguet62.meetall.provider.model.ProposalDto;
@@ -39,17 +41,31 @@ class TinderConverters {
                 input.getPhotos().stream().map(TinderPhotoDto::getUrl).collect(toList()));
     }
 
+    public static LazyProfileDto convertToLazy(TinderUserDto input) {
+        return new LazyProfileDto(
+                input.get_id(),
+                input.getName(),
+                input.getPhotos().stream().map(TinderPhotoDto::getUrl).findFirst().orElse(null));
+    }
+
     public static ConversationDto convert(TinderMatchDto input, String currentUserId, Clock clock) {
         return new ConversationDto(
                 input.get_id(),
-                convert(input.getPerson(), clock),
+                convertToLazy(input.getPerson()),
                 input.getLast_activity_date(),
-                input.getMessages().isEmpty() ? null : convert(input.getMessages().get(0), currentUserId));
+                input.getMessages().isEmpty() ? null : convertToLazy(input.getMessages().get(0), currentUserId));
     }
 
     public static MessageDto convert(TinderMessageDto input, String currentUserId) {
         return new MessageDto(
                 input.get_id(),
+                input.getSent_date(),
+                input.getFrom().equals(currentUserId),
+                input.getMessage());
+    }
+
+    public static LazyMessageDto convertToLazy(TinderMessageDto input, String currentUserId) {
+        return new LazyMessageDto(
                 input.getSent_date(),
                 input.getFrom().equals(currentUserId),
                 input.getMessage());

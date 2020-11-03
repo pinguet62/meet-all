@@ -3,13 +3,18 @@ import {Injectable} from '@angular/core';
 import {Observable} from 'rxjs';
 import {environment} from '../../environments/environment';
 
-// TODO move to shared module
 export interface Profile {
     id: string;
     name: string;
     age: number;
     description: string | null;
     avatars: string[];
+}
+
+export interface LazyProfile {
+    id: string;
+    name: string;
+    avatar: string | null;
 }
 
 export interface Message {
@@ -19,10 +24,16 @@ export interface Message {
     text: string;
 }
 
+export interface LazyMessage {
+    date: Date;
+    sent: boolean;
+    text: string;
+}
+
 export interface Conversation {
     id: string;
-    profile: Profile;
-    lastMessage: Message | null;
+    profile: LazyProfile;
+    lastMessage: LazyMessage | null;
 }
 
 @Injectable()

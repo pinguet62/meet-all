@@ -6,6 +6,8 @@ import lombok.Value;
 import lombok.With;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
 @Value
 public class ProposalDto {
@@ -14,11 +16,13 @@ public class ProposalDto {
                     Internal ID<br>
                     Generated from provider's *key* and provider's *id*""")
     @NonNull
+    @NotEmpty
     @With
     String id;
 
     @NonNull
-    @With
+    @NotNull
     @Valid
-    ProfileDto profile; // TODO LazyProfileDto
+    @With
+    ProfileDto profile;
 }

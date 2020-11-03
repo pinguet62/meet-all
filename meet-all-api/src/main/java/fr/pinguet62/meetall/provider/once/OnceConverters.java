@@ -1,6 +1,8 @@
 package fr.pinguet62.meetall.provider.once;
 
 import fr.pinguet62.meetall.provider.model.ConversationDto;
+import fr.pinguet62.meetall.provider.model.ConversationDto.LazyMessageDto;
+import fr.pinguet62.meetall.provider.model.ConversationDto.LazyProfileDto;
 import fr.pinguet62.meetall.provider.model.MessageDto;
 import fr.pinguet62.meetall.provider.model.ProfileDto;
 import fr.pinguet62.meetall.provider.once.dto.OnceConversationsResultDto.OnceConnectionDto;
@@ -21,10 +23,9 @@ class OnceConverters {
     public static ConversationDto convert(OnceConnectionDto input, String baseUrl) {
         return new ConversationDto(
                 input.getMatch_id(),
-                convert(input.getMatch_id(), input.getUser(), baseUrl),
+                convertToLazy(input.getMatch_id(), input.getUser(), baseUrl),
                 Instant.ofEpochSecond(input.getMessage_sent_at()).atZone(ZONE_ID),
-                input.getLast_message_id().equals("0") ? null : new MessageDto(
-                        input.getMatch_id() + "::" + input.getLast_message_id(),
+                input.getLast_message_id().equals("0") ? null : new LazyMessageDto(
                         Instant.ofEpochSecond(input.getMessage_sent_at()).atZone(ZONE_ID),
                         !input.getSender_id().equals(input.getUser().getId()),
                         input.getLast_message()));
@@ -40,6 +41,17 @@ class OnceConverters {
                         .map(OncePictureDto::getOriginal)
                         .map(it -> baseUrl + "/" + input.getId() + "/" + it)
                         .collect(toList()));
+    }
+
+    public static LazyProfileDto convertToLazy(String matchId, OnceUserDto input, String baseUrl) {
+        return new LazyProfileDto(
+                matchId,
+                input.getFirst_name(),
+                input.getPictures().stream()
+                        .map(OncePictureDto::getOriginal)
+                        .map(it -> baseUrl + "/" + input.getId() + "/" + it)
+                        .findFirst()
+                        .orElse(null));
     }
 
     public static MessageDto convert(OnceMessagesDto input, OnceUserDto user) {

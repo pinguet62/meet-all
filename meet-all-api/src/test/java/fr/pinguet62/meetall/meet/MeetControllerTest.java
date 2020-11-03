@@ -2,6 +2,8 @@ package fr.pinguet62.meetall.meet;
 
 import fr.pinguet62.meetall.PartialArrayList;
 import fr.pinguet62.meetall.provider.model.ConversationDto;
+import fr.pinguet62.meetall.provider.model.ConversationDto.LazyMessageDto;
+import fr.pinguet62.meetall.provider.model.ConversationDto.LazyProfileDto;
 import fr.pinguet62.meetall.provider.model.MessageDto;
 import fr.pinguet62.meetall.provider.model.ProfileDto;
 import fr.pinguet62.meetall.provider.model.ProposalDto;
@@ -116,9 +118,11 @@ class MeetControllerTest {
     class getConversations {
         @Test
         void ok() {
-            when(meetService.getConversationsForUser(currentUserId)).thenReturn(Mono.just(new PartialArrayList<>(List.of(
-                    new ConversationDto("conversation-1", new ProfileDto("profile-id-1", "profile-name-1", 1, "description-1", emptyList()), now(), new MessageDto("message-1", now(), true, "message-text-1")),
-                    new ConversationDto("conversation-2", new ProfileDto("profile-id-2", "profile-name-2", 2, "description-2", emptyList()), now(), new MessageDto("message-2", now(), false, "message-text-2"))), false)));
+            when(meetService.getConversationsForUser(currentUserId)).thenReturn(Mono.just(new PartialArrayList<>(
+                    List.of(
+                            new ConversationDto("conversation-1", new LazyProfileDto("profile-id-1", "profile-name-1", null), now(), new LazyMessageDto(now(), true, "message-text-1")),
+                            new ConversationDto("conversation-2", new LazyProfileDto("profile-id-2", "profile-name-2", null), now(), new LazyMessageDto(now(), false, "message-text-2"))),
+                    false)));
 
             webTestClient
                     .get()

@@ -1,6 +1,8 @@
 package fr.pinguet62.meetall.provider.once;
 
 import fr.pinguet62.meetall.provider.model.ConversationDto;
+import fr.pinguet62.meetall.provider.model.ConversationDto.LazyMessageDto;
+import fr.pinguet62.meetall.provider.model.ConversationDto.LazyProfileDto;
 import fr.pinguet62.meetall.provider.model.MessageDto;
 import fr.pinguet62.meetall.provider.model.ProfileDto;
 import fr.pinguet62.meetall.provider.model.ProposalDto;
@@ -177,25 +179,20 @@ class OnceProviderServiceTest {
         assertThat(conversations, contains(
                 new ConversationDto(
                         "MEA356404742",
-                        new ProfileDto(
+                        new LazyProfileDto(
                                 "MEA356404742",
                                 "Marine",
-                                27,
-                                null, // not filled
-                                List.of("https://d110abryny6tab.cloudfront.net/pictures/EA7640585/34002662_original.jpg")),
+                                "https://d110abryny6tab.cloudfront.net/pictures/EA7640585/34002662_original.jpg"),
                         ZonedDateTime.of(2019, 1, 7, 21, 24, 26, 0, UTC),
                         null),
                 new ConversationDto(
                         "MEA346007886",
-                        new ProfileDto(
+                        new LazyProfileDto(
                                 "MEA346007886",
                                 "Louise",
-                                27,
-                                null, // not filled
-                                List.of("https://d110abryny6tab.cloudfront.net/pictures/EA7464845/33485378_original.jpg")),
+                                "https://d110abryny6tab.cloudfront.net/pictures/EA7464845/33485378_original.jpg"),
                         ZonedDateTime.of(2018, 11, 24, 18, 37, 48, 0, UTC),
-                        new MessageDto(
-                                "MEA346007886::2",
+                        new LazyMessageDto(
                                 ZonedDateTime.of(2018, 11, 24, 18, 37, 48, 0, UTC),
                                 true,
                                 "Bonsoir la timide :p"))));

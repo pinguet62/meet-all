@@ -6,6 +6,8 @@ import fr.pinguet62.meetall.provider.happn.dto.HappnNotificationsResponseDto.Hap
 import fr.pinguet62.meetall.provider.happn.dto.HappnUserDto;
 import fr.pinguet62.meetall.provider.happn.dto.HappnUserDto.HappnProfileDto;
 import fr.pinguet62.meetall.provider.model.ConversationDto;
+import fr.pinguet62.meetall.provider.model.ConversationDto.LazyMessageDto;
+import fr.pinguet62.meetall.provider.model.ConversationDto.LazyProfileDto;
 import fr.pinguet62.meetall.provider.model.MessageDto;
 import fr.pinguet62.meetall.provider.model.ProfileDto;
 import fr.pinguet62.meetall.provider.model.ProposalDto;
@@ -29,12 +31,19 @@ class HappnConverters {
                 input.getProfiles().stream().map(HappnProfileDto::getUrl).collect(toList()));
     }
 
+    public static LazyProfileDto convertToLazy(HappnUserDto input) {
+        return new LazyProfileDto(
+                input.getId(),
+                input.getDisplay_name().orElse(""),
+                input.getProfiles().stream().map(HappnProfileDto::getUrl).findFirst().orElse(null));
+    }
+
     public static ConversationDto convert(HappnConversationDto input) {
         return new ConversationDto(
                 input.getId(),
-                convert(input.getParticipants().get(1).getUser()),
+                convertToLazy(input.getParticipants().get(1).getUser()),
                 input.getModification_date().toZonedDateTime(),
-                input.getMessages().isEmpty() ? null : convert(input.getMessages().get(0)));
+                input.getMessages().isEmpty() ? null : convertToLazy(input.getMessages().get(0)));
     }
 
     public static MessageDto convert(HappnMessageDto input) {
@@ -45,4 +54,10 @@ class HappnConverters {
                 input.getMessage());
     }
 
+    public static LazyMessageDto convertToLazy(HappnMessageDto input) {
+        return new LazyMessageDto(
+                input.getCreation_date().toZonedDateTime(),
+                input.getSender().flatMap(HappnUserDto::getBirth_date).isPresent(),
+                input.getMessage());
+    }
 }

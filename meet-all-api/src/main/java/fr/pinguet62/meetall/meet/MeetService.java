@@ -82,10 +82,7 @@ class MeetService {
                             it = it.withId(TransformedId.format(providerCredential.getId(), it.getId()));
                             it = it.withProfile(it.getProfile()
                                     .withId(TransformedId.format(providerCredential.getId(), it.getProfile().getId()))
-                                    .withAvatars(it.getProfile().getAvatars().stream().map(PhotoProxyEncoder::encode).collect(toList())));
-                            if (it.getLastMessage().isPresent())
-                                it = it.withLastMessage(it.getLastMessage().get()
-                                        .withId(TransformedId.format(providerCredential.getId(), it.getLastMessage().get().getId())));
+                                    .withAvatar(it.getProfile().getAvatar().map(PhotoProxyEncoder::encode).orElse(null)));
                             return it;
                         })
                         // success or error(=partial)

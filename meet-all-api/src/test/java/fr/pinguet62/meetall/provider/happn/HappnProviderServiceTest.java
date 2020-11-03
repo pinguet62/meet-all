@@ -2,6 +2,8 @@ package fr.pinguet62.meetall.provider.happn;
 
 import fr.pinguet62.meetall.ExpiredTokenException;
 import fr.pinguet62.meetall.provider.model.ConversationDto;
+import fr.pinguet62.meetall.provider.model.ConversationDto.LazyMessageDto;
+import fr.pinguet62.meetall.provider.model.ConversationDto.LazyProfileDto;
 import fr.pinguet62.meetall.provider.model.MessageDto;
 import fr.pinguet62.meetall.provider.model.ProfileDto;
 import fr.pinguet62.meetall.provider.model.ProposalDto;
@@ -215,29 +217,21 @@ class HappnProviderServiceTest {
             assertThat(conversations, contains(
                     new ConversationDto(
                             "6758b9e9-7691-4acb-8096-9a8c596098dc_7339ddb1-72d9-468d-b3b6-8bf84f8f9555",
-                            new ProfileDto(
+                            new LazyProfileDto(
                                     "7339ddb1-72d9-468d-b3b6-8bf84f8f9555",
                                     "Alice",
-                                    29,
-                                    null, // not filled
-                                    List.of(
-                                            "https://1675564c27.optimicdn.com/cache/images/7339ddb1-72d9-468d-b3b6-8bf84f8f9555/320-320.0_1c7dc000-e27e-11e8-99cf-737224347269.jpg")),
+                                    "https://1675564c27.optimicdn.com/cache/images/7339ddb1-72d9-468d-b3b6-8bf84f8f9555/320-320.0_1c7dc000-e27e-11e8-99cf-737224347269.jpg"),
                             OffsetDateTime.parse("2019-01-06T16:09:27+00:00").toZonedDateTime(),
                             null),
                     // filtered: "happn pack"
                     new ConversationDto(
                             "6758b9e9-7691-4acb-8096-9a8c596098dc_93833b7c-a427-45be-b3cd-81d068108184",
-                            new ProfileDto(
+                            new LazyProfileDto(
                                     "93833b7c-a427-45be-b3cd-81d068108184",
                                     "Cha",
-                                    30,
-                                    null, // not filled
-                                    List.of(
-                                            "https://1675564c27.optimicdn.com/cache/images/93833b7c-a427-45be-b3cd-81d068108184/320-320.0_7b745d40-aed9-11e8-9d0d-0f272e08b1ea.jpg",
-                                            "https://1675564c27.optimicdn.com/cache/images/93833b7c-a427-45be-b3cd-81d068108184/320-320.0_7c213f10-aed9-11e8-a9a7-0d1f7e69a1ae.jpg")),
+                                    "https://1675564c27.optimicdn.com/cache/images/93833b7c-a427-45be-b3cd-81d068108184/320-320.0_7b745d40-aed9-11e8-9d0d-0f272e08b1ea.jpg"),
                             OffsetDateTime.parse("2018-11-25T09:47:58+00:00").toZonedDateTime(),
-                            new MessageDto(
-                                    "1543139278_30e2ad90-f097-11e8-b59a-bf3837b6acfb",
+                            new LazyMessageDto(
                                     OffsetDateTime.parse("2018-11-25T09:47:58+00:00").toZonedDateTime(),
                                     false,
                                     "Bonjour, comment vas tu ? :)"))));

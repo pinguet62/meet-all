@@ -18,8 +18,8 @@ public class ProfileDto {
                     Internal ID<br>
                     Generated from provider's *key* and provider's *id*""")
     @NonNull
-    @With
     @NotEmpty
+    @With
     String id;
 
     @Schema(example = "Céline")
@@ -35,7 +35,7 @@ public class ProfileDto {
 
     @ArraySchema(schema = @Schema(example = "https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_150x54dp.png"))
     @NonNull
-    @With
     @NotNull
+    @With
     List<@NotEmpty String> avatars;
 }
