@@ -51,11 +51,20 @@ class MeetService {
                 .reduce(concatPartialList());
     }
 
-    public Mono<Boolean> likeOrUnlikeProposal(String userId, String credentialId, String proposalId, boolean likeOrUnlike) {
+    public Mono<Void> passProposal(String userId, String credentialId, String proposalId) {
         return credentialService.findByUserId(userId)
                 .filter(providerCredential -> providerCredential.getId().equals(credentialId))
                 .next()
-                .flatMap(providerCredential -> providerFactory.getProviderService(providerCredential.getProvider()).likeOrUnlikeProposal(providerCredential.getCredential(), proposalId, likeOrUnlike));
+                .flatMap(providerCredential -> providerFactory.getProviderService(providerCredential.getProvider())
+                        .passProposal(providerCredential.getCredential(), proposalId));
+    }
+
+    public Mono<Boolean> likeProposal(String userId, String credentialId, String proposalId) {
+        return credentialService.findByUserId(userId)
+                .filter(providerCredential -> providerCredential.getId().equals(credentialId))
+                .next()
+                .flatMap(providerCredential -> providerFactory.getProviderService(providerCredential.getProvider())
+                        .likeProposal(providerCredential.getCredential(), proposalId));
     }
 
     /**
@@ -99,7 +108,8 @@ class MeetService {
                 .filter(providerCredential -> providerCredential.getId().equals(credentialId))
                 .next()
                 .flatMapMany(providerCredential ->
-                        providerFactory.getProviderService(providerCredential.getProvider()).getMessages(providerCredential.getCredential(), conversationId)
+                        providerFactory.getProviderService(providerCredential.getProvider())
+                                .getMessages(providerCredential.getCredential(), conversationId)
                                 .map(it -> it.withId(TransformedId.format(providerCredential.getId(), it.getId()))))
                 .sort(comparing(MessageDto::getDate));
     }
@@ -117,7 +127,8 @@ class MeetService {
                 .filter(providerCredential -> providerCredential.getId().equals(credentialId))
                 .next()
                 .flatMap(providerCredential ->
-                        providerFactory.getProviderService(providerCredential.getProvider()).sendMessage(providerCredential.getCredential(), conversationId, text)
+                        providerFactory.getProviderService(providerCredential.getProvider())
+                                .sendMessage(providerCredential.getCredential(), conversationId, text)
                                 .map(it -> it.withId(TransformedId.format(providerCredential.getId(), it.getId()))));
     }
 
@@ -133,7 +144,8 @@ class MeetService {
                 .filter(providerCredential -> providerCredential.getId().equals(credentialId))
                 .next()
                 .flatMap(providerCredential ->
-                        providerFactory.getProviderService(providerCredential.getProvider()).getProfile(providerCredential.getCredential(), profileId)
+                        providerFactory.getProviderService(providerCredential.getProvider())
+                                .getProfile(providerCredential.getCredential(), profileId)
                                 .map(it -> it
                                         .withId(TransformedId.format(providerCredential.getId(), it.getId()))
                                         .withAvatars(it.getAvatars().stream().map(PhotoProxyEncoder::encode).collect(toList()))));

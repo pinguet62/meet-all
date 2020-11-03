@@ -8,6 +8,8 @@ import fr.pinguet62.meetall.security.ApplicationAuthentication;
 import fr.pinguet62.meetall.security.ApplicationReactiveSecurityContextHolder;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -47,22 +49,26 @@ class MeetController {
                 .map(it -> it.isPartial() ? new ResponseEntity<>(it, PARTIAL_CONTENT) : ResponseEntity.ok(it));
     }
 
-    @Operation(summary = "Like a proposal")
-    @PostMapping("/proposals/{id}/like")
-    public Mono<Boolean /*TODO Void*/> likeProposal(@PathVariable @Parameter(example = "TINDER#0123456789") String id) {
+    @Operation(summary = "Refuse a proposal")
+    @PostMapping("/proposals/{id}/pass")
+    @ResponseStatus(NO_CONTENT)
+    public Mono<Void> passProposal(@PathVariable @Parameter(example = "TINDER#0123456789") String id) {
         TransformedId transformedId = TransformedId.parse(id);
         return ApplicationReactiveSecurityContextHolder.getAuthentication()
                 .map(ApplicationAuthentication::getUserId)
-                .flatMap(userId -> meetService.likeOrUnlikeProposal(userId, transformedId.getCredentialId(), transformedId.getValueId(), true));
+                .flatMap(userId -> meetService.passProposal(userId, transformedId.getCredentialId(), transformedId.getValueId()));
     }
 
-    @Operation(summary = "Refuse a proposal")
-    @PostMapping("/proposals/{id}/unlike")
-    public Mono<Boolean /*TODO Void*/> unlikeProposal(@PathVariable @Parameter(example = "TINDER#0123456789") String id) {
+    @Operation(summary = "Like a proposal",
+            responses = @ApiResponse(
+                    description = "If the acceptation triggered a respective match",
+                    content = @Content(schema = @Schema(type = "boolean", example = "true"))))
+    @PostMapping("/proposals/{id}/like")
+    public Mono<Boolean> likeProposal(@PathVariable @Parameter(example = "TINDER#0123456789") String id) {
         TransformedId transformedId = TransformedId.parse(id);
         return ApplicationReactiveSecurityContextHolder.getAuthentication()
                 .map(ApplicationAuthentication::getUserId)
-                .flatMap(userId -> meetService.likeOrUnlikeProposal(userId, transformedId.getCredentialId(), transformedId.getValueId(), false));
+                .flatMap(userId -> meetService.likeProposal(userId, transformedId.getCredentialId(), transformedId.getValueId()));
     }
 
     @Operation(summary = "List all (available) conversations")

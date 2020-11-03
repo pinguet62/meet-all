@@ -109,60 +109,57 @@ class OnceProviderServiceTest {
     }
 
     @Nested
-    class likeOrUnlikeProposal {
-        @Nested
-        class pass {
-            @Test
-            void pass() {
-                final String matchId = "MEA356800065";
-                server.enqueue(new MockResponse()
-                        .setHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
-                        .setBody(readResource("/fr/pinguet62/meetall/provider/once/match_pass.json")));
+    class passProposal {
+        @Test
+        void pass() {
+            final String matchId = "MEA356800065";
+            server.enqueue(new MockResponse()
+                    .setHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
+                    .setBody(readResource("/fr/pinguet62/meetall/provider/once/match_pass.json")));
 
-                Boolean matched = onceProvider.likeOrUnlikeProposal(authToken, matchId, false).block();
+            Void matched = onceProvider.passProposal(authToken, matchId).block();
 
-                assertThat(server, takingRequest(allOf(
-                        url(with(HttpUrl::url, with(URL::toString, containsString("match/" + matchId + "/pass")))),
-                        header(HEADER, authToken))));
-                assertThat(matched, nullValue());
-            }
+            assertThat(server, takingRequest(allOf(
+                    url(with(HttpUrl::url, with(URL::toString, containsString("match/" + matchId + "/pass")))),
+                    header(HEADER, authToken))));
+            assertThat(matched, nullValue());
+        }
+    }
+
+    @Nested
+    class likeProposal {
+        @Test
+        void notMatched() {
+            final String matchId = "MEA356800065";
+            server.enqueue(new MockResponse()
+                    .setHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
+                    .setBody(readResource("/fr/pinguet62/meetall/provider/once/match_like_not-matched.json")));
+
+            Boolean matched = onceProvider.likeProposal(authToken, matchId).block();
+
+            assertThat(server, takingRequest(allOf(
+                    url(with(HttpUrl::url, with(URL::toString, containsString("match/" + matchId + "/like")))),
+                    header(HEADER, authToken))));
+            assertThat(matched, allOf(
+                    notNullValue(),
+                    is(false)));
         }
 
-        @Nested
-        class like {
-            @Test
-            void notMatched() {
-                final String matchId = "MEA356800065";
-                server.enqueue(new MockResponse()
-                        .setHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
-                        .setBody(readResource("/fr/pinguet62/meetall/provider/once/match_like_not-matched.json")));
+        @Test
+        void matched() {
+            final String matchId = "MEA356800065";
+            server.enqueue(new MockResponse()
+                    .setHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
+                    .setBody(readResource("/fr/pinguet62/meetall/provider/once/match_like_matched.json")));
 
-                Boolean matched = onceProvider.likeOrUnlikeProposal(authToken, matchId, true).block();
+            Boolean matched = onceProvider.likeProposal(authToken, matchId).block();
 
-                assertThat(server, takingRequest(allOf(
-                        url(with(HttpUrl::url, with(URL::toString, containsString("match/" + matchId + "/like")))),
-                        header(HEADER, authToken))));
-                assertThat(matched, allOf(
-                        notNullValue(),
-                        is(false)));
-            }
-
-            @Test
-            void matched() {
-                final String matchId = "MEA356800065";
-                server.enqueue(new MockResponse()
-                        .setHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
-                        .setBody(readResource("/fr/pinguet62/meetall/provider/once/match_like_matched.json")));
-
-                Boolean matched = onceProvider.likeOrUnlikeProposal(authToken, matchId, true).block();
-
-                assertThat(server, takingRequest(allOf(
-                        url(with(HttpUrl::url, with(URL::toString, containsString("match/" + matchId + "/like")))),
-                        header(HEADER, authToken))));
-                assertThat(matched, allOf(
-                        notNullValue(),
-                        is(true)));
-            }
+            assertThat(server, takingRequest(allOf(
+                    url(with(HttpUrl::url, with(URL::toString, containsString("match/" + matchId + "/like")))),
+                    header(HEADER, authToken))));
+            assertThat(matched, allOf(
+                    notNullValue(),
+                    is(true)));
         }
     }
 

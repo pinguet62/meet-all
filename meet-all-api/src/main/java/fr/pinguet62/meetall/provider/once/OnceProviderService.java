@@ -60,15 +60,18 @@ public class OnceProviderService implements ProviderService {
     }
 
     @Override
-    public Mono<Boolean> likeOrUnlikeProposal(String authorization, String matchId, boolean likeOrUnlike) {
-        return likeOrUnlike ?
-                client.likeMatch(authorization, matchId)
-                        .onErrorMap(Unauthorized.class, ExpiredTokenException::new)
-                        .map(OnceMatchLikeResponseDto::getResult)
-                        .map(OnceMatchLikeResultDto::isConnected) :
-                client.passMatch(authorization, matchId)
-                        .onErrorMap(Unauthorized.class, ExpiredTokenException::new)
-                        .map(it -> null);
+    public Mono<Void> passProposal(String authorization, String matchId) {
+        return client.passMatch(authorization, matchId)
+                .onErrorMap(Unauthorized.class, ExpiredTokenException::new)
+                .then();
+    }
+
+    @Override
+    public Mono<Boolean> likeProposal(String authorization, String matchId) {
+        return client.likeMatch(authorization, matchId)
+                .onErrorMap(Unauthorized.class, ExpiredTokenException::new)
+                .map(OnceMatchLikeResponseDto::getResult)
+                .map(OnceMatchLikeResultDto::isConnected);
     }
 
     @Override

@@ -112,93 +112,90 @@ class HappnProviderServiceTest {
     }
 
     @Nested
-    class likeOrUnlikeProposal {
-        @Nested
-        class pass {
-            @Test
-            void ok() {
-                final String userId = "userId";
-                server.enqueue(new MockResponse()
-                        .setHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
-                        .setBody(readResource("/fr/pinguet62/meetall/provider/happn/rejected.json")));
+    class passProposal {
+        @Test
+        void ok() {
+            final String userId = "userId";
+            server.enqueue(new MockResponse()
+                    .setHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
+                    .setBody(readResource("/fr/pinguet62/meetall/provider/happn/rejected.json")));
 
-                Boolean matched = happnProvider.likeOrUnlikeProposal(authToken, userId, false).block();
+            Void matched = happnProvider.passProposal(authToken, userId).block();
 
-                assertThat(server, takingRequest(allOf(
-                        url(with(HttpUrl::url, with(URL::toString, containsString("users/me/rejected/" + userId)))),
-                        header(HEADER, "OAuth=\"" + authToken + "\""))));
-                assertThat(matched, nullValue());
-            }
-
-            @Test
-            void tokenExpired() {
-                final String userId = "userId";
-                server.enqueue(new MockResponse()
-                        .setResponseCode(410)
-                        .setHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
-                        .setBody(readResource("/fr/pinguet62/meetall/provider/happn/tokenExpired410.json")));
-
-                assertThat(() -> happnProvider.likeOrUnlikeProposal(authToken, userId, false).block(), throwing(ExpiredTokenException.class));
-            }
+            assertThat(server, takingRequest(allOf(
+                    url(with(HttpUrl::url, with(URL::toString, containsString("users/me/rejected/" + userId)))),
+                    header(HEADER, "OAuth=\"" + authToken + "\""))));
+            assertThat(matched, nullValue());
         }
 
-        @Nested
-        class like {
-            @Test
-            void notMatched() {
-                final String userId = "userId";
-                server.enqueue(new MockResponse()
-                        .setHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
-                        .setBody(readResource("/fr/pinguet62/meetall/provider/happn/accepted_notMatched.json")));
+        @Test
+        void tokenExpired() {
+            final String userId = "userId";
+            server.enqueue(new MockResponse()
+                    .setResponseCode(410)
+                    .setHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
+                    .setBody(readResource("/fr/pinguet62/meetall/provider/happn/tokenExpired410.json")));
 
-                Boolean matched = happnProvider.likeOrUnlikeProposal(authToken, userId, true).block();
+            assertThat(() -> happnProvider.passProposal(authToken, userId).block(), throwing(ExpiredTokenException.class));
+        }
+    }
 
-                assertThat(server, takingRequest(allOf(
-                        url(with(HttpUrl::url, with(URL::toString, containsString("users/me/accepted/" + userId)))),
-                        header(HEADER, "OAuth=\"" + authToken + "\""))));
-                assertThat(matched, allOf(
-                        notNullValue(),
-                        is(false)));
-            }
+    @Nested
+    class likeProposal {
+        @Test
+        void notMatched() {
+            final String userId = "userId";
+            server.enqueue(new MockResponse()
+                    .setHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
+                    .setBody(readResource("/fr/pinguet62/meetall/provider/happn/accepted_notMatched.json")));
 
-            @Test
-            void matched() {
-                final String userId = "userId";
-                server.enqueue(new MockResponse()
-                        .setHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
-                        .setBody(readResource("/fr/pinguet62/meetall/provider/happn/accepted_matched.json")));
+            Boolean matched = happnProvider.likeProposal(authToken, userId).block();
 
-                Boolean matched = happnProvider.likeOrUnlikeProposal(authToken, userId, true).block();
+            assertThat(server, takingRequest(allOf(
+                    url(with(HttpUrl::url, with(URL::toString, containsString("users/me/accepted/" + userId)))),
+                    header(HEADER, "OAuth=\"" + authToken + "\""))));
+            assertThat(matched, allOf(
+                    notNullValue(),
+                    is(false)));
+        }
 
-                assertThat(server, takingRequest(allOf(
-                        url(with(HttpUrl::url, with(URL::toString, containsString("users/me/accepted/" + userId)))),
-                        header(HEADER, "OAuth=\"" + authToken + "\""))));
-                assertThat(matched, allOf(
-                        notNullValue(),
-                        is(true)));
-            }
+        @Test
+        void matched() {
+            final String userId = "userId";
+            server.enqueue(new MockResponse()
+                    .setHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
+                    .setBody(readResource("/fr/pinguet62/meetall/provider/happn/accepted_matched.json")));
 
-            @Test
-            void tokenExpired() {
-                final String userId = "userId";
-                server.enqueue(new MockResponse()
-                        .setResponseCode(410)
-                        .setHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
-                        .setBody(readResource("/fr/pinguet62/meetall/provider/happn/accepted_quotaExceeded.json")));
+            Boolean matched = happnProvider.likeProposal(authToken, userId).block();
 
-                assertThat(() -> happnProvider.likeOrUnlikeProposal(authToken, userId, true).block(), throwing(ExpiredTokenException.class));
-            }
+            assertThat(server, takingRequest(allOf(
+                    url(with(HttpUrl::url, with(URL::toString, containsString("users/me/accepted/" + userId)))),
+                    header(HEADER, "OAuth=\"" + authToken + "\""))));
+            assertThat(matched, allOf(
+                    notNullValue(),
+                    is(true)));
+        }
 
-            @Test
-            void quotaExceeded() {
-                final String userId = "userId";
-                server.enqueue(new MockResponse()
-                        .setResponseCode(412)
-                        .setHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
-                        .setBody(readResource("/fr/pinguet62/meetall/provider/happn/tokenExpired410.json")));
+        @Test
+        void tokenExpired() {
+            final String userId = "userId";
+            server.enqueue(new MockResponse()
+                    .setResponseCode(410)
+                    .setHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
+                    .setBody(readResource("/fr/pinguet62/meetall/provider/happn/accepted_quotaExceeded.json")));
 
-                assertThat(() -> happnProvider.likeOrUnlikeProposal(authToken, userId, true).block(), throwing(Exception.class));
-            }
+            assertThat(() -> happnProvider.likeProposal(authToken, userId).block(), throwing(ExpiredTokenException.class));
+        }
+
+        @Test
+        void quotaExceeded() {
+            final String userId = "userId";
+            server.enqueue(new MockResponse()
+                    .setResponseCode(412)
+                    .setHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
+                    .setBody(readResource("/fr/pinguet62/meetall/provider/happn/tokenExpired410.json")));
+
+            assertThat(() -> happnProvider.likeProposal(authToken, userId).block(), throwing(Exception.class));
         }
     }
 

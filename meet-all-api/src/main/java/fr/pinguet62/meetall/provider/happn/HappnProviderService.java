@@ -10,6 +10,7 @@ import fr.pinguet62.meetall.provider.happn.dto.HappnNotificationsResponseDto;
 import fr.pinguet62.meetall.provider.happn.dto.HappnOauthResponseDto;
 import fr.pinguet62.meetall.provider.happn.dto.HappnSendMessageResponseDto;
 import fr.pinguet62.meetall.provider.happn.dto.HappnUserAcceptedResponseDto;
+import fr.pinguet62.meetall.provider.happn.dto.HappnUserAcceptedResponseDto.HappnUserAcceptedDataDto;
 import fr.pinguet62.meetall.provider.happn.dto.HappnUserDto;
 import fr.pinguet62.meetall.provider.happn.dto.HappnUserResponseDto;
 import fr.pinguet62.meetall.provider.model.ConversationDto;
@@ -70,12 +71,18 @@ public class HappnProviderService implements ProviderService {
     }
 
     @Override
-    public Mono<Boolean> likeOrUnlikeProposal(String authToken, String userId, boolean likeOrUnlike) {
-        Mono<HappnUserAcceptedResponseDto> acceptOrReject = likeOrUnlike ? client.acceptUser(authToken, userId) : client.rejectUser(authToken, userId);
-        return acceptOrReject
+    public Mono<Void> passProposal(String authToken, String userId) {
+        return client.rejectUser(authToken, userId)
+                .onErrorMap(Gone.class, ExpiredTokenException::new)
+                .then();
+    }
+
+    @Override
+    public Mono<Boolean> likeProposal(String authToken, String userId) {
+        return client.acceptUser(authToken, userId)
                 .onErrorMap(Gone.class, ExpiredTokenException::new)
                 .map(HappnUserAcceptedResponseDto::getData)
-                .flatMap(it -> likeOrUnlike ? Mono.just(it.isHas_crushed()) : Mono.empty());
+                .map(HappnUserAcceptedDataDto::isHas_crushed);
     }
 
     /**

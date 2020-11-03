@@ -125,95 +125,92 @@ class TinderProviderServiceTest {
     }
 
     @Nested
-    class likeOrUnlikeProposal {
-        @Nested
-        class pass {
-            @Test
-            void ok() {
-                final String userId = "userId";
-                server.enqueue(new MockResponse()
-                        .setHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
-                        .setBody(readResource("/fr/pinguet62/meetall/provider/tinder/pass.json")));
+    class passProposal {
+        @Test
+        void ok() {
+            final String userId = "userId";
+            server.enqueue(new MockResponse()
+                    .setHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
+                    .setBody(readResource("/fr/pinguet62/meetall/provider/tinder/pass.json")));
 
-                Boolean matched = tinderProvider.likeOrUnlikeProposal(authToken, userId, false).block();
+            Void matched = tinderProvider.passProposal(authToken, userId).block();
 
-                assertThat(server, takingRequest(allOf(
-                        url(with(HttpUrl::url, with(URL::toString, containsString("pass/" + userId)))),
-                        header(HEADER, authToken))));
-                assertThat(matched, nullValue());
-            }
-
-            @Test
-            void tokenExpired() {
-                final String userId = "userId";
-                server.enqueue(new MockResponse()
-                        .setResponseCode(401)
-                        .setHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
-                        .setBody(readResource("/fr/pinguet62/meetall/provider/tinder/pass_tokenExpired401.json")));
-
-                assertThat(() -> tinderProvider.likeOrUnlikeProposal(authToken, userId, false).block(), throwing(ExpiredTokenException.class));
-            }
+            assertThat(server, takingRequest(allOf(
+                    url(with(HttpUrl::url, with(URL::toString, containsString("pass/" + userId)))),
+                    header(HEADER, authToken))));
+            assertThat(matched, nullValue());
         }
 
-        @Nested
-        class like {
-            @Test
-            void notMatched() {
-                final String userId = "userId";
-                server.enqueue(new MockResponse()
-                        .setHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
-                        .setBody(readResource("/fr/pinguet62/meetall/provider/tinder/like_not-matched.json")));
+        @Test
+        void tokenExpired() {
+            final String userId = "userId";
+            server.enqueue(new MockResponse()
+                    .setResponseCode(401)
+                    .setHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
+                    .setBody(readResource("/fr/pinguet62/meetall/provider/tinder/pass_tokenExpired401.json")));
 
-                Boolean matched = tinderProvider.likeOrUnlikeProposal(authToken, userId, true).block();
+            assertThat(() -> tinderProvider.passProposal(authToken, userId).block(), throwing(ExpiredTokenException.class));
+        }
+    }
 
-                assertThat(server, takingRequest(allOf(
-                        url(with(HttpUrl::url, with(URL::toString, containsString("like/" + userId)))),
-                        header(HEADER, authToken))));
-                assertThat(matched, allOf(
-                        notNullValue(),
-                        is(false)));
-            }
+    @Nested
+    class likeProposal {
+        @Test
+        void notMatched() {
+            final String userId = "userId";
+            server.enqueue(new MockResponse()
+                    .setHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
+                    .setBody(readResource("/fr/pinguet62/meetall/provider/tinder/like_not-matched.json")));
 
-            @Test
-            void matched() {
-                final String userId = "userId";
-                server.enqueue(new MockResponse()
-                        .setHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
-                        .setBody(readResource("/fr/pinguet62/meetall/provider/tinder/like_matched.json")));
+            Boolean matched = tinderProvider.likeProposal(authToken, userId).block();
 
-                Boolean matched = tinderProvider.likeOrUnlikeProposal(authToken, userId, true).block();
+            assertThat(server, takingRequest(allOf(
+                    url(with(HttpUrl::url, with(URL::toString, containsString("like/" + userId)))),
+                    header(HEADER, authToken))));
+            assertThat(matched, allOf(
+                    notNullValue(),
+                    is(false)));
+        }
 
-                assertThat(server, takingRequest(allOf(
-                        url(with(HttpUrl::url, with(URL::toString, containsString("like/" + userId)))),
-                        header(HEADER, authToken))));
-                assertThat(matched, allOf(
-                        notNullValue(),
-                        is(true)));
-            }
+        @Test
+        void matched() {
+            final String userId = "userId";
+            server.enqueue(new MockResponse()
+                    .setHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
+                    .setBody(readResource("/fr/pinguet62/meetall/provider/tinder/like_matched.json")));
 
-            @Test
-            void tokenExpired() {
-                final String userId = "userId";
-                server.enqueue(new MockResponse()
-                        .setResponseCode(401)
-                        .setHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
-                        .setBody(readResource("/fr/pinguet62/meetall/provider/tinder/like_tokenExpired401.json")));
+            Boolean matched = tinderProvider.likeProposal(authToken, userId).block();
 
-                assertThat(() -> tinderProvider.likeOrUnlikeProposal(authToken, userId, true).block(), throwing(ExpiredTokenException.class));
-            }
+            assertThat(server, takingRequest(allOf(
+                    url(with(HttpUrl::url, with(URL::toString, containsString("like/" + userId)))),
+                    header(HEADER, authToken))));
+            assertThat(matched, allOf(
+                    notNullValue(),
+                    is(true)));
+        }
 
-            @Test
-            void likeRemaining() {
-                final String userId = "userId";
-                server.enqueue(new MockResponse()
-                        .setHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
-                        .setBody(readResource("/fr/pinguet62/meetall/provider/tinder/like_like-remaining.json")));
+        @Test
+        void tokenExpired() {
+            final String userId = "userId";
+            server.enqueue(new MockResponse()
+                    .setResponseCode(401)
+                    .setHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
+                    .setBody(readResource("/fr/pinguet62/meetall/provider/tinder/like_tokenExpired401.json")));
 
-                assertThat(() -> tinderProvider.likeOrUnlikeProposal(authToken, userId, true).block(), throwing(RuntimeException.class));
-                assertThat(server, takingRequest(allOf(
-                        url(with(HttpUrl::url, with(URL::toString, containsString("like/" + userId)))),
-                        header(HEADER, authToken))));
-            }
+            assertThat(() -> tinderProvider.likeProposal(authToken, userId).block(), throwing(ExpiredTokenException.class));
+        }
+
+        @Test
+        void likeRemaining() {
+            final String userId = "userId";
+            server.enqueue(new MockResponse()
+                    .setHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
+                    .setBody(readResource("/fr/pinguet62/meetall/provider/tinder/like_like-remaining.json")));
+
+            assertThat(() -> tinderProvider.likeProposal(authToken, userId).block(), throwing(RuntimeException.class));
+            assertThat(server, takingRequest(allOf(
+                    url(with(HttpUrl::url, with(URL::toString, containsString("like/" + userId)))),
+                    header(HEADER, authToken))));
         }
     }
 

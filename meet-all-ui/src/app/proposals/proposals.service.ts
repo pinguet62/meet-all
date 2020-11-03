@@ -27,8 +27,8 @@ export class ProposalsService {
         return this.http.get<Proposal[]>(environment.apiUrl + '/proposals');
     }
 
-    unlikeProposal(proposalId: string): Observable<void> {
-        return this.http.post<void>(environment.apiUrl + `/proposals/${encodeURIComponent(proposalId)}/unlike`, null);
+    passProposal(proposalId: string): Observable<void> {
+        return this.http.post<void>(environment.apiUrl + `/proposals/${encodeURIComponent(proposalId)}/pass`, null);
     }
 
     likeProposal(proposalId: string): Observable<boolean> {

@@ -31,7 +31,6 @@ import java.time.Clock;
 
 import static fr.pinguet62.meetall.provider.Provider.TINDER;
 import static fr.pinguet62.meetall.provider.tinder.TinderConverters.convert;
-import static reactor.core.publisher.Mono.empty;
 
 /**
  * <ol>
@@ -89,21 +88,22 @@ public class TinderProviderService implements ProviderService {
                                 .take(limit));
     }
 
+    @Override
+    public Mono<Void> passProposal(String authToken, String userId) {
+        return client.passUser(authToken, userId)
+                .onErrorMap(Unauthorized.class, ExpiredTokenException::new)
+                .then();
+    }
+
     /**
      * @throws RuntimeException When {@code "data.likes.likes_remaining"} is {@code 0}.
      */
     @Override
-    public Mono<Boolean> likeOrUnlikeProposal(String authToken, String userId, boolean likeOrUnlike) {
-        if (likeOrUnlike) {
-            return client.likeUser(authToken, userId)
-                    .onErrorMap(Unauthorized.class, ExpiredTokenException::new)
-                    .flatMap(it -> it.getRate_limited_until().isPresent() ? Mono.error(new RuntimeException()) : Mono.just(it)) // "likes remaining" support
-                    .flatMap(it -> likeOrUnlike ? Mono.just(convert(it)) : empty());
-        } else {
-            return client.passUser(authToken, userId)
-                    .onErrorMap(Unauthorized.class, ExpiredTokenException::new)
-                    .flatMap(it -> empty());
-        }
+    public Mono<Boolean> likeProposal(String authToken, String userId) {
+        return client.likeUser(authToken, userId)
+                .onErrorMap(Unauthorized.class, ExpiredTokenException::new)
+                .flatMap(it -> it.getRate_limited_until().isPresent() ? Mono.error(new RuntimeException()) : Mono.just(it)) // "likes remaining" support
+                .map(TinderConverters::convert);
     }
 
     @Override

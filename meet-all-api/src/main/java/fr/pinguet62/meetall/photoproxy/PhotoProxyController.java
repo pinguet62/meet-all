@@ -26,7 +26,9 @@ class PhotoProxyController {
 
     @Operation(
             summary = "Proxy for original image",
-            responses = @ApiResponse(description = "The photo content", content = @Content(schema = @Schema(type = "string", format = "binary"))))
+            responses = @ApiResponse(
+                    description = "The photo content",
+                    content = @Content(schema = @Schema(type = "string", format = "binary"))))
     @GetMapping("/photo/{encodedUrl:.+}")
     public Mono<ResponseEntity<DataBuffer>> proxifyPhoto(@PathVariable @Parameter(example = "https%3A%2F%2Fwww.google.com%2Fimages%2Fbranding%2Fgooglelogo%2F1x%2Fgooglelogo_color_150x54dp.png", description = "Encoded original URL") String encodedUrl) {
         String originalUrl = PhotoProxyEncoder.decode(encodedUrl);

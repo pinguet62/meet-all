@@ -15,6 +15,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.test.publisher.TestPublisher;
 
 import java.util.List;
 
@@ -22,7 +23,6 @@ import static fr.pinguet62.meetall.meet.MeetControllerTest.currentUserId;
 import static java.time.ZonedDateTime.now;
 import static java.util.Collections.emptyList;
 import static org.mockito.AdditionalMatchers.eq;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.HttpStatus.PARTIAL_CONTENT;
 import static org.springframework.security.test.web.reactive.server.SecurityMockServerConfigurers.csrf;
@@ -74,21 +74,22 @@ class MeetControllerTest {
     }
 
     @Test
-    void unlikeProposal() {
+    void passProposal() {
         final String credentialId = "42";
         final String id = "99";
 
-        when(meetService.likeOrUnlikeProposal(currentUserId, credentialId, id, false)).thenReturn(Mono.empty());
+        TestPublisher<Void> passProposalResponse = TestPublisher.<Void>createCold().complete();
+        when(meetService.passProposal(currentUserId, credentialId, id)).thenReturn(passProposalResponse.mono());
 
         String transformedId = TransformedId.format(credentialId, id);
         webTestClient.mutateWith(csrf())
                 .post()
-                .uri(uriBuilder -> uriBuilder.path("/proposals").pathSegment(transformedId).pathSegment("unlike").build())
+                .uri(uriBuilder -> uriBuilder.path("/proposals").pathSegment(transformedId).pathSegment("pass").build())
                 .exchange()
-                .expectStatus().isOk()
+                .expectStatus().isNoContent()
                 .expectBody().isEmpty();
 
-        verify(meetService).likeOrUnlikeProposal(currentUserId, credentialId, id, false);
+        passProposalResponse.assertWasRequested();
     }
 
     @Test
@@ -96,7 +97,8 @@ class MeetControllerTest {
         final String credentialId = "42";
         final String id = "99";
 
-        when(meetService.likeOrUnlikeProposal(currentUserId, credentialId, id, true)).thenReturn(Mono.just(true));
+        TestPublisher<Boolean> likeProposalResponse = TestPublisher.<Boolean>createCold().emit(true).complete();
+        when(meetService.likeProposal(currentUserId, credentialId, id)).thenReturn(likeProposalResponse.mono());
 
         String transformedId = TransformedId.format(credentialId, id);
         webTestClient.mutateWith(csrf())
@@ -106,7 +108,7 @@ class MeetControllerTest {
                 .expectStatus().isOk()
                 .expectBody(Boolean.class).isEqualTo(true);
 
-        verify(meetService).likeOrUnlikeProposal(currentUserId, credentialId, id, true);
+        likeProposalResponse.assertWasRequested();
     }
 
     @Nested

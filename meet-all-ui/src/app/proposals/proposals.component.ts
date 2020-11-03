@@ -31,7 +31,7 @@ import {Proposal, ProposalsService} from './proposals.service';
             </ion-card>
 
             <ion-fab vertical="bottom" slot="fixed" class="fab-space">
-                <ion-fab-button (click)="clickOnUnlike()" color="danger">
+                <ion-fab-button (click)="clickOnPass()" color="danger">
                     <ion-icon name="close"></ion-icon>
                 </ion-fab-button>
                 <ion-fab-button (click)="clickOnLike()" color="success">
@@ -68,8 +68,8 @@ export class ProposalsComponent {
             .subscribe();
     }
 
-    clickOnUnlike() {
-        this.service.unlikeProposal(this.currentProposal.id)
+    clickOnPass() {
+        this.service.passProposal(this.currentProposal.id)
             .pipe(tap(() => this.popNextProfile()))
             .subscribe();
     }
