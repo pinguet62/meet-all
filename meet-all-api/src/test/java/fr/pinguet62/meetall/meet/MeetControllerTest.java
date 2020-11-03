@@ -47,8 +47,8 @@ public class MeetControllerTest {
     @Test
     public void getProposals() {
         when(meetService.getProposalsForUser(currentUserId)).thenReturn(Mono.just(new PartialArrayList<>(List.of(
-                new ProposalDto("proposal-1", new ProfileDto("profile-id-1", "profile-name-1", 1, emptyList())),
-                new ProposalDto("proposal-2", new ProfileDto("profile-id-2", "profile-name-2", 2, emptyList()))))));
+                new ProposalDto("proposal-1", new ProfileDto("profile-id-1", "profile-name-1", 1, "description-1", emptyList())),
+                new ProposalDto("proposal-2", new ProfileDto("profile-id-2", "profile-name-2", 2, "description-2", emptyList()))))));
 
         webTestClient
                 .get()
@@ -110,8 +110,8 @@ public class MeetControllerTest {
     @Test
     public void getConversations() {
         when(meetService.getConversationsForUser(currentUserId)).thenReturn(Mono.just(new PartialArrayList<>(List.of(
-                new ConversationDto("conversation-1", new ProfileDto("profile-id-1", "profile-name-1", 1, emptyList()), now(), new MessageDto("message-1", now(), true, "message-text-1")),
-                new ConversationDto("conversation-2", new ProfileDto("profile-id-2", "profile-name-2", 2, emptyList()), now(), new MessageDto("message-2", now(), false, "message-text-2"))), false)));
+                new ConversationDto("conversation-1", new ProfileDto("profile-id-1", "profile-name-1", 1, "description-1", emptyList()), now(), new MessageDto("message-1", now(), true, "message-text-1")),
+                new ConversationDto("conversation-2", new ProfileDto("profile-id-2", "profile-name-2", 2, "description-2", emptyList()), now(), new MessageDto("message-2", now(), false, "message-text-2"))), false)));
 
         webTestClient
                 .get()
@@ -181,7 +181,7 @@ public class MeetControllerTest {
         final String credentialId = "42";
         final String id = "99";
 
-        when(meetService.getProfileForUser(currentUserId, credentialId, id)).thenReturn(Mono.just(new ProfileDto("profile-id", "profile-name", 29, emptyList())));
+        when(meetService.getProfileForUser(currentUserId, credentialId, id)).thenReturn(Mono.just(new ProfileDto("profile-id", "profile-name", 29, "description", emptyList())));
 
         String transformedId = TransformedId.format(credentialId, id);
         webTestClient

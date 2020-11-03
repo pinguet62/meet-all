@@ -40,7 +40,7 @@ xdescribe('conversation-messages.page', () => {
     }));
 
     it('<input> & <button> lifecycle', fakeAsync(() => {
-        conversationsService.getProfile.and.returnValue(of<Profile>({id: 'id', name: 'name', age: 42, avatars: []}));
+        conversationsService.getProfile.and.returnValue(of<Profile>({id: 'id', name: 'name', age: 42, description: 'description', avatars: []}));
         conversationsService.getMessagesByConversation.and.returnValue(of<Message[]>([]));
         const sentMessage: Message = {id: 'id', date: new Date(), sent: true, text: 'text'};
         conversationsService.sendMessage.and.returnValue(of(sentMessage));

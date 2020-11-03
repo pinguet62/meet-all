@@ -31,6 +31,8 @@ public class ProfileDto {
     @PositiveOrZero
     int age;
 
+    String description;
+
     @ArraySchema(schema = @Schema(example = "https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_150x54dp.png"))
     @NonNull
     @With

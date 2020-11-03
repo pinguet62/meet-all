@@ -6,8 +6,11 @@ import lombok.Value;
 
 import java.time.ZonedDateTime;
 import java.util.List;
+import java.util.Optional;
 
 import static com.fasterxml.jackson.annotation.JsonFormat.Shape.STRING;
+import static java.util.Optional.empty;
+import static java.util.Optional.of;
 
 @Value
 public class TinderUserDto {
@@ -20,8 +23,14 @@ public class TinderUserDto {
     @NonNull
     String _id;
 
-    @NonNull
-    String name;
+    /**
+     * When undefined:
+     * <ul>
+     *     <li>From {@code "/matches"}: is absent from JSON</li>
+     *     <li>From {@code "/user"}: is {@code ""}</li>
+     * </ul>
+     */
+    String bio;
 
     /**
      * @example {@code 2018-10-26T10:09:42.830Z}
@@ -31,5 +40,12 @@ public class TinderUserDto {
     ZonedDateTime birth_date;
 
     @NonNull
+    String name;
+
+    @NonNull
     List<TinderPhotoDto> photos;
+
+    public Optional<String> getBio() {
+        return bio == null || bio.isEmpty() ? empty() : of(bio);
+    }
 }

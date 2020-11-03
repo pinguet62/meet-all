@@ -82,6 +82,7 @@ public class HappnProviderServiceTest {
                                 "1489726553",
                                 "Virginie",
                                 26,
+                                null, // not filled
                                 List.of(
                                         "https://1675564c27.optimicdn.com/cache/images/1489726553/320-320.0_592356f68d916-592356f68d95e.jpg",
                                         "https://1675564c27.optimicdn.com/cache/images/1489726553/320-320.0_57c80a2f98d74-57c80a2f98dc7.jpg"))),
@@ -91,6 +92,7 @@ public class HappnProviderServiceTest {
                                 "1eeeb72a-6ae8-4d0f-aea7-68a0852d5063",
                                 "Takoua",
                                 26,
+                                null, // not filled
                                 List.of(
                                         "https://1675564c27.optimicdn.com/cache/images/1eeeb72a-6ae8-4d0f-aea7-68a0852d5063/320-320.0_b0ec72e0-bd1c-11e8-9958-372c0714599a.jpg")))));
     }
@@ -205,6 +207,7 @@ public class HappnProviderServiceTest {
                                 "7339ddb1-72d9-468d-b3b6-8bf84f8f9555",
                                 "Alice",
                                 29,
+                                null, // not filled
                                 List.of(
                                         "https://1675564c27.optimicdn.com/cache/images/7339ddb1-72d9-468d-b3b6-8bf84f8f9555/320-320.0_1c7dc000-e27e-11e8-99cf-737224347269.jpg")),
                         OffsetDateTime.parse("2019-01-06T16:09:27+00:00").toZonedDateTime(),
@@ -216,6 +219,7 @@ public class HappnProviderServiceTest {
                                 "93833b7c-a427-45be-b3cd-81d068108184",
                                 "Cha",
                                 30,
+                                null, // not filled
                                 List.of(
                                         "https://1675564c27.optimicdn.com/cache/images/93833b7c-a427-45be-b3cd-81d068108184/320-320.0_7b745d40-aed9-11e8-9d0d-0f272e08b1ea.jpg",
                                         "https://1675564c27.optimicdn.com/cache/images/93833b7c-a427-45be-b3cd-81d068108184/320-320.0_7c213f10-aed9-11e8-a9a7-0d1f7e69a1ae.jpg")),
@@ -347,6 +351,7 @@ public class HappnProviderServiceTest {
                 "48a3216c-a73f-4f7b-a5f9-aeeacdbabeb1",
                 "Sophie",
                 26,
+                "Je cherche l'amour...",
                 List.of(
                         "https://1675564c27.optimicdn.com/cache/images/48a3216c-a73f-4f7b-a5f9-aeeacdbabeb1/320-320.0_559a0790-d18a-11e8-9e28-196ec4dfc48e.jpg",
                         "https://1675564c27.optimicdn.com/cache/images/48a3216c-a73f-4f7b-a5f9-aeeacdbabeb1/320-320.0_3219f290-c117-11e8-b57d-0fc094ce31f9.jpg"))));

@@ -13,6 +13,8 @@ import java.util.List;
 import java.util.Optional;
 
 import static java.util.Arrays.stream;
+import static java.util.Optional.empty;
+import static java.util.Optional.of;
 import static java.util.Optional.ofNullable;
 
 @Value
@@ -72,6 +74,8 @@ public class HappnUserDto {
     // @JsonProperty(required = true)
     Integer age;
 
+    String about;
+
     @NonNull
     @GraphQLField(additional = ".mode(0).width(1000).height(1000)")
     List<HappnProfileDto> profiles;
@@ -92,5 +96,9 @@ public class HappnUserDto {
 
     public Optional<LocalDate> getBirth_date() {
         return ofNullable(birth_date);
+    }
+
+    public Optional<String> getAbout() {
+        return about == null || about.isEmpty() ? empty() : of(about);
     }
 }

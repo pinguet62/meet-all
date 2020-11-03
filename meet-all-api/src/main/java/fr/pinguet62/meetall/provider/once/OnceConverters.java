@@ -35,6 +35,7 @@ class OnceConverters {
                 matchId,
                 input.getFirst_name(),
                 (int) input.getAge(),
+                input.getDescription().orElse(null),
                 input.getPictures().stream()
                         .map(OncePictureDto::getOriginal)
                         .map(it -> baseUrl + "/" + input.getId() + "/" + it)

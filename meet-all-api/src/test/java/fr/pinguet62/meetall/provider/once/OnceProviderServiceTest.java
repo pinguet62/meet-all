@@ -70,6 +70,7 @@ public class OnceProviderServiceTest {
                         "MEA353970154",
                         "Anne-marie",
                         27,
+                        "Je cherche du sérieux...",
                         List.of(
                                 "https://d110abryny6tab.cloudfront.net/pictures/EA6728641/33787916_original.jpg",
                                 "https://d110abryny6tab.cloudfront.net/pictures/EA6728641/33803466_original.jpg")))));
@@ -170,6 +171,7 @@ public class OnceProviderServiceTest {
                                 "MEA356404742",
                                 "Marine",
                                 27,
+                                null, // not filled
                                 List.of("https://d110abryny6tab.cloudfront.net/pictures/EA7640585/34002662_original.jpg")),
                         ZonedDateTime.of(2019, 1, 7, 21, 24, 26, 0, UTC),
                         null),
@@ -179,6 +181,7 @@ public class OnceProviderServiceTest {
                                 "MEA346007886",
                                 "Louise",
                                 27,
+                                null, // not filled
                                 List.of("https://d110abryny6tab.cloudfront.net/pictures/EA7464845/33485378_original.jpg")),
                         ZonedDateTime.of(2018, 11, 24, 18, 37, 48, 0, UTC),
                         new MessageDto(
@@ -249,6 +252,7 @@ public class OnceProviderServiceTest {
                 "MEA346007886",
                 "Louise",
                 27,
+                "1m80 !",
                 List.of(
                         "https://d110abryny6tab.cloudfront.net/pictures/EA7464845/33485378_original.jpg",
                         "https://d110abryny6tab.cloudfront.net/pictures/EA7464845/33485380_original.jpg"))));

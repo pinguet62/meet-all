@@ -4,7 +4,12 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.NonNull;
 import lombok.Value;
 
+import javax.annotation.Nullable;
 import java.util.List;
+import java.util.Optional;
+
+import static java.util.Optional.empty;
+import static java.util.Optional.of;
 
 @Value
 public class OnceUserDto {
@@ -28,4 +33,11 @@ public class OnceUserDto {
 
     @NonNull
     List<OncePictureDto> pictures;
+
+    @Nullable
+    String description;
+
+    public Optional<String> getDescription() {
+        return description == null || description.isEmpty() ? empty() : of(description);
+    }
 }

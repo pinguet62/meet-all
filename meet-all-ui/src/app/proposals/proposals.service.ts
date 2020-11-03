@@ -8,6 +8,7 @@ export interface Profile {
     id: string;
     name: string;
     age: number;
+    description: string | null;
     avatars: string[];
 }
 

@@ -30,6 +30,9 @@ import {ProfileService} from './profile.service';
                 <ion-card-title>{{profile.name}}</ion-card-title>
                 <ion-card-subtitle i18n="@@profile.model.age">{profile.age, plural, =1 {1 year old} other {{{profile.age}} years old}}</ion-card-subtitle>
             </ion-card-header>
+            <ion-card-content>
+                {{profile.description}}
+            </ion-card-content>
         </ion-content>`,
 })
 export class ProfileComponent {

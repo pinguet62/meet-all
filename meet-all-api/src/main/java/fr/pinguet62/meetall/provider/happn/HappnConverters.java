@@ -25,6 +25,7 @@ class HappnConverters {
                 input.getId(),
                 input.getDisplay_name().orElse(""),
                 input.getAge(),
+                input.getAbout().orElse(null),
                 input.getProfiles().stream().map(HappnProfileDto::getUrl).collect(toList()));
     }
 

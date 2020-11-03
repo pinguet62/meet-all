@@ -55,14 +55,14 @@ public class MeetServiceTest {
         when(providerFactory.getProviderService(TINDER)).thenAnswer(a -> {
             ProviderService providerService = mock(ProviderService.class);
             when(providerService.getProposals("tinderCredential_91")).thenReturn(Flux.just(
-                    new ProposalDto("propTinder11", new ProfileDto("profTinder11", "profile name 11", 11, List.of("https://google.fr/favicon.png"))),
-                    new ProposalDto("propTinder12", new ProfileDto("profTinder12", "profile name 12", 12, emptyList()))));
+                    new ProposalDto("propTinder11", new ProfileDto("profTinder11", "profile name 11", 11, "description 11", List.of("https://google.fr/favicon.png"))),
+                    new ProposalDto("propTinder12", new ProfileDto("profTinder12", "profile name 12", 12, "description 12", emptyList()))));
             return providerService;
         });
         when(providerFactory.getProviderService(HAPPN)).thenAnswer(a -> {
             ProviderService providerService = mock(ProviderService.class);
             when(providerService.getProposals("happnCredential_92")).thenReturn(Flux.just(
-                    new ProposalDto("propHappn21", new ProfileDto("profHappn21", "profile name 21", 21, emptyList()))));
+                    new ProposalDto("propHappn21", new ProfileDto("profHappn21", "profile name 21", 21, "description 21", emptyList()))));
             return providerService;
         });
 
@@ -71,9 +71,9 @@ public class MeetServiceTest {
         PartialList<ProposalDto> proposals = result.block();
         assertThat(proposals.isPartial(), is(false));
         assertThat(proposals, containsInAnyOrder(
-                new ProposalDto("91#propTinder11", new ProfileDto("91#profTinder11", "profile name 11", 11, List.of(encode("https://google.fr/favicon.png")))),
-                new ProposalDto("91#propTinder12", new ProfileDto("91#profTinder12", "profile name 12", 12, emptyList())),
-                new ProposalDto("92#propHappn21", new ProfileDto("92#profHappn21", "profile name 21", 21, emptyList()))));
+                new ProposalDto("91#propTinder11", new ProfileDto("91#profTinder11", "profile name 11", 11, "description 11", List.of(encode("https://google.fr/favicon.png")))),
+                new ProposalDto("91#propTinder12", new ProfileDto("91#profTinder12", "profile name 12", 12, "description 12", emptyList())),
+                new ProposalDto("92#propHappn21", new ProfileDto("92#profHappn21", "profile name 21", 21, "description 21", emptyList()))));
     }
 
     @Test
@@ -84,7 +84,7 @@ public class MeetServiceTest {
         when(providerFactory.getProviderService(TINDER)).thenAnswer(a -> {
             ProviderService providerService = mock(ProviderService.class);
             when(providerService.getProposals("tinderCredential_91")).thenReturn(Flux.just(
-                    new ProposalDto("propTinder12", new ProfileDto("profTinder12", "profile name 12", 12, emptyList()))));
+                    new ProposalDto("propTinder12", new ProfileDto("profTinder12", "profile name 12", 12, "description 12", emptyList()))));
             return providerService;
         });
         when(providerFactory.getProviderService(HAPPN)).thenAnswer(a -> {
@@ -98,7 +98,7 @@ public class MeetServiceTest {
         PartialList<ProposalDto> proposals = result.block();
         assertThat(proposals.isPartial(), is(true));
         assertThat(proposals, containsInAnyOrder(
-                new ProposalDto("91#propTinder12", new ProfileDto("91#profTinder12", "profile name 12", 12, emptyList()))));
+                new ProposalDto("91#propTinder12", new ProfileDto("91#profTinder12", "profile name 12", 12, "description 12", emptyList()))));
     }
 
     @Test
@@ -109,14 +109,14 @@ public class MeetServiceTest {
         when(providerFactory.getProviderService(TINDER)).thenAnswer(a -> {
             ProviderService providerService = mock(ProviderService.class);
             when(providerService.getConversations("tinderCredential_91")).thenReturn(Flux.just(
-                    new ConversationDto("convTinder11", new ProfileDto("profTinder11", "profile name 11", 11, List.of("https://google.fr/favicon.png")), ZonedDateTime.of(2001, 4, 7, 9, 13, 37, 27, UTC), new MessageDto("messTinder11", ZonedDateTime.of(2001, 4, 7, 9, 13, 37, 27, UTC), true, "message Tinder 11")),
-                    new ConversationDto("convTinder12", new ProfileDto("profTinder12", "profile name 12", 12, emptyList()), ZonedDateTime.of(2003, 8, 12, 5, 28, 56, 98, UTC), null)));
+                    new ConversationDto("convTinder11", new ProfileDto("profTinder11", "profile name 11", 11, "description 11", List.of("https://google.fr/favicon.png")), ZonedDateTime.of(2001, 4, 7, 9, 13, 37, 27, UTC), new MessageDto("messTinder11", ZonedDateTime.of(2001, 4, 7, 9, 13, 37, 27, UTC), true, "message Tinder 11")),
+                    new ConversationDto("convTinder12", new ProfileDto("profTinder12", "profile name 12", 12, "description 12", emptyList()), ZonedDateTime.of(2003, 8, 12, 5, 28, 56, 98, UTC), null)));
             return providerService;
         });
         when(providerFactory.getProviderService(HAPPN)).thenAnswer(a -> {
             ProviderService providerService = mock(ProviderService.class);
             when(providerService.getConversations("happnCredential_92")).thenReturn(Flux.just(
-                    new ConversationDto("convHappn21", new ProfileDto("profHappn21", "profile name 21", 21, emptyList()), ZonedDateTime.of(2002, 7, 9, 19, 52, 59, 12, UTC), new MessageDto("messHappn21", ZonedDateTime.of(2002, 7, 9, 19, 52, 59, 12, UTC), false, "message Happn 21"))));
+                    new ConversationDto("convHappn21", new ProfileDto("profHappn21", "profile name 21", 21, "description 21", emptyList()), ZonedDateTime.of(2002, 7, 9, 19, 52, 59, 12, UTC), new MessageDto("messHappn21", ZonedDateTime.of(2002, 7, 9, 19, 52, 59, 12, UTC), false, "message Happn 21"))));
             return providerService;
         });
 
@@ -125,9 +125,9 @@ public class MeetServiceTest {
         PartialList<ConversationDto> conversations = result.block();
         assertThat(conversations.isPartial(), is(false));
         assertThat(conversations, contains(
-                new ConversationDto("91#convTinder12", new ProfileDto("91#profTinder12", "profile name 12", 12, emptyList()), ZonedDateTime.of(2003, 8, 12, 5, 28, 56, 98, UTC), null),
-                new ConversationDto("92#convHappn21", new ProfileDto("92#profHappn21", "profile name 21", 21, emptyList()), ZonedDateTime.of(2002, 7, 9, 19, 52, 59, 12, UTC), new MessageDto("92#messHappn21", ZonedDateTime.of(2002, 7, 9, 19, 52, 59, 12, UTC), false, "message Happn 21")),
-                new ConversationDto("91#convTinder11", new ProfileDto("91#profTinder11", "profile name 11", 11, List.of(encode("https://google.fr/favicon.png"))), ZonedDateTime.of(2001, 4, 7, 9, 13, 37, 27, UTC), new MessageDto("91#messTinder11", ZonedDateTime.of(2001, 4, 7, 9, 13, 37, 27, UTC), true, "message Tinder 11"))));
+                new ConversationDto("91#convTinder12", new ProfileDto("91#profTinder12", "profile name 12", 12, "description 12", emptyList()), ZonedDateTime.of(2003, 8, 12, 5, 28, 56, 98, UTC), null),
+                new ConversationDto("92#convHappn21", new ProfileDto("92#profHappn21", "profile name 21", 21, "description 21", emptyList()), ZonedDateTime.of(2002, 7, 9, 19, 52, 59, 12, UTC), new MessageDto("92#messHappn21", ZonedDateTime.of(2002, 7, 9, 19, 52, 59, 12, UTC), false, "message Happn 21")),
+                new ConversationDto("91#convTinder11", new ProfileDto("91#profTinder11", "profile name 11", 11, "description 11", List.of(encode("https://google.fr/favicon.png"))), ZonedDateTime.of(2001, 4, 7, 9, 13, 37, 27, UTC), new MessageDto("91#messTinder11", ZonedDateTime.of(2001, 4, 7, 9, 13, 37, 27, UTC), true, "message Tinder 11"))));
     }
 
     @Test
@@ -138,7 +138,7 @@ public class MeetServiceTest {
         when(providerFactory.getProviderService(TINDER)).thenAnswer(a -> {
             ProviderService providerService = mock(ProviderService.class);
             when(providerService.getConversations("tinderCredential_91")).thenReturn(Flux.just(
-                    new ConversationDto("convTinder12", new ProfileDto("profTinder12", "profile name 12", 12, emptyList()), ZonedDateTime.of(2003, 8, 12, 5, 28, 56, 98, UTC), null)));
+                    new ConversationDto("convTinder12", new ProfileDto("profTinder12", "profile name 12", 12, "description 12", emptyList()), ZonedDateTime.of(2003, 8, 12, 5, 28, 56, 98, UTC), null)));
             return providerService;
         });
         when(providerFactory.getProviderService(HAPPN)).thenAnswer(a -> {
@@ -152,7 +152,7 @@ public class MeetServiceTest {
         PartialList<ConversationDto> conversations = result.block();
         assertThat(conversations.isPartial(), is(true));
         assertThat(conversations, contains(
-                new ConversationDto("91#convTinder12", new ProfileDto("91#profTinder12", "profile name 12", 12, emptyList()), ZonedDateTime.of(2003, 8, 12, 5, 28, 56, 98, UTC), null)));
+                new ConversationDto("91#convTinder12", new ProfileDto("91#profTinder12", "profile name 12", 12, "description 12", emptyList()), ZonedDateTime.of(2003, 8, 12, 5, 28, 56, 98, UTC), null)));
     }
 
     /**
@@ -170,13 +170,13 @@ public class MeetServiceTest {
                 ProviderService providerService = mock(ProviderService.class);
                 when(providerService.getConversations("tinderCredential_91")).thenReturn(
                         Mono.delay(delay)
-                                .flatMapIterable(it -> List.of(new ConversationDto("convTinder11", new ProfileDto("profTinder11", "profile name 11", 11, emptyList()), ZonedDateTime.of(2001, 4, 7, 9, 13, 37, 27, UTC), new MessageDto("messTinder11", ZonedDateTime.of(2001, 4, 7, 9, 13, 37, 27, UTC), true, "message Tinder 11")))));
+                                .flatMapIterable(it -> List.of(new ConversationDto("convTinder11", new ProfileDto("profTinder11", "profile name 11", 11, "description 11", emptyList()), ZonedDateTime.of(2001, 4, 7, 9, 13, 37, 27, UTC), new MessageDto("messTinder11", ZonedDateTime.of(2001, 4, 7, 9, 13, 37, 27, UTC), true, "message Tinder 11")))));
                 return providerService;
             });
             when(providerFactory.getProviderService(HAPPN)).thenAnswer(a -> {
                 ProviderService providerService = mock(ProviderService.class);
                 when(providerService.getConversations("happnCredential_92")).thenReturn(
-                        Mono.delay(delay).flatMapIterable(it -> List.of(new ConversationDto("convHappn21", new ProfileDto("profHappn21", "profile name 21", 21, emptyList()), ZonedDateTime.of(2002, 7, 9, 19, 52, 59, 12, UTC), new MessageDto("messHappn21", ZonedDateTime.of(2002, 7, 9, 19, 52, 59, 12, UTC), false, "message Happn 21")))));
+                        Mono.delay(delay).flatMapIterable(it -> List.of(new ConversationDto("convHappn21", new ProfileDto("profHappn21", "profile name 21", 21, "description 21", emptyList()), ZonedDateTime.of(2002, 7, 9, 19, 52, 59, 12, UTC), new MessageDto("messHappn21", ZonedDateTime.of(2002, 7, 9, 19, 52, 59, 12, UTC), false, "message Happn 21")))));
                 return providerService;
             });
 
@@ -216,13 +216,13 @@ public class MeetServiceTest {
                 new Credential("42", "userId", TINDER, "secret", "label")));
         when(providerFactory.getProviderService(TINDER)).thenAnswer(a -> {
             ProviderService providerService = mock(ProviderService.class);
-            when(providerService.getProfile("secret", "99")).thenReturn(Mono.just(new ProfileDto("profTinder", "profile name", 1, List.of("https://google.fr/favicon.png"))));
+            when(providerService.getProfile("secret", "99")).thenReturn(Mono.just(new ProfileDto("profTinder", "profile name", 1, "description", List.of("https://google.fr/favicon.png"))));
             return providerService;
         });
 
         Mono<ProfileDto> profile = service.getProfileForUser("userId", "42", "99");
 
-        assertThat(profile.block(), is(new ProfileDto(42 + "#" + "profTinder", "profile name", 1, List.of(encode("https://google.fr/favicon.png")))));
+        assertThat(profile.block(), is(new ProfileDto(42 + "#" + "profTinder", "profile name", 1, "description", List.of(encode("https://google.fr/favicon.png")))));
     }
 
     @Test

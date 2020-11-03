@@ -35,6 +35,7 @@ class TinderConverters {
                 input.get_id(),
                 input.getName(),
                 (int) ChronoUnit.YEARS.between(input.getBirth_date(), now(clock)),
+                input.getBio().orElse(null),
                 input.getPhotos().stream().map(TinderPhotoDto::getUrl).collect(toList()));
     }
 
