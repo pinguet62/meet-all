@@ -36,6 +36,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
@@ -113,6 +114,20 @@ class TinderProviderServiceTest {
                                     "Steuplé, Fais moi rire !",
                                     List.of(
                                             "https://images-ssl.gotinder.com/5c30dbfb7f49061862de6256/1080x1080_8b718deb-9c11-4835-86e7-100c613f865e.jpg")))));
+        }
+
+        @Test
+        void likeRemaining() {
+            server.enqueue(new MockResponse()
+                    .setHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
+                    .setBody(readResource("/fr/pinguet62/meetall/provider/tinder/profile_likes-remaining.json")));
+            server.enqueue(new MockResponse()
+                    .setHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
+                    .setBody(readResource("/fr/pinguet62/meetall/provider/tinder/recs_core.json")));
+
+            List<ProposalDto> proposals = tinderProvider.getProposals(authToken).collectList().block();
+
+            assertThat(proposals, is(empty()));
         }
 
         @Test
@@ -209,10 +224,9 @@ class TinderProviderServiceTest {
                     .setHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
                     .setBody(readResource("/fr/pinguet62/meetall/provider/tinder/like_like-remaining.json")));
 
-            assertThat(() -> tinderProvider.likeProposal(authToken, userId).block(), throwing(RuntimeException.class));
-            assertThat(server, takingRequest(allOf(
-                    url(with(HttpUrl::url, with(URL::toString, containsString("like/" + userId)))),
-                    header(HEADER, authToken))));
+            boolean matched = tinderProvider.likeProposal(authToken, userId).block();
+
+            assertThat(matched, is(false));
         }
     }
 

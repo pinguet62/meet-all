@@ -1,0 +1,21 @@
+{
+  "meta": {
+    "status": 200
+  },
+  "data": {
+    "likes": {
+      "likes_remaining": 0,
+      "rate_limited_until": 1604448727399
+    },
+    "super_likes": {
+      "remaining": 2,
+      "alc_remaining": 2,
+      "new_alc_remaining": 0,
+      "allotment": 1,
+      "superlike_refresh_amount": 5,
+      "superlike_refresh_interval": 1,
+      "superlike_refresh_interval_unit": "d",
+      "resets_at": "2020-11-04T18:03:07.254Z"
+    }
+  }
+}

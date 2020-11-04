@@ -70,9 +70,6 @@ public class TinderProviderService implements ProviderService {
                 .map(TinderAuthLoginFacebookResponseDataDto::getApi_token);
     }
 
-    /**
-     * Count limited by {@code "data.likes.likes_remaining"} from {@code "/profile"} result.
-     */
     @Override
     public Flux<ProposalDto> getProposals(String authToken) {
         return client.getProfile(authToken)
@@ -95,14 +92,10 @@ public class TinderProviderService implements ProviderService {
                 .then();
     }
 
-    /**
-     * @throws RuntimeException When {@code "data.likes.likes_remaining"} is {@code 0}.
-     */
     @Override
     public Mono<Boolean> likeProposal(String authToken, String userId) {
         return client.likeUser(authToken, userId)
                 .onErrorMap(Unauthorized.class, ExpiredTokenException::new)
-                .flatMap(it -> it.getRate_limited_until().isPresent() ? Mono.error(new RuntimeException()) : Mono.just(it)) // "likes remaining" support
                 .map(TinderConverters::convert);
     }
 

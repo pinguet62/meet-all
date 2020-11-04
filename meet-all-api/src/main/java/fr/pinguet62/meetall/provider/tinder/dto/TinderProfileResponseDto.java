@@ -10,6 +10,10 @@ public class TinderProfileResponseDto {
     public static class TinderProfileDto {
         @Value
         public static class TinderProfileLikesDto {
+            /**
+             * Always {@code 100} when remaining likes.<br>
+             * {@code 0} after last like.
+             */
             @JsonProperty(required = true)
             int likes_remaining;
         }
