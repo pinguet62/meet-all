@@ -5,6 +5,9 @@ import lombok.NonNull;
 import lombok.Value;
 
 import java.util.List;
+import java.util.Optional;
+
+import static java.util.Optional.ofNullable;
 
 @Value
 public class OnceConversationsResultDto {
@@ -23,22 +26,27 @@ public class OnceConversationsResultDto {
         String match_id;
 
         /**
+         * Default message: {@code null} or {@code "Vous avez été connectés"}.
+         *
          * @see OnceMessagesDto#getMessage()
          */
-        @NonNull
         String last_message;
 
         /**
-         * @see OnceMessagesDto#getId()
+         * {@code 0} when {@link #last_message} is default message.
          */
-        @NonNull
-        String last_message_id;
+        @JsonProperty(required = true)
+        int last_message_id;
 
         /**
          * @see OnceMessagesDto#getCreatedAt()
          */
         @JsonProperty(required = true)
         long message_sent_at;
+
+        public Optional<String> getLast_message() {
+            return ofNullable(last_message);
+        }
     }
 
     @NonNull

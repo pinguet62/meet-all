@@ -92,7 +92,7 @@ public class OnceProviderService implements ProviderService {
                 .onErrorMap(Unauthorized.class, ExpiredTokenException::new)
                 .map(OnceMessagesResponseDto::getResult)
                 .flatMapMany(result -> fromIterable(result.getMessages())
-                        .filter(it -> it.getNumber() != 1)
+                        .filter(it -> it.getNumber() != 1) // TODO can be 2 when 1 is a charm
                         .map(message -> convert(message, result.getUser())));
     }
 

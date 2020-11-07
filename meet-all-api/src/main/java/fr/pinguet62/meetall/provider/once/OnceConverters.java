@@ -25,10 +25,10 @@ class OnceConverters {
                 input.getMatch_id(),
                 convertToLazy(input.getMatch_id(), input.getUser(), baseUrl),
                 Instant.ofEpochSecond(input.getMessage_sent_at()).atZone(ZONE_ID),
-                input.getLast_message_id().equals("0") ? null : new LazyMessageDto(
+                input.getLast_message_id() == 0 ? null : new LazyMessageDto(
                         Instant.ofEpochSecond(input.getMessage_sent_at()).atZone(ZONE_ID),
                         !input.getSender_id().equals(input.getUser().getId()),
-                        input.getLast_message()));
+                        input.getLast_message().get()));
     }
 
     public static ProfileDto convert(String matchId, OnceUserDto input, String baseUrl) {
