@@ -35,8 +35,7 @@ class PhotoProxyController {
         return webClient
                 .get()
                 .uri(originalUrl)
-                .exchange()
-                .flatMap(res -> res.bodyToMono(DataBuffer.class)
+                .exchangeToMono(res -> res.bodyToMono(DataBuffer.class)
                         .map(body -> ResponseEntity
                                 .status(res.statusCode())
                                 .headers(res.headers().asHttpHeaders())

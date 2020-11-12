@@ -10,9 +10,7 @@ public class ReactiveLocaleContextHolder {
     static final Object KEY = Locale.class;
 
     public static Mono<Locale> getLocale() {
-        return Mono.subscriberContext()
-                .filter(c -> c.hasKey(KEY))
-                .map(c -> c.get(KEY));
+        return Mono.deferContextual(context -> Mono.just(context.get(KEY)));
     }
 
     public static Context withLocaleContext(Locale locale) {

@@ -26,6 +26,6 @@ class LocaleFilter implements WebFilter {
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
         return chain.filter(exchange)
-                .subscriberContext(withLocaleContext(localeContextResolver.resolveLocaleContext(exchange).getLocale()));
+                .contextWrite(withLocaleContext(localeContextResolver.resolveLocaleContext(exchange).getLocale()));
     }
 }
