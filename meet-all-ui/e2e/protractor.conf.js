@@ -24,7 +24,14 @@ exports.config = {
       project: require('path').join(__dirname, './tsconfig.json')
     });
     jasmine.getEnv().addReporter(new SpecReporter({ spec: { displayStacktrace: true } }));
-  }
+  },
+  plugins: [
+    {
+      package: 'protractor-backend-mock-plugin',
+      backend: [8080, 'localhost'],
+      fake: [9999, 'localhost']
+    }
+  ]
 };
 
 if (process.env.CI) {

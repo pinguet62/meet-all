@@ -1,16 +1,16 @@
 import {browser} from 'protractor';
+import {promise} from 'selenium-webdriver';
 import {ConversationPage} from './conversations.po';
 import {LoginPage} from './login.po';
-import {promise} from 'selenium-webdriver';
-import {setItem} from '../localStorage';
+import {clear, setItem} from '../localStorage';
 
-export function openApp(params: { localStorage?: { [key: string]: string } } = {}): promise.Promise<LoginPage | ConversationPage> {
-    return browser.get('/')
+export function openApp<T extends LoginPage | ConversationPage = (LoginPage | ConversationPage)>(params: { localStorage?: { [key: string]: string } } = {}): promise.Promise<T> {
+    return browser.get('/') // create browser before initialisation // TODO create automatically browser before all tests
+        .then(() => clear()) // TODO create automatically browser before all tests
         .then(() => promise.all(
             Object.entries(params.localStorage || {})
-                .map(([key, value]) => setItem(key, value)))
-        )
+                .map(([key, value]) => setItem(key, value))))
         .then(() => browser.get('/')) // refresh app with initialized localStorage
         .then(() => browser.getCurrentUrl())
-        .then(currentUrl => currentUrl.endsWith('/login') ? new LoginPage() : new ConversationPage());
+        .then(currentUrl => currentUrl.endsWith('/login') ? new LoginPage() as T : new ConversationPage() as T);
 }

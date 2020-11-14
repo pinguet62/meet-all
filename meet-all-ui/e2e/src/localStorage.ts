@@ -7,3 +7,7 @@ export function removeItem(key: string) {
 export function setItem(key: string, value: string) {
     return browser.executeScript(`return window.localStorage.setItem("${key}", "${value}");`);
 }
+
+export function clear() {
+    return browser.executeScript(`return window.localStorage.clear();`);
+}
