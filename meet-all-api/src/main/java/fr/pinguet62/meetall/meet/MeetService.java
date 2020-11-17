@@ -70,7 +70,7 @@ class MeetService {
     /**
      * Merge result of each {@link ProviderService#getConversations(String)}.<br>
      * Update {@link ConversationDto#getId()}, {@link ProfileDto#getId()}, {@link ProfileDto#getAvatars()}, {@link MessageDto#getId()}.<br>
-     * Order by descending {@link ConversationDto#getDate()}.
+     * Ordered by descending {@link ConversationDto#getDate()}.
      *
      * @param userId {@link Credential#getUserId()}
      */
@@ -94,7 +94,7 @@ class MeetService {
 
     /**
      * Update {@link MessageDto#getId()}.<br>
-     * Order by ascending {@link MessageDto#getDate()}.
+     * Ordered by ascending {@link MessageDto#getDate()}.
      *
      * @param userId         {@link Credential#getUserId()}
      * @param credentialId   {@link Credential#getId()}

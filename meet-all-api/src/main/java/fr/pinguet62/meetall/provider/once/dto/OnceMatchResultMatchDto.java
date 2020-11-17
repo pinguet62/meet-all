@@ -13,5 +13,11 @@ public class OnceMatchResultMatchDto {
     OnceUserDto user;
 
     @JsonProperty(required = true)
-    boolean viewed;
+    int match_date;
+
+    @JsonProperty(required = true)
+    boolean liked;
+
+    @JsonProperty(required = true)
+    boolean passed;
 }

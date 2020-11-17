@@ -13,6 +13,7 @@ import fr.pinguet62.meetall.provider.once.dto.OnceMatchAllResponseDto;
 import fr.pinguet62.meetall.provider.once.dto.OnceMatchByIdResponseDto;
 import fr.pinguet62.meetall.provider.once.dto.OnceMatchLikeResponseDto;
 import fr.pinguet62.meetall.provider.once.dto.OnceMatchLikeResponseDto.OnceMatchLikeResultDto;
+import fr.pinguet62.meetall.provider.once.dto.OnceMatchResultMatchDto;
 import fr.pinguet62.meetall.provider.once.dto.OnceMessagesResponseDto;
 import fr.pinguet62.meetall.provider.once.dto.OnceSendMessageResponseDto;
 import lombok.RequiredArgsConstructor;
@@ -21,8 +22,11 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.Comparator;
+
 import static fr.pinguet62.meetall.provider.Provider.ONCE;
 import static fr.pinguet62.meetall.provider.once.OnceConverters.convert;
+import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.toList;
 import static reactor.core.publisher.Flux.fromIterable;
 
@@ -47,13 +51,17 @@ public class OnceProviderService implements ProviderService {
                 .map(OnceAuthenticateFacebookResponseDto::getToken);
     }
 
+    /**
+     * Ordered by ascending {@link OnceMatchResultMatchDto#getMatch_date()}.
+     */
     @Override
     public Flux<ProposalDto> getProposals(String authorization) {
-        return client.getMatchs(authorization)
+        return client.getMatchsHistoryFiltered(authorization, Integer.MAX_VALUE)
                 .onErrorMap(Unauthorized.class, ExpiredTokenException::new)
                 .map(OnceMatchAllResponseDto::getResult)
                 .flatMapMany(result -> fromIterable(result.getMatches())
-                        .filter(match -> !match.isViewed())
+                        .sort(comparing(OnceMatchResultMatchDto::getMatch_date))
+                        .filter(match -> !match.isLiked() && !match.isPassed())
                         .map(match -> new ProposalDto(
                                 match.getId(),
                                 convert(match.getId(), match.getUser(), result.getBase_url()))));

@@ -14,6 +14,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
+import javax.annotation.Nullable;
+
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.web.reactive.function.BodyInserters.fromValue;
 
@@ -51,9 +53,12 @@ class OnceClient {
                 .retrieve().bodyToMono(OnceAuthenticateFacebookResponseDto.class);
     }
 
-    public Mono<OnceMatchAllResponseDto> getMatchs(String authorization) {
+    /**
+     * @param size Default: {@code 10}
+     */
+    public Mono<OnceMatchAllResponseDto> getMatchsHistoryFiltered(String authorization, @Nullable Integer size) {
         return webClient.get()
-                .uri("/v1/match")
+                .uri("/v1/match/history/filtered?size={size}", size)
                 .header(HEADER, authorization)
                 .retrieve().bodyToMono(OnceMatchAllResponseDto.class);
     }

@@ -31,7 +31,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
@@ -59,54 +58,36 @@ class OnceProviderServiceTest {
     @Nested
     class getProposals {
         @Test
-        void notYetViewed() {
+        void neitherLikedNotPassed() {
             server.enqueue(new MockResponse()
                     .setHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
-                    .setBody(readResource("/fr/pinguet62/meetall/provider/once/match-notYetViewed.json")));
+                    .setBody(readResource("/fr/pinguet62/meetall/provider/once/match-history-filtered.json")));
 
             List<ProposalDto> proposal = onceProvider.getProposals(authToken).collectList().block();
 
             assertThat(server, takingRequest(allOf(
-                    url(with(HttpUrl::url, with(URL::toString, containsString("match")))),
+                    url(with(HttpUrl::encodedPath, containsString("match/history/filtered"))),
                     header(HEADER, authToken))));
-            assertThat(proposal, contains(new ProposalDto(
-                    "MEA353970154",
-                    new ProfileDto(
-                            "MEA353970154",
-                            "Anne-marie",
-                            27,
-                            "Je cherche du sérieux...",
-                            List.of(
-                                    "https://d110abryny6tab.cloudfront.net/pictures/EA6728641/33787916_original.jpg",
-                                    "https://d110abryny6tab.cloudfront.net/pictures/EA6728641/33803466_original.jpg")))));
-        }
-
-        @Test
-        void alreadyLiked() {
-            server.enqueue(new MockResponse()
-                    .setHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
-                    .setBody(readResource("/fr/pinguet62/meetall/provider/once/match-alreadyLiked.json")));
-
-            List<ProposalDto> proposal = onceProvider.getProposals(authToken).collectList().block();
-
-            assertThat(server, takingRequest(allOf(
-                    url(with(HttpUrl::url, with(URL::toString, containsString("match")))),
-                    header(HEADER, authToken))));
-            assertThat(proposal, is(empty()));
-        }
-
-        @Test
-        void alreadyPassed() {
-            server.enqueue(new MockResponse()
-                    .setHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
-                    .setBody(readResource("/fr/pinguet62/meetall/provider/once/match-alreadyPassed.json")));
-
-            List<ProposalDto> proposal = onceProvider.getProposals(authToken).collectList().block();
-
-            assertThat(server, takingRequest(allOf(
-                    url(with(HttpUrl::url, with(URL::toString, containsString("match")))),
-                    header(HEADER, authToken))));
-            assertThat(proposal, is(empty()));
+            assertThat(proposal, contains(
+                    new ProposalDto(
+                            "MEA507894692",
+                            new ProfileDto(
+                                    "MEA507894692",
+                                    "Cam",
+                                    28,
+                                    null,
+                                    List.of(
+                                            "https://d110abryny6tab.cloudfront.net/pictures/EA2305753/12968361_original.jpg"))),
+                    new ProposalDto(
+                            "MEA508077237",
+                            new ProfileDto(
+                                    "MEA508077237",
+                                    "Mathilde",
+                                    29,
+                                    "Naturelle, souriante, sportive,curieuse.. Je recherche une personne qui a envie de se poser. ",
+                                    List.of(
+                                            "https://d110abryny6tab.cloudfront.net/pictures/EA6290730/29958367_original.jpg",
+                                            "https://d110abryny6tab.cloudfront.net/pictures/EA6290730/29962886_original.jpg")))));
         }
     }
 
