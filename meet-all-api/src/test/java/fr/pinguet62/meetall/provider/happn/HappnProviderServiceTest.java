@@ -115,6 +115,9 @@ class HappnProviderServiceTest {
 
     @Nested
     class passProposal {
+        /**
+         * @deprecated remove data file
+         */
         @Test
         void ok() {
             final String userId = "userId";
@@ -144,6 +147,9 @@ class HappnProviderServiceTest {
 
     @Nested
     class likeProposal {
+        /**
+         * @deprecated remove data file
+         */
         @Test
         void notMatched() {
             final String userId = "userId";
@@ -161,6 +167,9 @@ class HappnProviderServiceTest {
                     is(false)));
         }
 
+        /**
+         * @deprecated remove data file
+         */
         @Test
         void matched() {
             final String userId = "userId";
@@ -390,9 +399,6 @@ class HappnProviderServiceTest {
         void ok() {
             server.enqueue(new MockResponse()
                     .setHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
-                    .setBody(readResource("/fr/pinguet62/meetall/provider/happn/users_me.json")));
-            server.enqueue(new MockResponse()
-                    .setHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
                     .setBody(readResource("/fr/pinguet62/meetall/provider/happn/users_me_devices.json")));
             server.enqueue(new MockResponse()
                     .setHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
@@ -402,14 +408,11 @@ class HappnProviderServiceTest {
                     .verifyComplete();
 
             assertThat(server, takingRequest(allOf(
-                    url(with(HttpUrl::url, with(URL::toString, containsString("users/me")))),
-                    header(HEADER, "OAuth=\"" + authToken + "\""))));
-            assertThat(server, takingRequest(allOf(
-                    url(with(HttpUrl::url, with(URL::toString, containsString("users/db17fecb-6332-4bb2-a5ad-2ad3317d4af3/devices")))),
+                    url(with(HttpUrl::url, with(URL::toString, containsString("users/me/devices")))),
                     header(HEADER, "OAuth=\"" + authToken + "\""))));
             assertThat(server, takingRequest(allOf(
                     method(is(PUT.name())),
-                    url(with(HttpUrl::url, with(URL::toString, containsString("users/db17fecb-6332-4bb2-a5ad-2ad3317d4af3/devices/87fbaa4f-2cef-4c60-bac3-08348cdf32e5")))),
+                    url(with(HttpUrl::url, with(URL::toString, containsString("users/me/devices/87fbaa4f-2cef-4c60-bac3-08348cdf32e5")))),
                     header(HEADER, "OAuth=\"" + authToken + "\""))));
         }
 

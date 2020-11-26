@@ -4,7 +4,7 @@ import fr.pinguet62.meetall.ExpiredTokenException;
 import fr.pinguet62.meetall.provider.Provider;
 import fr.pinguet62.meetall.provider.ProviderService;
 import fr.pinguet62.meetall.provider.happn.dto.HappnConversationsResponseDto;
-import fr.pinguet62.meetall.provider.happn.dto.HappnDevicesResponseDto.HappnDevicesDto;
+import fr.pinguet62.meetall.provider.happn.dto.HappnDeviceResponseDto.HappnDeviceDto;
 import fr.pinguet62.meetall.provider.happn.dto.HappnMessagesResponseDto;
 import fr.pinguet62.meetall.provider.happn.dto.HappnNotificationsResponseDto;
 import fr.pinguet62.meetall.provider.happn.dto.HappnOauthResponseDto;
@@ -72,7 +72,7 @@ public class HappnProviderService implements ProviderService {
                                         .map(HappnConverters::convert),
                                 client.getUserMeDevices(authToken)
                                         .flatMapIterable(it -> it.getData().orElseGet(List::of))
-                                        .map(HappnDevicesDto::getId)
+                                        .map(HappnDeviceDto::getId)
                                         .flatMap(deviceId -> client.getRecommendations(authToken, deviceId))
                                         .flatMapIterable(HappnRecommendationsResponseDto::getData)
                                         .map(HappnRecommendationDto::getContent)
@@ -83,14 +83,14 @@ public class HappnProviderService implements ProviderService {
 
     @Override
     public Mono<Void> passProposal(String authToken, String userId) {
-        return client.rejectUser(authToken, userId)
+        return client.rejectedUser(authToken, userId)
                 .onErrorMap(Gone.class, ExpiredTokenException::new)
                 .then();
     }
 
     @Override
     public Mono<Boolean> likeProposal(String authToken, String userId) {
-        return client.acceptUser(authToken, userId)
+        return client.acceptedUser(authToken, userId)
                 .onErrorMap(Gone.class, ExpiredTokenException::new)
                 .map(HappnUserAcceptedResponseDto::getData)
                 .map(HappnUserAcceptedDataDto::isHas_crushed);
@@ -116,7 +116,7 @@ public class HappnProviderService implements ProviderService {
      */
     @Override
     public Flux<MessageDto> getMessages(String authToken, String conversationId) {
-        return client.getMessagesForConversation(authToken, conversationId)
+        return client.getConversationMessages(authToken, conversationId)
                 .onErrorMap(Gone.class, ExpiredTokenException::new)
                 .flatMapIterable(HappnMessagesResponseDto::getData)
                 .map(HappnConverters::convert);
@@ -124,7 +124,7 @@ public class HappnProviderService implements ProviderService {
 
     @Override
     public Mono<MessageDto> sendMessage(String authToken, String conversationId, String text) {
-        return client.sendMessagesToConversation(authToken, conversationId, text)
+        return client.sendConversationMessage(authToken, conversationId, text)
                 .onErrorMap(Gone.class, ExpiredTokenException::new)
                 .map(HappnSendMessageResponseDto::getData)
                 .map(HappnConverters::convert);
@@ -140,13 +140,11 @@ public class HappnProviderService implements ProviderService {
 
     @Override
     public Mono<Void> setPosition(String authToken, double latitude, double longitude, double altitude) {
-        return client.getUserMe(authToken)
+        return client.getUserMeDevices(authToken)
                 .onErrorMap(Gone.class, ExpiredTokenException::new)
-                .map(it -> it.getData().getId())
-                .flatMapMany(meId -> client.getUserDevices(authToken, meId)
-                        .flatMapIterable(it -> it.getData().orElseGet(List::of))
-                        .map(HappnDevicesDto::getId)
-                        .flatMap(deviceId -> client.setUserPosition(authToken, meId, deviceId, latitude, longitude, altitude)))
+                .flatMapIterable(it -> it.getData().orElseGet(List::of))
+                .map(HappnDeviceDto::getId)
+                .flatMap(deviceId -> client.setUserMePosition(authToken, deviceId, latitude, longitude, altitude))
                 .then();
     }
 }

@@ -53,7 +53,7 @@ public class HappnUserDto {
 
     /**
      * <ol>
-     * <li>{@code "CLIENT"} for normal user.</li>
+     * <li>{@code "CLIENT"} or {@code "client"} for normal user.</li>
      * <li>{@code "sponsor"} for pub.</li>
      * </ol>
      */

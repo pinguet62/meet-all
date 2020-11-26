@@ -1,0 +1,623 @@
+{
+  "success": true,
+  "status": 200,
+  "error": null,
+  "data": {
+    "acquisition_survey": {
+      "enable": false
+    },
+    "sso": {
+      "facebook": {
+        "enable": true
+      },
+      "vk": {
+        "enable": false
+      }
+    },
+    "report_types": [
+      {
+        "id": "10404",
+        "name": "Bad behavior",
+        "description": "Bad behavior",
+        "level": 1
+      },
+      {
+        "id": "10403",
+        "name": "Fake profile",
+        "description": "Fake profile",
+        "level": 1
+      },
+      {
+        "id": "10408",
+        "name": "Commercial profile",
+        "description": "Commercial profile",
+        "level": 3
+      },
+      {
+        "id": "10406",
+        "name": "Inappropriate picture",
+        "description": "Inappropriate picture",
+        "level": 4
+      },
+      {
+        "id": "b30b1e25-1aa6-4eae-8119-54acf52887fd",
+        "name": "Video call: bad behavior",
+        "description": "Video call: bad behavior",
+        "level": 4
+      },
+      {
+        "id": "10405",
+        "name": "Scam",
+        "description": "Scam",
+        "level": 4
+      },
+      {
+        "id": "10407",
+        "name": "Underage",
+        "description": "Underage",
+        "level": 5
+      }
+    ],
+    "achievement_types": [
+      {
+        "id": "799",
+        "status": 0,
+        "name": "COCA_COLA",
+        "creation_date": "2020-11-26",
+        "credits": 0,
+        "max_times": 1
+      },
+      {
+        "id": "796",
+        "status": 0,
+        "name": "END_TUTORIAL",
+        "creation_date": "2020-11-26",
+        "credits": 0,
+        "max_times": 1
+      },
+      {
+        "id": "533",
+        "status": 0,
+        "name": "FACEBOOK_CONNECT",
+        "creation_date": "2020-11-26",
+        "credits": 0,
+        "max_times": 1
+      },
+      {
+        "id": "534",
+        "status": 0,
+        "name": "FACEBOOK_LIKE",
+        "creation_date": "2020-11-26",
+        "credits": 0,
+        "max_times": 1
+      },
+      {
+        "id": "537",
+        "status": 0,
+        "name": "INVITE",
+        "creation_date": "2020-11-26",
+        "credits": 5,
+        "max_times": 1000
+      },
+      {
+        "id": "798",
+        "status": 0,
+        "name": "NESCAFE_END",
+        "creation_date": "2020-11-26",
+        "credits": 0,
+        "max_times": 1
+      },
+      {
+        "id": "797",
+        "status": 0,
+        "name": "NESCAFE_START",
+        "creation_date": "2020-11-26",
+        "credits": 0,
+        "max_times": 1
+      },
+      {
+        "id": "538",
+        "status": 0,
+        "name": "NEW_ACCOUNT",
+        "creation_date": "2020-11-26",
+        "credits": 3,
+        "max_times": 1
+      },
+      {
+        "id": "536",
+        "status": 0,
+        "name": "RATE_APP",
+        "creation_date": "2020-11-26",
+        "credits": 0,
+        "max_times": 1
+      },
+      {
+        "id": "791",
+        "status": 0,
+        "name": "SOCIAL_LIKE",
+        "creation_date": "2020-11-26",
+        "credits": 0,
+        "max_times": 1
+      },
+      {
+        "id": "792",
+        "status": 0,
+        "name": "START_TUTORIAL",
+        "creation_date": "2020-11-26",
+        "credits": 0,
+        "max_times": 1
+      },
+      {
+        "id": "795",
+        "status": 0,
+        "name": "TUTORIAL_CHARM_PROFILE",
+        "creation_date": "2020-11-26",
+        "credits": 1,
+        "max_times": 1
+      },
+      {
+        "id": "793",
+        "status": 0,
+        "name": "TUTORIAL_LIKE_PROFILE",
+        "creation_date": "2020-11-26",
+        "credits": 0,
+        "max_times": 2
+      },
+      {
+        "id": "794",
+        "status": 0,
+        "name": "TUTORIAL_STEP_2",
+        "creation_date": "2020-11-26",
+        "credits": 0,
+        "max_times": 1
+      },
+      {
+        "id": "535",
+        "status": 0,
+        "name": "UPDATE_PICTURE",
+        "creation_date": "2020-11-26",
+        "credits": 0,
+        "max_times": 5
+      }
+    ],
+    "supernote": {
+      "enabled": false,
+      "segment": "supernote_default"
+    },
+    "charms_sent": {
+      "enable": true
+    },
+    "availability_types": [],
+    "last_tos_version": "ae5eca30-dc7a-11ea-a824-3f8a74c903b0",
+    "last_sdc_version": "5d6da800-708c-11e8-8080-808080808080",
+    "last_cookie_v1_version": "a6805620-61ec-11ea-bc55-0242ac130003",
+    "last_cookie_v2_version": "f7df26e0-1871-11eb-8080-808080808080",
+    "shop": [
+      {
+        "id": "d2977b20-b459-11e5-8d4a-b9f5925dc5ce",
+        "name": "pack 10 - Windows",
+        "description": "pack 10 - Windows",
+        "modification_date": "2015-04-14T00:00:00",
+        "creation_date": "2015-04-14T00:00:00",
+        "activated": true,
+        "store_product_id": "com.ftw_and_co.happn.c.10_coins",
+        "default_product": true,
+        "position": 0,
+        "channel": "windows",
+        "product_type": "PACK",
+        "pack_information": {
+          "credits": 10
+        }
+      },
+      {
+        "id": "d2981760-b459-11e5-8d4a-b9f5925dc5ce",
+        "name": "Pack 60 - Windows",
+        "description": "Pack 60 - Windows",
+        "modification_date": "2015-04-14T00:00:00",
+        "creation_date": "2015-04-14T00:00:00",
+        "activated": true,
+        "store_product_id": "com.ftw_and_co.happn.c.60_coins",
+        "default_product": true,
+        "position": 2,
+        "channel": "windows",
+        "product_type": "PACK",
+        "pack_information": {
+          "credits": 60
+        }
+      },
+      {
+        "id": "d2994fe0-b459-11e5-8d4a-b9f5925dc5ce",
+        "name": "Pack 250 - Windows",
+        "description": "Pack 250 - Windows",
+        "modification_date": "2015-04-14T00:00:00",
+        "creation_date": "2015-04-14T00:00:00",
+        "activated": true,
+        "store_product_id": "com.ftw_and_co.happn.c.250_coins",
+        "default_product": true,
+        "position": 4,
+        "channel": "windows",
+        "product_type": "PACK",
+        "pack_information": {
+          "credits": 250
+        }
+      },
+      {
+        "id": "2fa1ae40-d07b-11e8-9f4b-4bf92d85566e",
+        "name": "Pack 50 - Itunes (tier 27)",
+        "description": "Pack 50 - Itunes (tier 27)",
+        "creation_date": "2018-10-15T13:06:53",
+        "activated": true,
+        "store_product_id": "fr.ftw_and_co.happn.c.50_hellos_t27",
+        "default_product": false,
+        "position": 2,
+        "channel": "itunes",
+        "product_type": "PACK",
+        "pack_information": {
+          "credits": 50
+        }
+      },
+      {
+        "id": "62728fb0-d07b-11e8-a863-c93b5bf2511c",
+        "name": "Pack 5 - Itunes (tier 5)",
+        "description": "Pack 5 - Itunes (tier 5)",
+        "creation_date": "2018-10-15T13:08:18",
+        "activated": true,
+        "store_product_id": "fr.ftw_and_co.happn.c.5_hellos_t5",
+        "default_product": false,
+        "position": 0,
+        "channel": "itunes",
+        "product_type": "PACK",
+        "pack_information": {
+          "credits": 5
+        }
+      },
+      {
+        "id": "75db9600-d07b-11e8-a863-c93b5bf2511c",
+        "name": "Pack 5 - Android (tier 5)",
+        "description": "Pack 5 - Android (tier 5)",
+        "creation_date": "2018-10-15T13:08:51",
+        "activated": true,
+        "store_product_id": "com.ftw_and_co.happn.c.5_hellos.t5",
+        "default_product": false,
+        "position": 0,
+        "channel": "playstore",
+        "product_type": "PACK",
+        "pack_information": {
+          "credits": 5
+        }
+      },
+      {
+        "id": "92f848a0-d07b-11e8-ae16-618e88776c6a",
+        "name": "Pack 50 - Android (tier 27)",
+        "description": "Pack 50 - Android (tier 27)",
+        "creation_date": "2018-10-15T13:09:40",
+        "activated": true,
+        "store_product_id": "com.ftw_and_co.happn.c.50_hellos_t27",
+        "default_product": false,
+        "position": 2,
+        "channel": "playstore",
+        "product_type": "PACK",
+        "pack_information": {
+          "credits": 50
+        }
+      },
+      {
+        "id": "d298b3a0-b459-11e5-8d4a-b9f5925dc5ce",
+        "name": "Pack 100 - Windows",
+        "description": "Pack 100 - Windows",
+        "modification_date": "2015-04-14T00:00:00",
+        "creation_date": "2015-04-14T00:00:00",
+        "activated": true,
+        "store_product_id": "com.ftw_and_co.happn.c.100_coins",
+        "default_product": true,
+        "position": 3,
+        "channel": "windows",
+        "product_type": "PACK",
+        "pack_information": {
+          "credits": 100
+        }
+      },
+      {
+        "id": "851d12b0-d07b-11e8-ae16-618e88776c6a",
+        "name": "Pack 20 - Android (tier 14)",
+        "description": "Pack 20 - Android (tier 14)",
+        "creation_date": "2018-10-15T13:09:16",
+        "activated": true,
+        "store_product_id": "com.ftw_and_co.happn.c.20_hellos_t14",
+        "default_product": false,
+        "position": 1,
+        "channel": "playstore",
+        "product_type": "PACK",
+        "pack_information": {
+          "credits": 20
+        }
+      },
+      {
+        "id": "51295c20-d07b-11e8-ae16-618e88776c6a",
+        "name": "Pack 20 - Itunes (tier 14)",
+        "description": "Pack 20 - Itunes (tier 14)",
+        "creation_date": "2018-10-15T13:07:49",
+        "activated": true,
+        "store_product_id": "fr.ftw_and_co.happn.c.20_hellos_t14",
+        "default_product": false,
+        "position": 1,
+        "channel": "itunes",
+        "product_type": "PACK",
+        "pack_information": {
+          "credits": 20
+        }
+      },
+      {
+        "id": "17664cd0-f7e2-11e8-adee-51e6b67e80f1",
+        "name": "itunes_plan_10_per_day_1_month_p35",
+        "description": "plan itunes 10 credits per day for 1 month p35",
+        "creation_date": "2018-12-04T16:31:46",
+        "activated": true,
+        "store_product_id": "fr.ftw_and_co.happn.ars.p35.10_hellos_per_day_1_month",
+        "default_product": true,
+        "position": 4,
+        "channel": "itunes",
+        "product_type": "PLAN",
+        "plan_information": {
+          "recurrence_subscription_period": {
+            "unit": "MONTH",
+            "value": 1
+          },
+          "renewable_credits_per_period": 5,
+          "cooldown_credits_period": 43200
+        },
+        "introductory": false
+      },
+      {
+        "id": "4451c800-f7e2-11e8-b846-87b989e6902d",
+        "name": "itunes_plan_10_per_day_6_months_p35",
+        "description": "plan itunes 10 credits per day for 6 months p35",
+        "creation_date": "2018-12-04T16:33:01",
+        "activated": true,
+        "store_product_id": "fr.ftw_and_co.happn.ars.p35.10_hellos_per_day_6_months",
+        "default_product": false,
+        "position": 1,
+        "channel": "itunes",
+        "product_type": "PLAN",
+        "plan_information": {
+          "recurrence_subscription_period": {
+            "unit": "MONTH",
+            "value": 6
+          },
+          "renewable_credits_per_period": 5,
+          "cooldown_credits_period": 43200
+        },
+        "introductory": false
+      },
+      {
+        "id": "9ac80730-f7e2-11e8-adee-51e6b67e80f1",
+        "name": "playstore_plan_5_per_day_1_month_p35",
+        "description": "plan playstore 5 credits per day for 1 month p35",
+        "creation_date": "2018-12-04T16:35:26",
+        "activated": true,
+        "store_product_id": "com.ftw_and_co.happn.ars.5_per_day_1_month_p35",
+        "default_product": false,
+        "position": 4,
+        "channel": "playstore",
+        "product_type": "PLAN",
+        "plan_information": {
+          "recurrence_subscription_period": {
+            "unit": "MONTH",
+            "value": 1
+          },
+          "renewable_credits_per_period": 5,
+          "cooldown_credits_period": 43200
+        },
+        "introductory": false
+      },
+      {
+        "id": "d45db260-f7e2-11e8-aab5-31060d90ecbd",
+        "name": "playstore_plan_5_per_day_12_months_p35",
+        "description": "plan playstore 5 credits per day for 12 months p35",
+        "creation_date": "2018-12-04T16:37:03",
+        "activated": true,
+        "store_product_id": "com.ftw_and_co.happn.ars.5_per_day_12_month_p35",
+        "default_product": false,
+        "position": 0,
+        "channel": "playstore",
+        "product_type": "PLAN",
+        "plan_information": {
+          "recurrence_subscription_period": {
+            "unit": "MONTH",
+            "value": 12
+          },
+          "renewable_credits_per_period": 5,
+          "cooldown_credits_period": 43200
+        },
+        "introductory": false
+      },
+      {
+        "id": "b7088aa0-f7e2-11e8-aab5-31060d90ecbd",
+        "name": "playstore_plan_5_per_day_6_months_p35",
+        "description": "plan playstore 5 credits per day for 6 months p35",
+        "creation_date": "2018-12-04T16:36:14",
+        "activated": true,
+        "store_product_id": "com.ftw_and_co.happn.ars.5_per_day_6_month_p35",
+        "default_product": false,
+        "position": 1,
+        "channel": "playstore",
+        "product_type": "PLAN",
+        "plan_information": {
+          "recurrence_subscription_period": {
+            "unit": "MONTH",
+            "value": 6
+          },
+          "renewable_credits_per_period": 5,
+          "cooldown_credits_period": 43200
+        },
+        "introductory": false
+      },
+      {
+        "id": "6709b880-f7e2-11e8-aab5-31060d90ecbd",
+        "name": "itunes_plan_10_per_day_12_months_p35",
+        "description": "plan itunes 10 credits per day for 12 months p35",
+        "creation_date": "2018-12-04T16:33:59",
+        "activated": true,
+        "store_product_id": "fr.ftw_and_co.happn.ars.p35.10_hellos_per_day_12_months",
+        "default_product": false,
+        "position": 0,
+        "channel": "itunes",
+        "product_type": "PLAN",
+        "plan_information": {
+          "recurrence_subscription_period": {
+            "unit": "MONTH",
+            "value": 12
+          },
+          "renewable_credits_per_period": 5,
+          "cooldown_credits_period": 43200
+        },
+        "introductory": false
+      }
+    ],
+    "crush_time": {
+      "board_size": 4,
+      "crush_time_enable": true,
+      "entry_point": "notification",
+      "is_restricted": false,
+      "max_generate_boards": 10,
+      "required_boards": 2,
+      "session": null
+    },
+    "crush_time_events": {
+      "enable": false
+    },
+    "suggest_users": {
+      "v2_enabled": true,
+      "radius": 4,
+      "timeline": {
+        "carousel": {
+          "actions": [
+            "accept",
+            "reject",
+            "hello"
+          ],
+          "interval": 10,
+          "size": 8,
+          "start_offset": 8
+        },
+        "single": {
+          "interval": 0,
+          "start_offset": 4
+        }
+      }
+    },
+    "maps": {
+      "clusters_preview_refresh_interval": 86400,
+      "maps_access": "bottom-bar",
+      "maps_enabled": true
+    },
+    "recovery_info": {
+      "enable": false,
+      "interval": 57600,
+      "segment": "recovery_info_control",
+      "skippable": true
+    },
+    "recovery_info_first_login": {
+      "enable": true
+    },
+    "registration_traits": {
+      "enable": true,
+      "max_traits": 8
+    },
+    "proximity": {
+      "bluetooth": {
+        "broadcast": {
+          "enable": false
+        },
+        "scan": {
+          "enable": false
+        }
+      }
+    },
+    "pictures": {
+      "show_addition": false,
+      "skip_addition": false
+    },
+    "shop_type": {
+      "view": "plan"
+    },
+    "shop_layout_plan_configuration": {
+      "view": "duration_featured_plan_view"
+    },
+    "shop_layout_pack_configuration": {
+      "view": "default"
+    },
+    "timeline": {
+      "optimized": false,
+      "blocked": true,
+      "rule_version": 2,
+      "version": 5
+    },
+    "has_pending_likes": {
+      "enable": true
+    },
+    "pending_likers_configuration": {
+      "enable": true,
+      "entry_locations": [
+        "conversations",
+        "stack"
+      ],
+      "non_premium_entry_destination": "shop",
+      "stack_design_version": 1
+    },
+    "dfp_inventory": null,
+    "shop_template": 1,
+    "renewable_likes": {
+      "enable": true
+    },
+    "opportunities": {
+      "enable": true
+    },
+    "popup_force_geoloc": {
+      "enable": false
+    },
+    "force_update": {},
+    "cookie_version_enabled": false,
+    "video_call": {
+      "enabled": true,
+      "ringing_max_duration": 60,
+      "free_video_max_duration": 3600,
+      "paid_video_max_duration": 3600
+    },
+    "face_detection": {
+      "check_album": false
+    },
+    "profile_verification": {
+      "enabled": false,
+      "video_duration": 6
+    },
+    "first_session_special_offer": {
+      "enable": false,
+      "free_credits_count": 0,
+      "targeted_plan_index": 0,
+      "type": "factual"
+    },
+    "special_offer": {
+      "free_credits_count": 40,
+      "targeted_plan_index": 0,
+      "type": "factual"
+    },
+    "rating_app": {
+      "enabled": true,
+      "steps": [],
+      "cooldown": 0
+    },
+    "boost": {
+      "enabled": false,
+      "duration": 1440,
+      "stack_design_version": 1
+    },
+    "instagram": {
+      "enable": false
+    },
+    "cities_location": {
+      "enabled": false
+    }
+  },
+  "error_code": 0
+}

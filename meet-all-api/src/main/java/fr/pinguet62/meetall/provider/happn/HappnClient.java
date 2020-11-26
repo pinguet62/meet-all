@@ -2,8 +2,9 @@ package fr.pinguet62.meetall.provider.happn;
 
 import fr.pinguet62.meetall.provider.happn.dto.HappnConversationsResponseDto;
 import fr.pinguet62.meetall.provider.happn.dto.HappnConversationsResponseDto.HappnConversationDto;
+import fr.pinguet62.meetall.provider.happn.dto.HappnDeviceResponseDto;
+import fr.pinguet62.meetall.provider.happn.dto.HappnDeviceResponseDto.HappnDeviceDto;
 import fr.pinguet62.meetall.provider.happn.dto.HappnDevicesResponseDto;
-import fr.pinguet62.meetall.provider.happn.dto.HappnDevicesResponseDto.HappnDevicesDto;
 import fr.pinguet62.meetall.provider.happn.dto.HappnMessageDto;
 import fr.pinguet62.meetall.provider.happn.dto.HappnMessagesResponseDto;
 import fr.pinguet62.meetall.provider.happn.dto.HappnNotificationsResponseDto;
@@ -16,11 +17,13 @@ import fr.pinguet62.meetall.provider.happn.dto.HappnSendMessageRequestDto;
 import fr.pinguet62.meetall.provider.happn.dto.HappnSendMessageResponseDto;
 import fr.pinguet62.meetall.provider.happn.dto.HappnUserAcceptedResponseDto;
 import fr.pinguet62.meetall.provider.happn.dto.HappnUserDto;
+import fr.pinguet62.meetall.provider.happn.dto.HappnUserRejectedResponseDto;
 import fr.pinguet62.meetall.provider.happn.dto.HappnUserResponseDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClient.ResponseSpec;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
@@ -50,7 +53,8 @@ class HappnClient {
     }
 
     public Mono<HappnOptionsDto> getOptions() {
-        return webClient.options()
+        return webClient
+                .options()
                 .uri("/api")
                 .retrieve()
                 .bodyToMono(HappnOptionsDto.class);
@@ -76,7 +80,8 @@ class HappnClient {
     }
 
     public Mono<HappnNotificationsResponseDto> getNotifications(String authToken) {
-        return webClient.get()
+        return webClient
+                .get()
                 .uri(uriBuilder -> uriBuilder
                         .path("/api/users/me/notifications")
                         .queryParam("types", 468)
@@ -88,10 +93,11 @@ class HappnClient {
     }
 
     /**
-     * @param deviceId {@link HappnDevicesDto#getId()}
+     * @param deviceId {@link HappnDeviceDto#getId()}
      */
     public Mono<HappnRecommendationsResponseDto> getRecommendations(String authToken, String deviceId) {
-        return webClient.get()
+        return webClient
+                .get()
                 .uri(uriBuilder -> uriBuilder
                         .path("/api/v1/users/me/recommendations")
                         .queryParam("fields", parseGraph(HappnRecommendationDto.class))
@@ -101,34 +107,39 @@ class HappnClient {
                 .retrieve().bodyToMono(HappnRecommendationsResponseDto.class);
     }
 
-    public Mono<HappnUserAcceptedResponseDto> acceptUser(String authToken, String userId) {
-        return acceptOrRejectUser(authToken, userId, "accepted");
+    public Mono<HappnUserRejectedResponseDto> rejectedUser(String authToken, String userId) {
+        return acceptedOrRejectedUser(authToken, userId, "rejected")
+                .bodyToMono(HappnUserRejectedResponseDto.class);
     }
 
-    public Mono<HappnUserAcceptedResponseDto> rejectUser(String authToken, String userId) {
-        return acceptOrRejectUser(authToken, userId, "rejected");
+    public Mono<HappnUserAcceptedResponseDto> acceptedUser(String authToken, String userId) {
+        return acceptedOrRejectedUser(authToken, userId, "accepted")
+                .bodyToMono(HappnUserAcceptedResponseDto.class);
     }
 
-    private Mono<HappnUserAcceptedResponseDto> acceptOrRejectUser(String authToken, String userId, String acceptOrReject) {
-        return webClient.post()
+    private ResponseSpec acceptedOrRejectedUser(String authToken, String userId, String acceptOrReject) {
+        return webClient
+                .post()
                 .uri(uriBuilder -> uriBuilder.path("/api/users/me").pathSegment(acceptOrReject).pathSegment(userId).build())
                 .header(HEADER, "OAuth=\"" + authToken + "\"")
-                .retrieve().bodyToMono(HappnUserAcceptedResponseDto.class);
+                .retrieve();
     }
 
     public Mono<HappnConversationsResponseDto> getConversations(String authToken) {
-        return webClient.get()
+        return webClient
+                .get()
                 .uri(uriBuilder -> uriBuilder
                         .path("/api/users/me/conversations")
-                        .queryParam("limit", 99999999)
                         .queryParam("fields", parseGraph(HappnConversationDto.class))
+                        .queryParam("limit", 99999999)
                         .build())
                 .header(HEADER, "OAuth=\"" + authToken + "\"")
                 .retrieve().bodyToMono(HappnConversationsResponseDto.class);
     }
 
-    public Mono<HappnMessagesResponseDto> getMessagesForConversation(String authToken, String conversationId) {
-        return webClient.get()
+    public Mono<HappnMessagesResponseDto> getConversationMessages(String authToken, String conversationId) {
+        return webClient
+                .get()
                 .uri(uriBuilder -> uriBuilder
                         .path("/api/conversations").pathSegment(conversationId).pathSegment("messages")
                         .queryParam("fields", parseGraph(HappnMessageDto.class))
@@ -137,8 +148,9 @@ class HappnClient {
                 .retrieve().bodyToMono(HappnMessagesResponseDto.class);
     }
 
-    public Mono<HappnSendMessageResponseDto> sendMessagesToConversation(String authToken, String conversationId, String text) {
-        return webClient.post()
+    public Mono<HappnSendMessageResponseDto> sendConversationMessage(String authToken, String conversationId, String text) {
+        return webClient
+                .post()
                 .uri(uriBuilder -> uriBuilder
                         .path("/api/conversations").pathSegment(conversationId).pathSegment("messages")
                         .queryParam("fields", parseGraph(HappnMessageDto.class))
@@ -148,8 +160,13 @@ class HappnClient {
                 .retrieve().bodyToMono(HappnSendMessageResponseDto.class);
     }
 
+    public Mono<HappnUserResponseDto> getUserMe(String authToken) {
+        return getUser(authToken, "me");
+    }
+
     public Mono<HappnUserResponseDto> getUser(String authToken, String userId) {
-        return webClient.get()
+        return webClient
+                .get()
                 .uri(uriBuilder -> uriBuilder
                         .path("/api/users").pathSegment(userId)
                         .queryParam("fields", parseGraph(HappnUserDto.class))
@@ -158,16 +175,13 @@ class HappnClient {
                 .retrieve().bodyToMono(HappnUserResponseDto.class);
     }
 
-    public Mono<HappnUserResponseDto> getUserMe(String authToken) {
-        return getUser(authToken, "me");
-    }
-
     public Mono<HappnDevicesResponseDto> getUserMeDevices(String authToken) {
         return getUserDevices(authToken, "me");
     }
 
     public Mono<HappnDevicesResponseDto> getUserDevices(String authToken, String userId) {
-        return webClient.get()
+        return webClient
+                .get()
                 .uri(uriBuilder -> uriBuilder
                         .path("/api/users").pathSegment(userId).pathSegment("devices")
                         .build())
@@ -176,17 +190,18 @@ class HappnClient {
     }
 
     /**
-     * @param deviceId {@link HappnDevicesDto#getId()}
+     * @param deviceId {@link HappnDeviceDto#getId()}
      */
-    public Mono<String> setUserMePosition(String authToken, String deviceId, double latitude, double longitude, double altitude) {
+    public Mono<HappnDeviceResponseDto> setUserMePosition(String authToken, String deviceId, double latitude, double longitude, double altitude) {
         return setUserPosition(authToken, "me", deviceId, latitude, longitude, altitude);
     }
 
     /**
-     * @param deviceId {@link HappnDevicesDto#getId()}
+     * @param deviceId {@link HappnDeviceDto#getId()}
      */
-    public Mono<String> setUserPosition(String authToken, String userId, String deviceId, double latitude, double longitude, double altitude) {
-        return webClient.put()
+    public Mono<HappnDeviceResponseDto> setUserPosition(String authToken, String userId, String deviceId, double latitude, double longitude, double altitude) {
+        return webClient
+                .put()
                 .uri(uriBuilder -> uriBuilder
                         .path("/api/users").pathSegment(userId).pathSegment("devices").pathSegment(deviceId)
                         .build())
@@ -195,7 +210,7 @@ class HappnClient {
                         Map.entry("longitude", longitude),
                         Map.entry("alt", altitude)))
                 .header(HEADER, "OAuth=\"" + authToken + "\"")
-                .retrieve().bodyToMono(String.class);
+                .retrieve().bodyToMono(HappnDeviceResponseDto.class);
     }
 
 }

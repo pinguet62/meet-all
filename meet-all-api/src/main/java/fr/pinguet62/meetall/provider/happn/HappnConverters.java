@@ -4,6 +4,7 @@ import fr.pinguet62.meetall.provider.happn.dto.HappnConversationsResponseDto.Hap
 import fr.pinguet62.meetall.provider.happn.dto.HappnMessageDto;
 import fr.pinguet62.meetall.provider.happn.dto.HappnNotificationsResponseDto.HappnNotificationDto;
 import fr.pinguet62.meetall.provider.happn.dto.HappnRecommendationsResponseDto.HappnRecommendationDto.HappnRecommendationContentDto;
+import fr.pinguet62.meetall.provider.happn.dto.HappnRecommendationsResponseDto.HappnRecommendationDto.HappnRecommendationContentDto.HappnUserV1Dto;
 import fr.pinguet62.meetall.provider.happn.dto.HappnUserDto;
 import fr.pinguet62.meetall.provider.happn.dto.HappnUserDto.HappnProfileDto;
 import fr.pinguet62.meetall.provider.model.ConversationDto;
@@ -33,6 +34,15 @@ class HappnConverters {
         return new ProfileDto(
                 input.getId(),
                 input.getDisplay_name().orElse(""),
+                input.getAge(),
+                input.getAbout().orElse(null),
+                input.getProfiles().stream().map(HappnProfileDto::getUrl).collect(toList()));
+    }
+
+    public static ProfileDto convert(HappnUserV1Dto input) {
+        return new ProfileDto(
+                input.getId(),
+                input.getFirst_name(),
                 input.getAge(),
                 input.getAbout().orElse(null),
                 input.getProfiles().stream().map(HappnProfileDto::getUrl).collect(toList()));
