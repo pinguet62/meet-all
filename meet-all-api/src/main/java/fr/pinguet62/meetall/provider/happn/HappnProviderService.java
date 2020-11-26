@@ -135,7 +135,7 @@ public class HappnProviderService implements ProviderService {
                 .flatMapMany(meId -> client.getUserDevices(authToken, meId)
                         .flatMapIterable(it -> it.getData().orElseGet(List::of))
                         .map(HappnDevicesDto::getId)
-                        .flatMap(deviceId -> client.setUserMePosition(authToken, meId, deviceId, latitude, longitude, altitude)))
+                        .flatMap(deviceId -> client.setUserPosition(authToken, meId, deviceId, latitude, longitude, altitude)))
                 .then();
     }
 }

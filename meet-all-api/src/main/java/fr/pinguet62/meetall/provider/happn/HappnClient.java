@@ -145,6 +145,10 @@ class HappnClient {
         return getUser(authToken, "me");
     }
 
+    public Mono<HappnDevicesResponseDto> getUserMeDevices(String authToken) {
+        return getUserDevices(authToken, "me");
+    }
+
     public Mono<HappnDevicesResponseDto> getUserDevices(String authToken, String userId) {
         return webClient.get()
                 .uri(uriBuilder -> uriBuilder
@@ -154,7 +158,17 @@ class HappnClient {
                 .retrieve().bodyToMono(HappnDevicesResponseDto.class);
     }
 
-    public Mono<String> setUserMePosition(String authToken, String userId, String deviceId, double latitude, double longitude, double altitude) {
+    /**
+     * @param deviceId {@link HappnDevicesDto#getId()}
+     */
+    public Mono<String> setUserMePosition(String authToken, String deviceId, double latitude, double longitude, double altitude) {
+        return setUserPosition(authToken, "me", deviceId, latitude, longitude, altitude);
+    }
+
+    /**
+     * @param deviceId {@link HappnDevicesDto#getId()}
+     */
+    public Mono<String> setUserPosition(String authToken, String userId, String deviceId, double latitude, double longitude, double altitude) {
         return webClient.put()
                 .uri(uriBuilder -> uriBuilder
                         .path("/api/users").pathSegment(userId).pathSegment("devices").pathSegment(deviceId)
