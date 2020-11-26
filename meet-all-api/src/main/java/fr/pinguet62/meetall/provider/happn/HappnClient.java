@@ -3,12 +3,15 @@ package fr.pinguet62.meetall.provider.happn;
 import fr.pinguet62.meetall.provider.happn.dto.HappnConversationsResponseDto;
 import fr.pinguet62.meetall.provider.happn.dto.HappnConversationsResponseDto.HappnConversationDto;
 import fr.pinguet62.meetall.provider.happn.dto.HappnDevicesResponseDto;
+import fr.pinguet62.meetall.provider.happn.dto.HappnDevicesResponseDto.HappnDevicesDto;
 import fr.pinguet62.meetall.provider.happn.dto.HappnMessageDto;
 import fr.pinguet62.meetall.provider.happn.dto.HappnMessagesResponseDto;
 import fr.pinguet62.meetall.provider.happn.dto.HappnNotificationsResponseDto;
 import fr.pinguet62.meetall.provider.happn.dto.HappnNotificationsResponseDto.HappnNotificationDto;
 import fr.pinguet62.meetall.provider.happn.dto.HappnOauthResponseDto;
 import fr.pinguet62.meetall.provider.happn.dto.HappnOptionsDto;
+import fr.pinguet62.meetall.provider.happn.dto.HappnRecommendationsResponseDto;
+import fr.pinguet62.meetall.provider.happn.dto.HappnRecommendationsResponseDto.HappnRecommendationDto;
 import fr.pinguet62.meetall.provider.happn.dto.HappnSendMessageRequestDto;
 import fr.pinguet62.meetall.provider.happn.dto.HappnSendMessageResponseDto;
 import fr.pinguet62.meetall.provider.happn.dto.HappnUserAcceptedResponseDto;
@@ -82,6 +85,20 @@ class HappnClient {
                         .build())
                 .header(HEADER, "OAuth=\"" + authToken + "\"")
                 .retrieve().bodyToMono(HappnNotificationsResponseDto.class);
+    }
+
+    /**
+     * @param deviceId {@link HappnDevicesDto#getId()}
+     */
+    public Mono<HappnRecommendationsResponseDto> getRecommendations(String authToken, String deviceId) {
+        return webClient.get()
+                .uri(uriBuilder -> uriBuilder
+                        .path("/api/v1/users/me/recommendations")
+                        .queryParam("fields", parseGraph(HappnRecommendationDto.class))
+                        .build())
+                .header(HEADER, "OAuth=\"" + authToken + "\"")
+                .header("x-happn-did", deviceId)
+                .retrieve().bodyToMono(HappnRecommendationsResponseDto.class);
     }
 
     public Mono<HappnUserAcceptedResponseDto> acceptUser(String authToken, String userId) {

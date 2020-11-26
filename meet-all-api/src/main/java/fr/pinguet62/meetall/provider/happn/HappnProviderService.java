@@ -8,6 +8,8 @@ import fr.pinguet62.meetall.provider.happn.dto.HappnDevicesResponseDto.HappnDevi
 import fr.pinguet62.meetall.provider.happn.dto.HappnMessagesResponseDto;
 import fr.pinguet62.meetall.provider.happn.dto.HappnNotificationsResponseDto;
 import fr.pinguet62.meetall.provider.happn.dto.HappnOauthResponseDto;
+import fr.pinguet62.meetall.provider.happn.dto.HappnRecommendationsResponseDto;
+import fr.pinguet62.meetall.provider.happn.dto.HappnRecommendationsResponseDto.HappnRecommendationDto;
 import fr.pinguet62.meetall.provider.happn.dto.HappnSendMessageResponseDto;
 import fr.pinguet62.meetall.provider.happn.dto.HappnUserAcceptedResponseDto;
 import fr.pinguet62.meetall.provider.happn.dto.HappnUserAcceptedResponseDto.HappnUserAcceptedDataDto;
@@ -62,11 +64,20 @@ public class HappnProviderService implements ProviderService {
                 .map(HappnUserResponseDto::getData)
                 .map(HappnUserDto::getRenewable_likes)
                 .flatMapMany(limit ->
-                        client.getNotifications(authToken)
-                                .onErrorMap(Gone.class, ExpiredTokenException::new)
-                                .flatMapIterable(HappnNotificationsResponseDto::getData)
-                                .filter(it -> it.getNotifier().getMy_relation().map(myRelation -> myRelation.equals(NEW_RELATION)).orElse(false))
-                                .map(HappnConverters::convert)
+                        Flux.concat(
+                                client.getNotifications(authToken)
+                                        .onErrorMap(Gone.class, ExpiredTokenException::new)
+                                        .flatMapIterable(HappnNotificationsResponseDto::getData)
+                                        .filter(it -> it.getNotifier().getMy_relation().map(myRelation -> myRelation.equals(NEW_RELATION)).orElse(false))
+                                        .map(HappnConverters::convert),
+                                client.getUserMeDevices(authToken)
+                                        .flatMapIterable(it -> it.getData().orElseGet(List::of))
+                                        .map(HappnDevicesDto::getId)
+                                        .flatMap(deviceId -> client.getRecommendations(authToken, deviceId))
+                                        .flatMapIterable(HappnRecommendationsResponseDto::getData)
+                                        .map(HappnRecommendationDto::getContent)
+                                        .map(HappnConverters::convert)
+                                        .distinct(ProposalDto::getId))
                                 .take(limit));
     }
 

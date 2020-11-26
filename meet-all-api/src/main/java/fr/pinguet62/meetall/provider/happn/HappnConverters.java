@@ -3,6 +3,7 @@ package fr.pinguet62.meetall.provider.happn;
 import fr.pinguet62.meetall.provider.happn.dto.HappnConversationsResponseDto.HappnConversationDto;
 import fr.pinguet62.meetall.provider.happn.dto.HappnMessageDto;
 import fr.pinguet62.meetall.provider.happn.dto.HappnNotificationsResponseDto.HappnNotificationDto;
+import fr.pinguet62.meetall.provider.happn.dto.HappnRecommendationsResponseDto.HappnRecommendationDto.HappnRecommendationContentDto;
 import fr.pinguet62.meetall.provider.happn.dto.HappnUserDto;
 import fr.pinguet62.meetall.provider.happn.dto.HappnUserDto.HappnProfileDto;
 import fr.pinguet62.meetall.provider.model.ConversationDto;
@@ -20,6 +21,12 @@ class HappnConverters {
         return new ProposalDto(
                 input.getNotifier().getId(),
                 convert(input.getNotifier()));
+    }
+
+    public static ProposalDto convert(HappnRecommendationContentDto input) {
+        return new ProposalDto(
+                input.getUser().getId(),
+                convert(input.getUser()));
     }
 
     public static ProfileDto convert(HappnUserDto input) {
