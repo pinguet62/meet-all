@@ -15,6 +15,9 @@ public class TinderGetConversationResponseDto {
     public static class TinderGetConversationDataResponseDto {
         @Value
         public static class TinderMatchDto {
+            /**
+             * {@code me} {@link TinderUserDto#_id} + {@link TinderMatchDto#person}.{@link TinderUserDto#_id}
+             */
             @NonNull
             String _id;
 

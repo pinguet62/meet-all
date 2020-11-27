@@ -84,7 +84,7 @@ class TinderProviderServiceTest {
                     .setBody(readResource("/fr/pinguet62/meetall/provider/tinder/profile.json")));
             server.enqueue(new MockResponse()
                     .setHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
-                    .setBody(readResource("/fr/pinguet62/meetall/provider/tinder/recs_core.json")));
+                    .setBody(readResource("/fr/pinguet62/meetall/provider/tinder/recs_core__old.json")));
 
             List<ProposalDto> proposals = tinderProvider.getProposals(authToken).collectList().block();
 
@@ -123,7 +123,7 @@ class TinderProviderServiceTest {
                     .setBody(readResource("/fr/pinguet62/meetall/provider/tinder/profile_likes-remaining.json")));
             server.enqueue(new MockResponse()
                     .setHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
-                    .setBody(readResource("/fr/pinguet62/meetall/provider/tinder/recs_core.json")));
+                    .setBody(readResource("/fr/pinguet62/meetall/provider/tinder/recs_core__old.json")));
 
             List<ProposalDto> proposals = tinderProvider.getProposals(authToken).collectList().block();
 

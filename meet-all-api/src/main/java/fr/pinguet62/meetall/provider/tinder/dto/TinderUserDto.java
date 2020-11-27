@@ -30,6 +30,7 @@ public class TinderUserDto {
      *     <li>From {@code "/user"}: is {@code ""}</li>
      * </ul>
      */
+    // TODO @NonNull
     String bio;
 
     /**
