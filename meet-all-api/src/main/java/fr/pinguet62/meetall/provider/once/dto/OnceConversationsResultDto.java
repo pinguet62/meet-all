@@ -39,7 +39,7 @@ public class OnceConversationsResultDto {
         int last_message_id;
 
         /**
-         * @see OnceMessagesDto#getCreatedAt()
+         * @see OnceMessagesDto#getCreated_at()
          */
         @JsonProperty(required = true)
         long message_sent_at;

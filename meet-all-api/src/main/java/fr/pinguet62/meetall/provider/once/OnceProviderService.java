@@ -56,7 +56,7 @@ public class OnceProviderService implements ProviderService {
      */
     @Override
     public Flux<ProposalDto> getProposals(String authorization) {
-        return client.getMatchsHistoryFiltered(authorization, Integer.MAX_VALUE)
+        return client.getMatchsHistoryFiltered(authorization)
                 .onErrorMap(Unauthorized.class, ExpiredTokenException::new)
                 .map(OnceMatchAllResponseDto::getResult)
                 .flatMapMany(result -> fromIterable(result.getMatches())

@@ -61,7 +61,7 @@ class OnceProviderServiceTest {
         void neitherLikedNotPassed() {
             server.enqueue(new MockResponse()
                     .setHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
-                    .setBody(readResource("/fr/pinguet62/meetall/provider/once/match-history-filtered.json")));
+                    .setBody(readResource("/fr/pinguet62/meetall/provider/once/match-history-filtered__old.json")));
 
             List<ProposalDto> proposal = onceProvider.getProposals(authToken).collectList().block();
 
@@ -212,7 +212,7 @@ class OnceProviderServiceTest {
                 .setHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
                 .setBody(readResource("/fr/pinguet62/meetall/provider/once/message_send.json")));
 
-        MessageDto message = onceProvider.sendMessage(authToken, matchId, "text").block();
+        MessageDto message = onceProvider.sendMessage(authToken, matchId, "Hello world!").block();
 
         assertThat(server, takingRequest(allOf(
                 url(with(HttpUrl::url, with(URL::toString, containsString("v1/message")))),
@@ -221,7 +221,7 @@ class OnceProviderServiceTest {
                 "MEA346007886::3",
                 ZonedDateTime.of(2018, 12, 17, 12, 19, 31, 0, UTC),
                 true,
-                "text")));
+                "Hello world!")));
     }
 
     @Test
