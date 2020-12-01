@@ -11,6 +11,7 @@ import java.util.Optional;
 
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
+import static java.util.Optional.ofNullable;
 
 @Value
 public class HappnRecommendationsResponseDto {
@@ -27,8 +28,7 @@ public class HappnRecommendationsResponseDto {
 
                 String about;
 
-                @JsonProperty(required = true)
-                int age;
+                Integer age;
 
                 @NonNull
                 @GraphQLField(additional = ".mode(0).width(1000).height(1000)")
@@ -36,6 +36,10 @@ public class HappnRecommendationsResponseDto {
 
                 public Optional<String> getAbout() {
                     return about == null || about.isEmpty() ? empty() : of(about);
+                }
+
+                public Optional<Integer> getAge() {
+                    return ofNullable(age);
                 }
             }
 

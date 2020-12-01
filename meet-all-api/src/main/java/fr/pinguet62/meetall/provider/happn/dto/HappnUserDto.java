@@ -70,8 +70,6 @@ public class HappnUserDto {
     // @JsonProperty(required = true)
     Integer renewable_likes;
 
-    // TODO refactor model: can be null
-    // @JsonProperty(required = true)
     Integer age;
 
     String about;
@@ -96,6 +94,10 @@ public class HappnUserDto {
 
     public Optional<LocalDate> getBirth_date() {
         return ofNullable(birth_date);
+    }
+
+    public Optional<Integer> getAge() {
+        return ofNullable(age);
     }
 
     public Optional<String> getAbout() {

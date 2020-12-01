@@ -34,7 +34,7 @@ class HappnConverters {
         return new ProfileDto(
                 input.getId(),
                 input.getDisplay_name().orElse(""),
-                input.getAge(),
+                input.getAge().orElse(-1), // workaround
                 input.getAbout().orElse(null),
                 input.getProfiles().stream().map(HappnProfileDto::getUrl).collect(toList()));
     }
@@ -43,7 +43,7 @@ class HappnConverters {
         return new ProfileDto(
                 input.getId(),
                 input.getFirst_name(),
-                input.getAge(),
+                input.getAge().orElse(-1), // workaround
                 input.getAbout().orElse(null),
                 input.getProfiles().stream().map(HappnProfileDto::getUrl).collect(toList()));
     }
