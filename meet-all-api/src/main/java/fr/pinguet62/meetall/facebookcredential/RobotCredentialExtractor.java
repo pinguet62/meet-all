@@ -63,7 +63,7 @@ public class RobotCredentialExtractor {
                 .toUriString();
 
         // chromedriver config
-        WebDriverManager.chromedriver().driverVersion("86.0.4240.22").setup(); // System.setProperty("webdriver.chrome.driver", "...");
+        WebDriverManager.chromedriver().driverVersion("88.0.4324").setup(); // System.setProperty("webdriver.chrome.driver", "...");
         // Driver configuration
         ChromeOptions options = new ChromeOptions();
         options.addArguments("--headless");
