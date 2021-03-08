@@ -20,7 +20,7 @@ import {CredentialListComponent} from './credential-list.component';
         CredentialModule,
         RouterModule.forChild([
             {path: '', component: CredentialListComponent},
-            {path: 'create', loadChildren: '../credential-create/credential-create.module#CredentialCreateModule'}]),
+            {path: 'create', loadChildren: () => import('../credential-create/credential-create.module').then(m => m.CredentialCreateModule)}]),
     ],
     declarations: [
         CredentialListComponent,

@@ -63,7 +63,8 @@ export class CredentialListComponent {
             .subscribe(noOp);
     }
 
-    onRefresh(event: CustomEvent<RefresherEventDetail>) {
+    onRefresh(e: Event) {
+        const event = e as CustomEvent<RefresherEventDetail>;
         this.service.refreshRegisteredCredentials()
             .pipe(tap(event.detail.complete))
             .subscribe(noOp);

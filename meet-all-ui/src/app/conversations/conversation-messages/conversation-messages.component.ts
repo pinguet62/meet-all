@@ -74,12 +74,12 @@ export class ConversationMessagesComponent {
     sendingMessage = false;
 
     constructor(
-        route: ActivatedRoute,
+        activatedRoute: ActivatedRoute,
         loadingController: LoadingController,
         private service: ConversationsService,
     ) {
-        this.conversationId = route.snapshot.paramMap.get('conversationId');
-        const profileId = route.snapshot.paramMap.get('profileId');
+        this.conversationId = activatedRoute.snapshot.paramMap.get('conversationId');
+        const profileId = activatedRoute.snapshot.paramMap.get('profileId');
         processLoading(loadingController, forkJoin([
             service.getMessagesByConversation(this.conversationId)
                 .pipe(tap(it => this.messages = it))

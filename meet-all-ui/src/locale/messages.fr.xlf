@@ -1,31 +1,29 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
-  <file source-language="fr" datatype="plaintext" original="ng2.template">
+  <file source-language="en-US" datatype="plaintext" original="ng2.template">
     <body>
       <trans-unit id="configuration.title" datatype="html">
         <source>Configuration</source>
         <target>Configuration</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/configuration/configuration.component.ts</context>
-          <context context-type="linenumber">4</context>
+          <context context-type="linenumber">12</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/tabs/tabs.component.ts</context>
-          <context context-type="linenumber">23</context>
+          <context context-type="linenumber">27</context>
         </context-group>
       </trans-unit>
       <trans-unit id="configuration.sendPosition" datatype="html">
-        <source>
-                <x id="START_TAG_ION-ICON" ctype="x-ion-icon" equiv-text="&lt;ion-icon&gt;"/><x id="CLOSE_TAG_ION-ICON" ctype="x-ion-icon" equiv-text="&lt;/ion-icon&gt;"/>
-                Send position
-            </source>
+        <source><x id="START_TAG_ION_ICON" ctype="x-ion_icon" equiv-text="&lt;ion-icon slot=&quot;start&quot; name=&quot;navigate&quot;&gt;"/><x id="CLOSE_TAG_ION_ICON" ctype="x-ion_icon" equiv-text="&lt;/ion-icon&gt;
+                "/> Send position </source>
         <target>
                 <x id="START_TAG_ION-ICON" ctype="x-ion-icon" equiv-text="&lt;ion-icon&gt;"/><x id="CLOSE_TAG_ION-ICON" ctype="x-ion-icon" equiv-text="&lt;/ion-icon&gt;"/>
                 Envoyer position
             </target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/configuration/configuration.component.ts</context>
-          <context context-type="linenumber">9</context>
+          <context context-type="linenumber">18,20</context>
         </context-group>
       </trans-unit>
       <trans-unit id="conversations.title" datatype="html">
@@ -33,11 +31,11 @@
         <target>Conversations</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/conversations/conversation-list/conversation-list.component.ts</context>
-          <context context-type="linenumber">4</context>
+          <context context-type="linenumber">13</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/tabs/tabs.component.ts</context>
-          <context context-type="linenumber">13</context>
+          <context context-type="linenumber">17</context>
         </context-group>
       </trans-unit>
       <trans-unit id="common.refreshing" datatype="html">
@@ -45,15 +43,15 @@
         <target>Rafraîchissement...</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/conversations/conversation-list/conversation-list.component.ts</context>
-          <context context-type="linenumber">9</context>
+          <context context-type="linenumber">18</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/credentials/credential-list/credential-list.component.ts</context>
-          <context context-type="linenumber">9</context>
+          <context context-type="linenumber">19</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/proposals/proposals.component.ts</context>
-          <context context-type="linenumber">9</context>
+          <context context-type="linenumber">18</context>
         </context-group>
       </trans-unit>
       <trans-unit id="conversations.messages" datatype="html">
@@ -61,7 +59,7 @@
         <target>Messages</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/conversations/conversation-list/conversation-list.component.ts</context>
-          <context context-type="linenumber">14</context>
+          <context context-type="linenumber">23</context>
         </context-group>
       </trans-unit>
       <trans-unit id="conversations.input.placeholder" datatype="html">
@@ -69,19 +67,7 @@
         <target>Message...</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/conversations/conversation-messages/conversation-messages.component.ts</context>
-          <context context-type="linenumber">31</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="profile.model.age" datatype="html">
-        <source>{VAR_PLURAL, plural, =1 {1 year old} other {<x id="INTERPOLATION" equiv-text="{{profile.age}}"/> years old} }</source>
-        <target>{VAR_PLURAL, plural, =1 {1 an} other {<x id="INTERPOLATION" equiv-text="{{profile.age}}"/> an} }</target>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/profile/profile.component.ts</context>
-          <context context-type="linenumber">21</context>
-        </context-group>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/proposals/proposals.component.ts</context>
-          <context context-type="linenumber">20</context>
+          <context context-type="linenumber">41</context>
         </context-group>
       </trans-unit>
       <trans-unit id="credentials.title" datatype="html">
@@ -89,29 +75,26 @@
         <target>Identifiants</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/credentials/credential-create/credential-create.component.ts</context>
-          <context context-type="linenumber">7</context>
+          <context context-type="linenumber">18</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/credentials/credential-list/credential-list.component.ts</context>
-          <context context-type="linenumber">4</context>
+          <context context-type="linenumber">14</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/tabs/tabs.component.ts</context>
-          <context context-type="linenumber">18</context>
+          <context context-type="linenumber">22</context>
         </context-group>
       </trans-unit>
       <trans-unit id="credentials.create.button" datatype="html">
-        <source>
-                        Create
-                        <x id="START_TAG_ION-ICON" ctype="x-ion-icon" equiv-text="&lt;ion-icon&gt;"/><x id="CLOSE_TAG_ION-ICON" ctype="x-ion-icon" equiv-text="&lt;/ion-icon&gt;"/>
-                    </source>
+        <source> Create <x id="START_TAG_ION_ICON" ctype="x-ion_icon" equiv-text="&lt;ion-icon name=&quot;checkmark&quot;&gt;"/><x id="CLOSE_TAG_ION_ICON" ctype="x-ion_icon" equiv-text="&lt;/ion-icon&gt;"/></source>
         <target>
                         Créer
                         <x id="START_TAG_ION-ICON" ctype="x-ion-icon" equiv-text="&lt;ion-icon&gt;"/><x id="CLOSE_TAG_ION-ICON" ctype="x-ion-icon" equiv-text="&lt;/ion-icon&gt;"/>
                     </target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/credentials/credential-create/credential-create.component.ts</context>
-          <context context-type="linenumber">9</context>
+          <context context-type="linenumber">21,22</context>
         </context-group>
       </trans-unit>
       <trans-unit id="common.model.provider" datatype="html">
@@ -119,7 +102,7 @@
         <target>Fournisseur</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/credentials/credential-create/credential-create.component.ts</context>
-          <context context-type="linenumber">20</context>
+          <context context-type="linenumber">31</context>
         </context-group>
       </trans-unit>
       <trans-unit id="credentials.model.email" datatype="html">
@@ -127,7 +110,7 @@
         <target>Email Facebook</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/credentials/credential-create/credential-create.component.ts</context>
-          <context context-type="linenumber">27</context>
+          <context context-type="linenumber">38</context>
         </context-group>
       </trans-unit>
       <trans-unit id="credentials.model.password" datatype="html">
@@ -135,7 +118,7 @@
         <target>Mot de passe Facebook</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/credentials/credential-create/credential-create.component.ts</context>
-          <context context-type="linenumber">31</context>
+          <context context-type="linenumber">42</context>
         </context-group>
       </trans-unit>
       <trans-unit id="credentials.model.label" datatype="html">
@@ -143,7 +126,7 @@
         <target>Étiquette</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/credentials/credential-create/credential-create.component.ts</context>
-          <context context-type="linenumber">36</context>
+          <context context-type="linenumber">47</context>
         </context-group>
       </trans-unit>
       <trans-unit id="credentials.delete.button" datatype="html">
@@ -151,7 +134,7 @@
         <target>Supprimer</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/credentials/credential-list/credential-list.component.ts</context>
-          <context context-type="linenumber">22</context>
+          <context context-type="linenumber">32</context>
         </context-group>
       </trans-unit>
       <trans-unit id="login.title" datatype="html">
@@ -159,21 +142,30 @@
         <target>Identification</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/login/login.component.ts</context>
-          <context context-type="linenumber">4</context>
+          <context context-type="linenumber">9</context>
         </context-group>
       </trans-unit>
       <trans-unit id="login.facebook.button" datatype="html">
-        <source>
-                    <x id="START_TAG_ION-ICON" ctype="x-ion-icon" equiv-text="&lt;ion-icon&gt;"/><x id="CLOSE_TAG_ION-ICON" ctype="x-ion-icon" equiv-text="&lt;/ion-icon&gt;"/>
-                    Continue with Facebook
-                </source>
+        <source><x id="START_TAG_ION_ICON" ctype="x-ion_icon" equiv-text="&lt;ion-icon slot=&quot;start&quot; name=&quot;logo-facebook&quot;&gt;"/><x id="CLOSE_TAG_ION_ICON" ctype="x-ion_icon" equiv-text="&lt;/ion-icon&gt;
+                    "/> Continue with Facebook </source>
         <target>
                     <x id="START_TAG_ION-ICON" ctype="x-ion-icon" equiv-text="&lt;ion-icon&gt;"/><x id="CLOSE_TAG_ION-ICON" ctype="x-ion-icon" equiv-text="&lt;/ion-icon&gt;"/>
                     Continuer avec Facebook
                 </target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/login/login.component.ts</context>
-          <context context-type="linenumber">10</context>
+          <context context-type="linenumber">16,18</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="profile.model.age" datatype="html">
+        <source>{VAR_PLURAL, plural, =1 {1 year old} other {<x id="INTERPOLATION"/> years old}}</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/profile/profile.component.ts</context>
+          <context context-type="linenumber">31</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/proposals/proposals.component.ts</context>
+          <context context-type="linenumber">29</context>
         </context-group>
       </trans-unit>
       <trans-unit id="proposal.title" datatype="html">
@@ -181,11 +173,11 @@
         <target>Propositions</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/proposals/proposals.component.ts</context>
-          <context context-type="linenumber">4</context>
+          <context context-type="linenumber">13</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/tabs/tabs.component.ts</context>
-          <context context-type="linenumber">8</context>
+          <context context-type="linenumber">12</context>
         </context-group>
       </trans-unit>
       <trans-unit id="proposal.noData" datatype="html">
@@ -193,7 +185,7 @@
         <target>Pas de proposition pour le moment...</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/proposals/proposals.component.ts</context>
-          <context context-type="linenumber">12</context>
+          <context context-type="linenumber">21</context>
         </context-group>
       </trans-unit>
     </body>

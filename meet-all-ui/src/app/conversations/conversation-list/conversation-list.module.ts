@@ -22,7 +22,7 @@ import {ProxifiedSrcModule} from '../../shared/proxifiedSrc';
         ProxifiedSrcModule,
         RouterModule.forChild([
             {path: '', component: ConversationListComponent},
-            {path: ':conversationId/:profileId', loadChildren: '../conversation-messages/conversation-messages.module#ConversationMessagesModule'}]),
+            {path: ':conversationId/:profileId', loadChildren: () => import('../conversation-messages/conversation-messages.module').then(m => m.ConversationMessagesModule)}]),
         SecurityModule,
     ],
     declarations: [

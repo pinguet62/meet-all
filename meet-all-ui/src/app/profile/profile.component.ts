@@ -40,11 +40,11 @@ export class ProfileComponent {
     profile: Profile = null;
 
     constructor(
-        route: ActivatedRoute,
+        activatedRoute: ActivatedRoute,
         loadingController: LoadingController,
         private service: ProfileService,
     ) {
-        const profileId = route.snapshot.paramMap.get('profileId');
+        const profileId = activatedRoute.snapshot.paramMap.get('profileId');
         processLoading(loadingController,
             service.getProfile(profileId)
                 .pipe(tap(it => this.profile = it))

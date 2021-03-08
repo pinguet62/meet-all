@@ -85,7 +85,8 @@ export class ProposalsComponent {
         this.currentProposal = this.proposals[0];
     }
 
-    onRefresh(event: CustomEvent<RefresherEventDetail>) {
+    onRefresh(e: Event) {
+        const event = e as CustomEvent<RefresherEventDetail>; // TODO best typing
         this.service.getProposals()
             .pipe(tap(it => this.proposals = it))
             .pipe(tap(() => this.currentProposal = this.proposals[0]))

@@ -27,7 +27,7 @@ import {Conversation, ConversationsService} from '../conversations.service';
                     <ion-avatar>
                         <img [appProxifiedSrc]="conversation.profile.avatar">
                         <app-badge-icon *ngIf="conversation.lastMessage != null"
-                                        [name]="conversation.lastMessage.sent ? 'undo' : 'redo'"
+                                        [name]="conversation.lastMessage.sent ? 'arrow-undo-outline' : 'arrow-redo-outline'"
                                         [color]="conversation.lastMessage.sent ? 'success' : 'danger'"></app-badge-icon>
                     </ion-avatar>
                     <ion-label>
@@ -51,7 +51,8 @@ export class ConversationListComponent {
         ).subscribe();
     }
 
-    onRefresh(event: CustomEvent<RefresherEventDetail>) {
+    onRefresh(e: Event) {
+        const event = e as CustomEvent<RefresherEventDetail>; // TODO best typing
         this.service.getConversations()
             .pipe(tap(it => this.conversations = it))
             .pipe(tap(event.detail.complete))

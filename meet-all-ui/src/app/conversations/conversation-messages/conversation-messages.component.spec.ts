@@ -1,5 +1,5 @@
 import {NO_ERRORS_SCHEMA} from '@angular/core';
-import {async, fakeAsync, TestBed} from '@angular/core/testing';
+import {waitForAsync, fakeAsync, TestBed} from '@angular/core/testing';
 import {By} from '@angular/platform-browser';
 import {ActivatedRoute, convertToParamMap, RouterModule} from '@angular/router';
 import {IonicModule, LoadingController} from '@ionic/angular';
@@ -23,7 +23,7 @@ xdescribe('conversation-messages.page', () => {
         conversationsService = jasmine.createSpyObj<ConversationsService>(ConversationsService.name, allMethodNames(ConversationsService));
     });
 
-    beforeEach(async(() => {
+    beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
             declarations: [ConversationMessagesComponent],
             providers: [

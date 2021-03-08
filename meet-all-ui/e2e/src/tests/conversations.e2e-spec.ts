@@ -11,7 +11,7 @@ const LOGGED = {
 describe('conversations', () => {
     afterEach(() => nock.cleanAll());
 
-    it('display list', () => {
+    it('display list', async () => {
         nock('http://localhost:9999').get(`/conversations`).reply(200, [
             {
                 id: '91#convTinder12',
@@ -44,6 +44,6 @@ describe('conversations', () => {
                 lastMessage: 'Coucou'
             }]);
         const page = openApp<ConversationPage>(LOGGED);
-        expect(page.then(it => it.getConversations()).then(it => it.length)).toEqual(3);
+        expect(await page.then(it => it.getConversations()).then(it => it.length)).toEqual(3);
     });
 });

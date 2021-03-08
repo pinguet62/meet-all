@@ -17,28 +17,28 @@ import {TabsComponent} from './tabs.component';
                     path: 'proposals',
                     children: [{
                         path: '',
-                        loadChildren: '../proposals/proposals.module#ProposalsModule',
+                        loadChildren: () => import('../proposals/proposals.module').then(m => m.ProposalsModule),
                     }]
                 },
                 {
                     path: 'conversations',
                     children: [{
                         path: '',
-                        loadChildren: '../conversations/conversation-list/conversation-list.module#ConversationListModule',
+                        loadChildren: () => import('../conversations/conversation-list/conversation-list.module').then(m => m.ConversationListModule),
                     }]
                 },
                 {
                     path: 'credentials',
                     children: [{
                         path: '',
-                        loadChildren: '../credentials/credential-list/credential-list.module#CredentialListModule',
+                        loadChildren: () => import('../credentials/credential-list/credential-list.module').then(m => m.CredentialListModule),
                     }]
                 },
                 {
                     path: 'configuration',
                     children: [{
                         path: '',
-                        loadChildren: '../configuration/configuration.module#ConfigurationModule',
+                        loadChildren: () => import('../configuration/configuration.module').then(m => m.ConfigurationModule),
                     }]
                 },
             ],
