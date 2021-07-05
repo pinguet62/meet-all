@@ -14,14 +14,14 @@ import {Proposal, ProposalsService} from './proposals.service';
             </ion-toolbar>
         </ion-header>
 
-        <ion-content *ngIf="proposals != null && proposals.length === 0">
+        <ion-content *ngIf="proposals !== null && proposals.length === 0">
             <ion-refresher slot="fixed" (ionRefresh)="onRefresh($event)" refreshingSpinner="circles" i18n-refreshingText="@@common.refreshing" refreshingText="Refreshing...">
                 <ion-refresher-content></ion-refresher-content>
             </ion-refresher>
             <h1 i18n="@@proposal.noData">No proposal for this moment...</h1>
         </ion-content>
 
-        <ion-content *ngIf="proposals != null && proposals.length !== 0">
+        <ion-content *ngIf="proposals !== null && proposals.length !== 0">
             <ion-card>
                 <ion-img [appProxifiedSrc]="currentProposal.profile.avatars[0]" [routerLink]="[currentProposal.id, 'profile', currentProposal.profile.id]" style="height: 100%;"></ion-img>
                 <ion-card-header>
@@ -57,7 +57,7 @@ import {Proposal, ProposalsService} from './proposals.service';
 })
 export class ProposalsComponent {
 
-    proposals: Proposal[];
+    proposals: Proposal[] = null;
     currentProposal: Proposal = undefined;
 
     constructor(loadingController: LoadingController, private service: ProposalsService) {
@@ -80,11 +80,6 @@ export class ProposalsComponent {
             .subscribe();
     }
 
-    private popNextProfile() {
-        this.proposals.splice(0, 1);
-        this.currentProposal = this.proposals[0];
-    }
-
     onRefresh(e: Event) {
         const event = e as CustomEvent<RefresherEventDetail>; // TODO best typing
         this.service.getProposals()
@@ -92,6 +87,11 @@ export class ProposalsComponent {
             .pipe(tap(() => this.currentProposal = this.proposals[0]))
             .pipe(tap(event.detail.complete))
             .subscribe();
+    }
+
+    private popNextProfile() {
+        this.proposals.splice(0, 1);
+        this.currentProposal = this.proposals[0];
     }
 
 }

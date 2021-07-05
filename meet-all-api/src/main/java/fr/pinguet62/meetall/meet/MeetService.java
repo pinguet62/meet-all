@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import javax.annotation.Nullable;
 import java.util.stream.Collectors;
 
 import static fr.pinguet62.meetall.PartialListUtils.concatPartialList;
@@ -151,7 +152,7 @@ class MeetService {
     /**
      * @param userId {@link Credential#getUserId()}
      */
-    public Mono<Void> setPosition(String userId, double latitude, double longitude, double altitude) {
+    public Mono<Void> setPosition(String userId, double latitude, double longitude, @Nullable Double altitude) {
         return credentialService.findByUserId(userId)
                 .flatMap(providerCredential -> providerFactory.getProviderService(providerCredential.getProvider())
                         .setPosition(providerCredential.getCredential(), latitude, longitude, altitude)

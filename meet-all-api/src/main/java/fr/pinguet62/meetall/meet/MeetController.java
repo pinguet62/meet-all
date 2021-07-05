@@ -117,9 +117,9 @@ class MeetController {
     @PostMapping("/position")
     @ResponseStatus(NO_CONTENT)
     public Mono<Void> setPosition(
-            @Parameter(example = "48.8534") @RequestParam float latitude,
-            @Parameter(example = "2.3488") @RequestParam float longitude,
-            @Parameter(example = "35.1") @RequestParam float altitude) {
+            @Parameter(example = "48.8534") @RequestParam double latitude,
+            @Parameter(example = "2.3488") @RequestParam double longitude,
+            @Parameter(example = "35.1") @RequestParam(required = false) Double altitude) {
         return ApplicationReactiveSecurityContextHolder.getAuthentication()
                 .map(ApplicationAuthentication::getUserId)
                 .flatMap(userId -> meetService.setPosition(userId, latitude, longitude, altitude));

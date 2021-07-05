@@ -25,6 +25,7 @@ import static fr.pinguet62.meetall.meet.MeetControllerTest.currentUserId;
 import static java.time.ZonedDateTime.now;
 import static java.util.Collections.emptyList;
 import static org.mockito.AdditionalMatchers.eq;
+import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.HttpStatus.PARTIAL_CONTENT;
 import static org.springframework.security.test.web.reactive.server.SecurityMockServerConfigurers.csrf;
@@ -208,15 +209,30 @@ class MeetControllerTest {
                 .jsonPath("$.avatars").isEmpty();
     }
 
-    @Test
-    void setPosition() {
-        when(meetService.setPosition(ArgumentMatchers.eq(currentUserId), eq(48.8534, 0.0001), eq(2.3488, 0.0001), eq(35.1, 0.0001))).thenReturn(Mono.empty());
+    @Nested
+    class setPosition {
+        @Test
+        void allParameters() {
+            when(meetService.setPosition(ArgumentMatchers.eq(currentUserId), eq(48.8534, 0.0001), eq(2.3488, 0.0001), eq(35.1, 0.0001))).thenReturn(Mono.empty());
 
-        webTestClient.mutateWith(csrf())
-                .post()
-                .uri("/position?latitude=48.8534&longitude=2.3488&altitude=35.1")
-                .exchange()
-                .expectStatus().isNoContent()
-                .expectBody().isEmpty();
+            webTestClient.mutateWith(csrf())
+                    .post()
+                    .uri("/position?latitude=48.8534&longitude=2.3488&altitude=35.1")
+                    .exchange()
+                    .expectStatus().isNoContent()
+                    .expectBody().isEmpty();
+        }
+
+        @Test
+        void withoutAltitude() {
+            when(meetService.setPosition(ArgumentMatchers.eq(currentUserId), eq(48.8534, 0.0001), eq(2.3488, 0.0001), isNull())).thenReturn(Mono.empty());
+
+            webTestClient.mutateWith(csrf())
+                    .post()
+                    .uri("/position?latitude=48.8534&longitude=2.3488")
+                    .exchange()
+                    .expectStatus().isNoContent()
+                    .expectBody().isEmpty();
+        }
     }
 }

@@ -5,12 +5,7 @@ import org.apache.hc.core5.http.NameValuePair;
 import org.apache.hc.core5.net.URLEncodedUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.openqa.selenium.By;
-import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.TimeoutException;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -23,6 +18,7 @@ import java.net.URI;
 import java.time.Duration;
 import java.util.List;
 
+import static com.google.common.collect.Iterables.getLast;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfAllElementsLocatedBy;
 import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElementLocated;
@@ -63,7 +59,8 @@ public class RobotCredentialExtractor {
                 .toUriString();
 
         // chromedriver config
-        WebDriverManager.chromedriver().driverVersion("88.0.4324").setup(); // System.setProperty("webdriver.chrome.driver", "...");
+        //WebDriverManager.chromedriver().driverVersion(getLast(WebDriverManager.chromedriver().getDriverVersions())).setup(); // System.setProperty("webdriver.chrome.driver", "...");
+        WebDriverManager.chromedriver().driverVersion("91.0.4472.124").setup(); // System.setProperty("webdriver.chrome.driver", "...");
         // Driver configuration
         ChromeOptions options = new ChromeOptions();
         options.addArguments("--headless");

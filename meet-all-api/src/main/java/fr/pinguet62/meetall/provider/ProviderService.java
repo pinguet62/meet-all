@@ -8,6 +8,8 @@ import fr.pinguet62.meetall.provider.model.ProposalDto;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import javax.annotation.Nullable;
+
 public interface ProviderService {
 
     Provider getId();
@@ -40,7 +42,7 @@ public interface ProviderService {
     /**
      * @return {@link Mono#empty()} when not supported or success.
      */
-    default Mono<Void> setPosition(String credential, double latitude, double longitude, double altitude) {
+    default Mono<Void> setPosition(String credential, double latitude, double longitude, @Nullable Double altitude) {
         return Mono.empty();
     }
 

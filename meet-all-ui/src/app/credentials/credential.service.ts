@@ -7,9 +7,9 @@ import {noOp} from '../utils';
 
 /** The icon name. */
 export enum Provider {
-    HAPPN = 'HAPPN',
-    ONCE = 'ONCE',
-    TINDER = 'TINDER',
+    happn = 'HAPPN',
+    once = 'ONCE',
+    tinder = 'TINDER',
 }
 
 export interface RegisteredCredential {
@@ -46,13 +46,13 @@ export class CredentialService {
             .pipe(tap(() => this.refreshRegisteredCredentialsAsync()));
     }
 
-    private refreshRegisteredCredentialsAsync() {
-        this.refreshRegisteredCredentials().subscribe(noOp);
-    }
-
     public refreshRegisteredCredentials() {
         return this.client.getRegisteredCredentials()
             .pipe(tap(it => this.registeredCredential.next(it)));
+    }
+
+    private refreshRegisteredCredentialsAsync() {
+        this.refreshRegisteredCredentials().subscribe(noOp);
     }
 
 }

@@ -53,7 +53,7 @@ import {ApiError, noOp} from '../../utils';
 })
 export class CredentialCreateComponent {
 
-    readonly providers = Object.keys(Provider);
+    readonly providers = Object.values(Provider);
 
     provider: Provider;
     facebookEmail = '';

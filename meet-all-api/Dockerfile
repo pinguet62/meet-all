@@ -1,4 +1,4 @@
-FROM openjdk:15-slim
+FROM openjdk:16-slim
 
 RUN apt-get update \
  && apt-get install -y wget gnupg gnupg2 gnupg1 \

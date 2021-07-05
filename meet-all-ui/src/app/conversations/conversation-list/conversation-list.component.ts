@@ -26,7 +26,7 @@ import {Conversation, ConversationsService} from '../conversations.service';
                           [routerLink]="['/tabs/conversations/', conversation.id, conversation.profile.id]">
                     <ion-avatar>
                         <img [appProxifiedSrc]="conversation.profile.avatar">
-                        <app-badge-icon *ngIf="conversation.lastMessage != null"
+                        <app-badge-icon *ngIf="conversation.lastMessage !== null"
                                         [name]="conversation.lastMessage.sent ? 'arrow-undo-outline' : 'arrow-redo-outline'"
                                         [color]="conversation.lastMessage.sent ? 'success' : 'danger'"></app-badge-icon>
                     </ion-avatar>

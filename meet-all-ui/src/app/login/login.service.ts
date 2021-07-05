@@ -15,7 +15,7 @@ export class LoginService {
         const paramBuilder: HttpParams = new HttpParams()
             .append('client_id', '370320447067710')
             .append('response_type', 'token')
-            .append('redirect_uri', `${currentLocation.protocol}//${currentLocation.host}/login/oauth`);
+            .append('redirect_uri', `${currentLocation.href}/oauth`);
         return `https://www.facebook.com/dialog/oauth?${paramBuilder.toString()}`;
     }
 
@@ -26,7 +26,8 @@ export class LoginService {
     }
 
     public login(facebookAccessToken: string): Observable<any> {
-        return this.http.post(environment.apiUrl + '/login', null, {params: {facebook_token: facebookAccessToken}, responseType: 'text'})
+        const params = {facebook_token: facebookAccessToken}; // eslint-disable-line @typescript-eslint/naming-convention
+        return this.http.post(environment.apiUrl + '/login', null, {params, responseType: 'text'})
             .pipe(tap(it => this.securityService.token = it));
     }
 

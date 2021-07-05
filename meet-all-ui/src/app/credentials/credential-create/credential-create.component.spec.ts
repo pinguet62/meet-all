@@ -40,7 +40,7 @@ describe('credential-create.component', () => {
     });
 
     it('should display toast message when Facebook account locked', fakeAsync(() => {
-        fixture.componentInstance.provider = Provider.TINDER;
+        fixture.componentInstance.provider = Provider.tinder;
         fixture.componentInstance.facebookEmail = 'example@test.org';
         fixture.componentInstance.facebookPassword = 'aZeRtY';
         fixture.componentInstance.label = 'Sample';

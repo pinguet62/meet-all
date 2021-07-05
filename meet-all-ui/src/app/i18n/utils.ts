@@ -1,6 +1,6 @@
 declare global {
     interface Navigator {
-        _mocked_languages?: string[]; // for mock
+        mockedLanguages?: string[]; // for mock
         userLanguage?: string;
         browserLanguage: string;
     }
@@ -8,8 +8,8 @@ declare global {
 
 export function getLanguagesWeighted() {
     const languages: string[] = [];
-    if (window.navigator._mocked_languages !== undefined) {
-        languages.push(...navigator._mocked_languages);
+    if (window.navigator.mockedLanguages !== undefined) {
+        languages.push(...navigator.mockedLanguages);
     } else if (navigator.languages !== undefined && navigator.languages.length > 0) {
         languages.push(...navigator.languages);
     } else {

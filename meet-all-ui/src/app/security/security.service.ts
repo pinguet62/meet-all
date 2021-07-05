@@ -3,7 +3,7 @@ import {Injectable} from '@angular/core';
 @Injectable()
 export class SecurityService {
 
-    static readonly TOKEN_KEY = 'token';
+    static readonly tokenKey = 'token';
 
     private internalToken: string | null = null;
 
@@ -13,15 +13,15 @@ export class SecurityService {
 
     public set token(value: string | null) {
         if (value == null) {
-            localStorage.removeItem(SecurityService.TOKEN_KEY);
+            localStorage.removeItem(SecurityService.tokenKey);
         } else {
-            localStorage.setItem(SecurityService.TOKEN_KEY, value);
+            localStorage.setItem(SecurityService.tokenKey, value);
         }
         this.internalToken = value;
     }
 
     constructor() {
-        this.internalToken = localStorage.getItem(SecurityService.TOKEN_KEY);
+        this.internalToken = localStorage.getItem(SecurityService.tokenKey);
     }
 
     isLogged() {

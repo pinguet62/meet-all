@@ -27,6 +27,7 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import javax.annotation.Nullable;
 import java.time.Clock;
 
 import static fr.pinguet62.meetall.provider.Provider.TINDER;
@@ -141,7 +142,7 @@ public class TinderProviderService implements ProviderService {
     }
 
     @Override
-    public Mono<Void> setPosition(String authToken, double latitude, double longitude, double altitude) {
+    public Mono<Void> setPosition(String authToken, double latitude, double longitude, @Nullable Double altitude) {
         return client.ping(authToken, latitude, longitude)
                 .then();
     }

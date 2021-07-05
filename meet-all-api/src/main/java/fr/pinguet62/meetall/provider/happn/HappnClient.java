@@ -26,6 +26,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClient.ResponseSpec;
 import reactor.core.publisher.Mono;
 
+import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Map;
 
@@ -192,14 +193,14 @@ class HappnClient {
     /**
      * @param deviceId {@link HappnDeviceDto#getId()}
      */
-    public Mono<HappnDeviceResponseDto> setUserMePosition(String authToken, String deviceId, double latitude, double longitude, double altitude) {
+    public Mono<HappnDeviceResponseDto> setUserMePosition(String authToken, String deviceId, double latitude, double longitude, @Nullable Double altitude) {
         return setUserPosition(authToken, "me", deviceId, latitude, longitude, altitude);
     }
 
     /**
      * @param deviceId {@link HappnDeviceDto#getId()}
      */
-    public Mono<HappnDeviceResponseDto> setUserPosition(String authToken, String userId, String deviceId, double latitude, double longitude, double altitude) {
+    public Mono<HappnDeviceResponseDto> setUserPosition(String authToken, String userId, String deviceId, double latitude, double longitude, @Nullable Double altitude) {
         return webClient
                 .put()
                 .uri(uriBuilder -> uriBuilder
