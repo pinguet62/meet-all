@@ -14,8 +14,7 @@
         </context-group>
       </trans-unit>
       <trans-unit id="configuration.sendPosition" datatype="html">
-        <source><x id="START_TAG_ION_ICON" ctype="x-ion_icon" equiv-text="&lt;ion-icon slot=&quot;start&quot; name=&quot;navigate&quot;&gt;"/><x id="CLOSE_TAG_ION_ICON" ctype="x-ion_icon" equiv-text="&lt;/ion-icon&gt;
-                "/> Send position </source>
+        <source><x id="START_TAG_ION_ICON" ctype="x-ion_icon" equiv-text="&lt;ion-icon slot=&quot;start&quot; name=&quot;navigate&quot;&gt;"/><x id="CLOSE_TAG_ION_ICON" ctype="x-ion_icon" equiv-text="&lt;/ion-icon&gt;"/> Send position </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/configuration/configuration.component.ts</context>
           <context context-type="linenumber">18,20</context>
@@ -126,8 +125,7 @@
         </context-group>
       </trans-unit>
       <trans-unit id="login.facebook.button" datatype="html">
-        <source><x id="START_TAG_ION_ICON" ctype="x-ion_icon" equiv-text="&lt;ion-icon slot=&quot;start&quot; name=&quot;logo-facebook&quot;&gt;"/><x id="CLOSE_TAG_ION_ICON" ctype="x-ion_icon" equiv-text="&lt;/ion-icon&gt;
-                    "/> Continue with Facebook </source>
+        <source><x id="START_TAG_ION_ICON" ctype="x-ion_icon" equiv-text="&lt;ion-icon slot=&quot;start&quot; name=&quot;logo-facebook&quot;&gt;"/><x id="CLOSE_TAG_ION_ICON" ctype="x-ion_icon" equiv-text="&lt;/ion-icon&gt;"/> Continue with Facebook </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/login/login.component.ts</context>
           <context context-type="linenumber">16,18</context>

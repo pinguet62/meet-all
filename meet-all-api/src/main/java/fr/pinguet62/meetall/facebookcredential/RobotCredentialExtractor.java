@@ -18,7 +18,6 @@ import java.net.URI;
 import java.time.Duration;
 import java.util.List;
 
-import static com.google.common.collect.Iterables.getLast;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfAllElementsLocatedBy;
 import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElementLocated;
@@ -60,7 +59,7 @@ public class RobotCredentialExtractor {
 
         // chromedriver config
         //WebDriverManager.chromedriver().driverVersion(getLast(WebDriverManager.chromedriver().getDriverVersions())).setup(); // System.setProperty("webdriver.chrome.driver", "...");
-        WebDriverManager.chromedriver().driverVersion("91.0.4472.124").setup(); // System.setProperty("webdriver.chrome.driver", "...");
+        WebDriverManager.chromedriver().driverVersion("94.0.4606.61").setup(); // System.setProperty("webdriver.chrome.driver", "...");
         // Driver configuration
         ChromeOptions options = new ChromeOptions();
         options.addArguments("--headless");
