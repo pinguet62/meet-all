@@ -7,6 +7,10 @@ export class SecurityService {
 
     private internalToken: string | null = null;
 
+    constructor() {
+        this.internalToken = localStorage.getItem(SecurityService.tokenKey);
+    }
+
     public get token(): string | null {
         return this.internalToken;
     }
@@ -18,10 +22,6 @@ export class SecurityService {
             localStorage.setItem(SecurityService.tokenKey, value);
         }
         this.internalToken = value;
-    }
-
-    constructor() {
-        this.internalToken = localStorage.getItem(SecurityService.tokenKey);
     }
 
     isLogged() {

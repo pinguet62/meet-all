@@ -1,8 +1,9 @@
 1. [Create app](https://ionicframework.com/docs/intro/cli)
 
   ```shell
+  npm install -g @ionic/cli
   ionic start
-  cd meet-all-ui
+  cd meet-all
   ```
 
 2. [PWA](https://ionicframework.com/docs/angular/pwa)
@@ -23,13 +24,12 @@
 
   ```shell
   npm install cordova-plugin-geolocation
-  npm install @ionic-native/geolocation
+  npm install @awesome-cordova-plugins/geolocation
   ionic cap sync
   ```
 
 5. Dependencies
 
   ```shell
-  npm install -D nock protractor-backend-mock-plugin
-  npm install -D protractor-backend-mock-plugin
+  npm install --save-dev nock protractor-backend-mock-plugin
   ```

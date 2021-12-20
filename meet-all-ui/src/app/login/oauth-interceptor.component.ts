@@ -2,7 +2,7 @@ import {Component} from '@angular/core';
 import {Router} from '@angular/router';
 import {LoadingController} from '@ionic/angular';
 import {of} from 'rxjs';
-import {finalize, flatMap} from 'rxjs/operators';
+import {finalize, mergeMap} from 'rxjs/operators';
 import {processLoading} from '../loading-controller.utils';
 import {LoginService} from './login.service';
 
@@ -25,7 +25,7 @@ export class OauthInterceptorComponent {
     ) {
         processLoading(loadingController,
             of(LoginService.extractOAuthAccessTokenFromUrl(window.location.href))
-                .pipe(flatMap(accessToken => loginService.login(accessToken)))
+                .pipe(mergeMap(accessToken => loginService.login(accessToken)))
                 .pipe(finalize(() => router.navigate(['/']))))
             .subscribe();
     }

@@ -3,7 +3,7 @@ import {CommonModule} from '@angular/common';
 import {HttpClientModule} from '@angular/common/http';
 import {RouterModule} from '@angular/router';
 import {IonicModule} from '@ionic/angular';
-import {Geolocation} from '@ionic-native/geolocation/ngx';
+import {Geolocation} from '@awesome-cordova-plugins/geolocation/ngx';
 import {SecurityModule} from '../security';
 import {ConfigurationComponent} from './configuration.component';
 import {ConfigurationService} from './configuration.service';

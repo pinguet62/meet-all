@@ -1,7 +1,7 @@
 import {Component} from '@angular/core';
-import {Geolocation} from '@ionic-native/geolocation/ngx';
+import {Geolocation} from '@awesome-cordova-plugins/geolocation/ngx';
 import {from, noop} from 'rxjs';
-import {flatMap, map} from 'rxjs/operators';
+import {map, mergeMap} from 'rxjs/operators';
 import {ConfigurationService} from './configuration.service';
 
 @Component({
@@ -27,7 +27,7 @@ export class ConfigurationComponent {
     setPosition() {
         from(this.geolocation.getCurrentPosition())
             .pipe(map(geoposition => geoposition.coords))
-            .pipe(flatMap(({latitude, longitude, altitude}) => this.service.setPosition(latitude, longitude, altitude)))
+            .pipe(mergeMap(({latitude, longitude, altitude}) => this.service.setPosition(latitude, longitude, altitude)))
             .subscribe(noop);
     }
 }

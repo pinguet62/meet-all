@@ -5,12 +5,12 @@ import {environment} from '../../environments/environment';
 @Directive({selector: 'img[appProxifiedSrc],ion-img[appProxifiedSrc]'})
 export class ProxifiedSrcDirective {
 
+    constructor(private el: ElementRef<HTMLImageElement>) {
+    }
+
     @Input()
     set appProxifiedSrc(value: string) {
         this.el.nativeElement.src = `${environment.apiUrl}/photo/${value}`;
-    }
-
-    constructor(private el: ElementRef<HTMLImageElement>) {
     }
 
 }

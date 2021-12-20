@@ -2,7 +2,7 @@ import {HttpErrorResponse} from '@angular/common/http';
 import {Component} from '@angular/core';
 import {LoadingController, NavController, ToastController} from '@ionic/angular';
 import {from, throwError} from 'rxjs';
-import {catchError, flatMap, map, tap} from 'rxjs/operators';
+import {catchError, map, mergeMap, tap} from 'rxjs/operators';
 import {processLoading} from '../../loading-controller.utils';
 import {CredentialService, Provider} from '../credential.service';
 import {ApiError, noOp} from '../../utils';
@@ -82,7 +82,7 @@ export class CredentialCreateComponent {
                         position: 'bottom'
                     })).pipe(
                         map((toast: HTMLIonToastElement) => toast.present()),
-                        flatMap(() => throwError(error))))))
+                        mergeMap(() => throwError(error))))))
             .subscribe(noOp, noOp);
     }
 
